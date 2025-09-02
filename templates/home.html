@@ -1,85 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="static/style.css" />
-  </head>
-  <body>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Interface</title>
+   <link rel="stylesheet" href="./forum.css">
+</head>
+<body>
+    <!-- Header -->
     <header class="header">
-      <div class="logo-section">
-        <div class="logo"></div>
-        <div class="title">TITLE</div>
-      </div>
-      <nav class="nav-section">
-        <a href="#" class="nav-link">Home</a>
-        <a href="#" class="nav-link">Categories</a>
-        <input type="text" class="search-box" placeholder="search" />
-        <button class="login-btn" href="/signup">login/register</button>
-      </nav>
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div class="title">TITLE</div>
+        </div>
+        <nav class="nav-section">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Categories</a>
+            <input type="text" class="search-box" placeholder="search">
+            <button class="login-btn" onclick="openRegisterModal()">login/register</button>
+        </nav>
     </header>
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <h3>New Posts</h3>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-      </aside>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>New Posts</h3>
+            <a href="#" class="sidebar-item">&gt; sujet</a>
+            <a href="#" class="sidebar-item">&gt; sujet</a>
+            <a href="#" class="sidebar-item">&gt; sujet</a>
+        </aside>
 
-      <!-- Posts Section -->
-      <section class="posts-section">
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">sujet 1</div>
-            <div class="post-text">
-              cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br />ceu vbce
-              nccb cebucenifcjoiezkfcfpozeffc z*sc
+        <!-- Posts Section -->
+        <section class="posts-section">
+            <div class="post-card">
+                <div class="post-avatar"></div>
+                <div class="post-content">
+                    <div class="post-title">sujet 1</div>
+                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                </div>
+                <button class="post-button">ouvrir</button>
             </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
 
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">sujet 2</div>
-            <div class="post-text">
-              cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br />ceu vbce
-              nccb cebucenifcjoiezkfcfpozeffc z*sc
+            <div class="post-card">
+                <div class="post-avatar"></div>
+                <div class="post-content">
+                    <div class="post-title">sujet 2</div>
+                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                </div>
+                <button class="post-button">ouvrir</button>
             </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
 
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">sujet 3</div>
-            <div class="post-text">
-              cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br />ceu vbce
-              nccb cebucenifcjoiezkfcfpozeffc z*sc
+            <div class="post-card">
+                <div class="post-avatar"></div>
+                <div class="post-content">
+                    <div class="post-title">sujet 3</div>
+                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                </div>
+                <button class="post-button">ouvrir</button>
             </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
 
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">sujet 4</div>
-            <div class="post-text">
-              cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br />ceu vbce
-              nccb cebucenifcjoiezkfcfpozeffc z*sc
+            <div class="post-card">
+                <div class="post-avatar"></div>
+                <div class="post-content">
+                    <div class="post-title">sujet 4</div>
+                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                </div>
+                <button class="post-button">ouvrir</button>
             </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
-      </section>
+        </section>
     </main>
-  </body>
+
+   <!-- Modal de connexion -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeRegisterModal()">&times;</button>
+        <div class="modal-header">
+            <h2 class="modal-title">Connexion</h2>
+            <p class="modal-subtitle">Accédez à votre compte</p>
+        </div>
+        
+ <form id="loginForm" onsubmit="showLoginModal(); return false;">
+    <div class="form-group">
+        <label class="form-label" for="loginEmail">Identifiant</label>
+        <input type="text" id="loginEmail" class="form-input" placeholder="email/nom d'utilisateur" required>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label" for="loginPassword">Mot de passe</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required minlength="6">
+         <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text-2">Afficher</span>
+    </div>
+    
+   <button type="submit" class="form-button">Se connecter</button>
+</form>
+        
+        <div class="form-divider">
+            <span>Pas encore de compte ?</span>
+        </div>
+        
+    
+     <a href="s'inscrire.html">
+                <button class="secondary-button" type="button">S'inscrire</button>
+            </a>
+</div>
+</div>
+
+
+    <script>
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+            
+            alert('Inscription réussie !');
+            closeRegisterModal();
+        }
+
+        function showLoginModal() {
+            alert('Modal de connexion à implémenter');
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('registerModal');
+            if (event.target === modal) {
+                closeRegisterModal();
+            }
+        }
+    </script>
+</body>
 </html>
