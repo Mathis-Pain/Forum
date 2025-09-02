@@ -81,5 +81,98 @@
         </div>
       </section>
     </main>
+
+    <!-- Modal de connexion -->
+    <div id="registerModal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeRegisterModal()">
+          &times;
+        </button>
+        <div class="modal-header">
+          <h2 class="modal-title">Connexion</h2>
+          <p class="modal-subtitle">Accédez à votre compte</p>
+        </div>
+
+        <form id="loginForm" method="post" onsubmit="showLoginModal(); return false;">
+          <div class="form-group">
+            {{if .}} <div>{{.}}</div> {{end}}
+            <label class="form-label" for="loginEmail">Identifiant</label>
+            <input
+              name="login"
+              type="text"
+              id="loginEmail"
+              class="form-input"
+              placeholder="email/nom d'utilisateur"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Mot de passe</label>
+            <input
+              name="password"
+              type="password"
+              id="loginPassword"
+              class="form-input"
+              placeholder="••••••••"
+              required
+              minlength="6"
+            />
+            <input
+              type="checkbox"
+              onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"
+            />
+            <span class="show-password-text-2">Afficher</span>
+          </div>
+
+          <button type="submit" class="form-button">Se connecter</button>
+        </form>
+
+        <div class="form-divider">
+          <span>Pas encore de compte ?</span>
+        </div>
+
+        <a href="s'inscrire.html">
+          <button class="secondary-button" type="button">S'inscrire</button>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      function openRegisterModal() {
+        document.getElementById("registerModal").style.display = "block";
+      }
+
+      function closeRegisterModal() {
+        document.getElementById("registerModal").style.display = "none";
+      }
+
+      function handleRegister(event) {
+        event.preventDefault();
+        const password = document.getElementById("registerPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          alert("Les mots de passe ne correspondent pas");
+          return;
+        }
+
+        alert("Inscription réussie !");
+        closeRegisterModal();
+      }
+
+      function showLoginModal() {
+        alert("Modal de connexion à implémenter");
+      }
+
+      // Fermer le modal en cliquant à l'extérieur
+      window.onclick = function (event) {
+        const modal = document.getElementById("registerModal");
+        if (event.target === modal) {
+          closeRegisterModal();
+        }
+      };
+    </script>
   </body>
 </html>
