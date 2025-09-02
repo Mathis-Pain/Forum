@@ -269,6 +269,7 @@ body {
 
 .show-password-text-2 {
   color: #333;
+  font-size: 11px;
 }
 
 .form-input {
@@ -323,4 +324,10 @@ body {
 
 .secondary-button:hover {
   background-color: #e9ecef;
+}
+
+.incorrect {
+  color: red;
+  font-size: 11px;
+  text-align: center;
 }

@@ -95,11 +95,14 @@
           <h2 class="modal-title">Connexion</h2>
           <p class="modal-subtitle">Accédez à votre compte</p>
         </div>
-
-        <form id="loginForm" onsubmit="showLoginModal(); return false;">
+        <form id="loginForm" method="post">
           <div class="form-group">
+            {{if .}}
+            <div>{{.}}</div>
+            {{end}}
             <label class="form-label" for="loginEmail">Identifiant</label>
             <input
+              name="login"
               type="text"
               id="loginEmail"
               class="form-input"
@@ -111,6 +114,7 @@
           <div class="form-group">
             <label class="form-label" for="loginPassword">Mot de passe</label>
             <input
+              name="password"
               type="password"
               id="loginPassword"
               class="form-input"
@@ -122,8 +126,11 @@
               type="checkbox"
               onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"
             />
-            <span class="show-password-text-2">Afficher</span>
+            <span class="show-password-text-2">Afficher le mot de passe</span>
           </div>
+          {{if .}}
+          <div class="incorrect">{{.}}</div>
+          {{end}} <br />
 
           <button type="submit" class="form-button">Se connecter</button>
         </form>
