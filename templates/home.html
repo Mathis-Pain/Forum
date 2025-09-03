@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forum Interface</title>
+    <title>Document</title>
     <link rel="stylesheet" href="static/style.css" />
   </head>
   <body>
-    <!-- Header -->
     <header class="header">
       <div class="logo-section">
         <div class="logo"></div>
@@ -17,9 +16,7 @@
         <a href="#" class="nav-link">Home</a>
         <a href="#" class="nav-link">Categories</a>
         <input type="text" class="search-box" placeholder="search" />
-        <button class="login-btn" onclick="openRegisterModal()">
-          login/register
-        </button>
+        <button class="login-btn" href="/signup">login/register</button>
       </nav>
     </header>
 
@@ -97,6 +94,7 @@
         </div>
         <form id="loginForm" method="post">
           <div class="form-group">
+            
             <label class="form-label" for="loginEmail">Identifiant</label>
             <input
               name="login"
