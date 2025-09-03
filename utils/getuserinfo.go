@@ -18,3 +18,16 @@ func GetUserInfoFromLogin(db *sql.DB, login string) (models.User, error) {
 
 	return user, nil
 }
+
+func GetUserInfoFromID(db *sql.DB, ID int) (models.User, error) {
+	sql := `SELECT username, profilpic FROM users WHERE id = ?`
+	row := db.QueryRow(sql, ID)
+
+	var user models.User
+	err := row.Scan(&user.Username, &user.ProfilPic)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}

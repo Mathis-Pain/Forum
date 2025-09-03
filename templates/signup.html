@@ -25,23 +25,28 @@
                 <form id="registerForm" onsubmit="alert('Inscription réussie !'); return false;">
                     <div class="form-group">
                         <label class="form-label-2" for="registerName">Nom d'utilisateur</label>
-                        <input type="text" id="registerName" class="form-input" placeholder="Votre Nom" required>
+                        <input name="username" type="text" id="registerName" class="form-input" placeholder="Votre Nom" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label-2" for="registerEmail">Adresse e-mail</label>
-                        <input type="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
+                        <input name="useremail" type="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label-2" for="registerPic">Photo de profil (facultatif)</label>
+                        <input name="userimage" type="text" id="registerPic" class="form-input" placeholder="http:// url de l'image" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label-2" for="registerPassword">Mot de passe</label>
-                        <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" required minlength="6">
+                        <input name="userpass" type="password" id="registerPassword" class="form-input" placeholder="••••••••" required minlength="6">
                        <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text">Afficher</span>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label-2" for="confirmPassword">Confirmer le mot de passe</label>
-                        <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required minlength="6"> 
+                        <input name="userconfirm" type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required minlength="6"> 
                         <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text">Afficher</span>
                     </div>
                     
