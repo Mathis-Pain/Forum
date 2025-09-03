@@ -7,8 +7,8 @@ import (
 )
 
 func GetCatDetails(db *sql.DB, catID int) (models.Category, error) {
-	sql := `SELECT name, description FROM categories WHERE id = ?`
-	row := db.QueryRow(sql, catID)
+	sqlQuery := `SELECT name, description FROM categories WHERE id = ?`
+	row := db.QueryRow(sqlQuery, catID)
 
 	var categ models.Category
 	err := row.Scan(&categ.Name, &categ.Description)

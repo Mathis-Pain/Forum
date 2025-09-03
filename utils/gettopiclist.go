@@ -8,8 +8,8 @@ import (
 )
 
 func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
-	sql := `SELECT topicid, name, author FROM topics WHERE catid = ?`
-	rows, err := db.Query(sql, catID)
+	sqlQuery := `SELECT topicid, name FROM topics WHERE catid = ?`
+	rows, err := db.Query(sqlQuery, catID)
 	if err != nil {
 		return nil, err
 	}
@@ -18,11 +18,18 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 
 	for rows.Next() {
 		var topic models.Topic
-		if err := rows.Scan(&topic.TopicID, &topic.Name, &topic.Author); err != nil {
+		if err := rows.Scan(&topic.TopicID, &topic.Name); err != nil {
 			log.Printf("Error scanning topic row: %v", err)
 			return nil, err
 		}
+		topic.Messages, err = GetMessageList(db, topic.TopicID)
+		if err == sql.ErrNoRows {
+			topic.Messages = []models.Message{}
+		} else if err != nil {
+			return topics, nil
+		}
 		topics = append(topics, topic)
+
 	}
 
 	return topics, nil
