@@ -2,6 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -269,6 +273,7 @@ body {
 
 .show-password-text-2 {
   color: #333;
+  font-size: 11px;
 }
 
 .form-input {
@@ -323,4 +328,10 @@ body {
 
 .secondary-button:hover {
   background-color: #e9ecef;
+}
+
+.incorrect {
+  color: red;
+  font-size: 11px;
+  text-align: center;
 }

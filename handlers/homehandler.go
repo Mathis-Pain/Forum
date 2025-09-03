@@ -8,12 +8,13 @@ import (
 	"strings"
 
 	"github.com/Mathis-Pain/Forum/utils"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var HomeHtml = template.Must(template.ParseFiles("templates/home.html"))
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("sqlite", "./database/forum.db")
+	db, err := sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Printf("<homehandler.go> Could not open database : %v\n", err)
 		return
@@ -33,7 +34,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	} else {
-		err := HomeHtml.Execute(w, r)
+		err := HomeHtml.Execute(w, nil)
 		if err != nil {
 			log.Printf("Erreur lors de l'exécution du template HomeHtml: %v\n", err)
 			utils.NotFoundHandler(w)
