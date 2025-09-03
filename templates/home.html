@@ -97,9 +97,6 @@
         </div>
         <form id="loginForm" method="post">
           <div class="form-group">
-            {{if .}}
-            <div>{{.}}</div>
-            {{end}}
             <label class="form-label" for="loginEmail">Identifiant</label>
             <input
               name="login"
@@ -139,7 +136,7 @@
           <span>Pas encore de compte ?</span>
         </div>
 
-        <a href="s'inscrire.html">
+        <a href="/signup/">
           <button class="secondary-button" type="button">S'inscrire</button>
         </a>
       </div>
