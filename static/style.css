@@ -272,7 +272,7 @@ body {
 
 .show-password-text-2 {
   color: #333;
-  font-size:11px;
+  font-size: 11px;
 }
 
 .form-input {
@@ -330,7 +330,26 @@ body {
 }
 
 .incorrect {
-  color:red;
-  font-size:11px;
+  color: red;
+  font-size: 11px;
   text-align: center;
 }
+
+.big { 
+    font-size: 80px; 
+    color: #667eea; 
+    margin: 0; 
+}
+
+.box { 
+    background: white; 
+    padding: 30px; 
+    border-radius: 10px; 
+    max-width: 500px; 
+    margin: 0 auto; 
+}
+
+.btn { 
+    color: #667eea; 
+    text-decoration: none;
+    padding: 5px 10px; }

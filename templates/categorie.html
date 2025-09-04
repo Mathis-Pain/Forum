@@ -52,57 +52,15 @@
     </main>
 
     <!-- Modal de connexion -->
-    <div id="registerModal" class="modal">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closeRegisterModal()">
-          &times;
-        </button>
-        <div class="modal-header">
-          <h2 class="modal-title">Connexion</h2>
-          <p class="modal-subtitle">Accédez à votre compte</p>
-        </div>
+    <div id="loginModal" class="modal">
+     {{template "loginModal" .Message}}
+    </div>
 
-        <form id="loginForm" onsubmit="showLoginModal(); return false;">
-          <div class="form-group">
-            <label class="form-label" for="loginEmail">Identifiant</label>
-            <input
-              type="text"
-              id="loginEmail"
-              class="form-input"
-              placeholder="email/nom d'utilisateur"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="loginPassword">Mot de passe</label>
-            <input
-              type="password"
-              id="loginPassword"
-              class="form-input"
-              placeholder="••••••••"
-              required
-              minlength="6"
-            />
-            <input
-              type="checkbox"
-              onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"
-            />
-            <span class="show-password-text-2">Afficher</span>
-          </div>
-
-          <button type="submit" class="form-button">Se connecter</button>
-        </form>
-
-        <div class="form-divider">
-          <span>Pas encore de compte ?</span>
-        </div>        
-    
-     <a href="signup.html">
-                <button class="secondary-button" type="button">S'inscrire</button>
-            </a>
-</div>
-</div>
+    <script>
+     {{if .ShowLogin}}
+      document.getElementById("loginModal").style.display = "block";
+      {{end}}
+    </script>
 
   </body>
 </html>
