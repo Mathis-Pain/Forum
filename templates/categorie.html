@@ -36,13 +36,13 @@
 
         <!-- Posts Section -->
         <section class="posts-section">
-            {{range Category.Topics}}
+            {{range .Category.Topics}}
             <div class="post-card">
                 <div class="post-avatar"></div>
                 <div class="post-content">
                     <div class="post-title">{{.Name}}</div>
-                    <div class="post-text">{{preview .Messages[0].Content 300}}</div>
-                    <div class="post-author">{{.Messages[0].Author}}</div>
+                    <div class="post-text">{{preview (index .Messages 0).Content 300}}</div>
+                    <div class="post-author">{{(index .Messages 0).Author}}</div>
                 </div>
                 <a class="post-button" href="t{{.topicID}}">Ouvrir</a>
             </div>

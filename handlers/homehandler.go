@@ -40,5 +40,4 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 			utils.NotFoundHandler(w)
 		}
 	}
-
 }
