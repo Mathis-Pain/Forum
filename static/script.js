@@ -1,9 +1,9 @@
- function openRegisterModal() {
-        document.getElementById("registerModal").style.display = "block";
+function openLoginModal() {
+        document.getElementById("loginModal").style.display = "block";
       }
 
-      function closeRegisterModal() {
-        document.getElementById("registerModal").style.display = "none";
+      function closeLoginModal() {
+        document.getElementById("loginModal").style.display = "none";
       }
 
       function handleRegister(event) {
@@ -18,17 +18,13 @@
         }
 
         alert("Inscription réussie !");
-        closeRegisterModal();
-      }
-
-      function showLoginModal() {
-        alert("Modal de connexion à implémenter");
+        closeLoginModal();
       }
 
       // Fermer le modal en cliquant à l'extérieur
       window.onclick = function (event) {
-        const modal = document.getElementById("registerModal");
+        const modal = document.getElementById("loginModal");
         if (event.target === modal) {
-          closeRegisterModal();
+          closeLoginModal();
         }
       };

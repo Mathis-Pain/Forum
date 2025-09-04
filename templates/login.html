@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="static/style.css" />
-    <script src="static/script.js"></script>
-</head>
-<body style="all:initial">
-      <!-- Modal de connexion -->
-    <div id="registerModal" class="modal">
+{{define "loginModal"}}
       <div class="modal-content">
-        <button class="close-btn" onclick="closeRegisterModal()">
+        <button class="close-btn" onclick="closeLoginModal()">
           &times;
         </button>
         <div class="modal-header">
@@ -62,6 +51,4 @@
           <button class="secondary-button" type="button">S'inscrire</button>
         </a>
       </div>
-    </div>
-</body>
-</html>
+{{end}}

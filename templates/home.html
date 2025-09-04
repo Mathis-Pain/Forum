@@ -18,7 +18,7 @@
         <a href="#" class="nav-link">Home</a>
         <a href="#" class="nav-link">Categories</a>
         <input type="text" class="search-box" placeholder="search" />
-        <button class="login-btn" href="/signup">login/register</button>
+        <button class="login-btn" onclick="openLoginModal()">login/login</button>
       </nav>
     </header>
 
@@ -85,8 +85,14 @@
     </main>
 
     <!-- Modal de connexion -->
-    <div id="registerModal" class="modal">
-      <iframe src="/login" frameborder="0" height="750px" width="90%"></iframe>
+    <div id="loginModal" class="modal">
+     {{template "loginModal" .Message}}
     </div>
+
+    <script>
+     {{if .ShowLogin}}
+      document.getElementById("loginModal").style.display = "block";
+      {{end}}
+    </script>
   </body>
 </html>

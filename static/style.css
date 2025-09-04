@@ -168,8 +168,11 @@ body {
 }
 
 /* Modal Styles */
-.modal {
+#loginModal {
   display: none;
+}
+
+.modal {
   position: fixed;
   z-index: 1000;
   left: 0;
