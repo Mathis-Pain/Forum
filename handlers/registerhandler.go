@@ -3,14 +3,16 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-// Handler regroupe toutes les dépendances dont les routes ont besoin
+var templ = template.Must(template.ParseFiles("templates/signup.html"))
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
+
 	name := r.FormValue("name")
 	email := r.FormValue("email")
 	password := r.FormValue("password")
@@ -20,28 +22,39 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	//Gestion d'erreur
 	erreur := utils.ValidName(name)
+
+	data := struct {
+		Error error
+	}{
+		Error: erreur,
+	}
+
 	if erreur != nil {
-		fmt.Fprint(w, erreur)
+		templ.Execute(w, data)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
 	erreur = utils.ValidEmail(email)
 	if erreur != nil {
-		fmt.Fprint(w, erreur)
+		templ.Execute(w, data)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
 	erreur = utils.ValidPasswd(password, passwordConfirm)
 	if erreur != nil {
-		fmt.Fprint(w, erreur)
+		templ.Execute(w, data)
 		w.WriteHeader(http.StatusBadRequest)
+
 	}
 
 	_, err := db.Exec("INSERT INTO users(name, email, password) VALUES(?, ?, ?)", name, email, password)
 	if err != nil {
 		http.Error(w, "Erreur DB: "+err.Error(), http.StatusInternalServerError)
+		utils.InternalServError(w)
 		return
 	}
 
-	fmt.Fprint(w, "Utilisateur ajouté")
+	//est-ce que vraiment ça va marcher ou alors il faut mettre un if err == nil pour être sûr
+	fmt.Fprint(w, "Utilisateur ajouté") //renvoyer ça dans un template pour le stylisé ?
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
