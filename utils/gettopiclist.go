@@ -8,7 +8,7 @@ import (
 )
 
 func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
-	sqlQuery := `SELECT topicid, name FROM topics WHERE catid = ?`
+	sqlQuery := `SELECT id, name FROM topic WHERE category_id = ?`
 	rows, err := db.Query(sqlQuery, catID)
 	if err != nil {
 		return nil, err

@@ -8,7 +8,7 @@ import (
 )
 
 func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
-	sqlQuery := `SELECT created, author, likes, dislikes, content FROM messages WHERE topicID = ?`
+	sqlQuery := `SELECT created_at,user_id,likes, dislikes, content FROM message WHERE topic_id = ?`
 	rows, err := db.Query(sqlQuery, topicID)
 	if err != nil {
 		return nil, err
