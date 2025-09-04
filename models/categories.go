@@ -11,7 +11,6 @@ type Topic struct {
 	CatID    int
 	TopicID  int
 	Name     string
-	Author   string
 	Messages []Message
 }
 
