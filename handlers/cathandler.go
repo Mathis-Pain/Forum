@@ -14,8 +14,9 @@ import (
 
 var CatHtml = template.Must(template.ParseFiles("templates/category.html"))
 
+// Permet au HTMl d'utiliser la fonction preview
 var funcMap = template.FuncMap{
-	"truncate": utils.Preview,
+	"preview": utils.Preview,
 }
 
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
