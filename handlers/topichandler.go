@@ -2,17 +2,14 @@ package handlers
 
 import (
 	"database/sql"
-	"html/template"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
-	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-var TopicHtml = template.Must(template.ParseFiles("templates/sujet.html"))
+// var TopicHtml = template.Must(template.ParseFiles("templates/sujet.html"))
 
 func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./database/forum.db")
@@ -29,31 +26,31 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		utils.NotFoundHandler(w)
 	}
 
-	topicID := strings.Trim(path, "t")
-	ID, err := strconv.Atoi(topicID)
+	// topicID := strings.Trim(path, "t")
+	// ID, err := strconv.Atoi(topicID)
 
-	if err != nil {
-		utils.InternalServError(w)
-	}
+	// if err != nil {
+	// 	utils.InternalServError(w)
+	// }
 
-	topic, err := utils.GetTopicInfo(db, ID)
+	// topic, err := utils.GetTopicInfo(db, ID)
 
-	if err == sql.ErrNoRows {
-		utils.NotFoundHandler(w)
-	} else if err != nil {
-		utils.InternalServError(w)
-	}
+	// if err == sql.ErrNoRows {
+	// 	utils.NotFoundHandler(w)
+	// } else if err != nil {
+	// 	utils.InternalServError(w)
+	// }
 
-	data := struct {
-		Topic models.Topic
-	}{
-		Topic: topic,
-	}
+	// data := struct {
+	// 	Topic models.Topic
+	// }{
+	// 	Topic: topic,
+	// }
 
-	err = TopicHtml.Execute(w, data)
-	if err != nil {
-		log.Printf("Erreur lors de l'exécution du template <sujet.html> : %v\n", err)
-		utils.NotFoundHandler(w)
-	}
+	// err = TopicHtml.Execute(w, data)
+	// if err != nil {
+	// 	log.Printf("Erreur lors de l'exécution du template <sujet.html> : %v\n", err)
+	// 	utils.NotFoundHandler(w)
+	// }
 
 }

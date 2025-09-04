@@ -1,40 +1,35 @@
 package handlers
 
 import (
-	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/Mathis-Pain/Forum/utils"
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var HomeHtml = template.Must(template.ParseFiles("templates/home.html"))
+var HomeHtml = template.Must(template.ParseFiles("templates/home.html", "templates/login.html"))
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("sqlite3", "./database/forum.db")
-	if err != nil {
-		log.Printf("<homehandler.go> Could not open database : %v\n", err)
-		return
-	}
-	defer db.Close()
-
 	if r.Method == "POST" {
-		login := r.FormValue("login")
-		password := r.FormValue("password")
-		err = utils.Authentification(db, login, password)
-		if err != nil {
-			if strings.Contains(err.Error(), "db") {
-				utils.InternalServError(w)
-			} else {
-				NotValid := "Mot de passe ou nom d'utilisateur incorrect. Veuillez réessayer."
-				HomeHtml.Execute(w, NotValid)
-			}
+		data, err := utils.LoginPopUp(r, w)
+		if err == nil {
+			HomeHtml.Execute(w, data)
 		}
+
+		// Connexion réussie (ouverture de session, accès aux boutons, etc, à ajouter ici)
+
 	} else {
-		err := HomeHtml.Execute(w, nil)
+		data := struct {
+			Message   string
+			ShowLogin bool
+		}{
+			Message:   "",    // No message on initial load
+			ShowLogin: false, // The modal should be hidden initially
+		}
+		// S'il n'y a pas eu d'envoi du formulaire de connexion, affiche la page d'accueil de base
+		err := HomeHtml.Execute(w, data)
 		if err != nil {
 			log.Printf("Erreur lors de l'exécution du template HomeHtml: %v\n", err)
 			utils.NotFoundHandler(w)
