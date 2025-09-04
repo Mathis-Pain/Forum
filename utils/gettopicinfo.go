@@ -7,7 +7,7 @@ import (
 )
 
 func GetTopicInfo(db *sql.DB, topicID int) (models.Topic, error) {
-	sqlQuery := `SELECT name FROM topics WHERE id = ?`
+	sqlQuery := `SELECT name FROM topic WHERE id = ?`
 	row := db.QueryRow(sqlQuery, topicID)
 
 	var topic models.Topic
