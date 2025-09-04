@@ -7,7 +7,7 @@ import (
 )
 
 func GetUserInfoFromLogin(db *sql.DB, login string) (models.User, error) {
-	sql := `SELECT ID, password FROM users WHERE email = ? OR username = ?`
+	sql := `SELECT id, password FROM user WHERE email = ? OR username = ?`
 	row := db.QueryRow(sql, login, login)
 
 	var user models.User
