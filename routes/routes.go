@@ -21,7 +21,7 @@ func InitRoutes() *http.ServeMux {
 	})
 
 	mux.HandleFunc("/signup", handlers.SignUpFormHandler)
-	mux.HandleFunc("/signup/submit", handlers.SignUpSubmitHandler)
+	mux.HandleFunc("/registration", handlers.SignUpSubmitHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))

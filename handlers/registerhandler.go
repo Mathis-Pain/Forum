@@ -9,52 +9,65 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-var templ = template.Must(template.ParseFiles("templates/signup.html"))
+var registrationHtml = template.Must(template.ParseFiles("templates/registration.html"))
 
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		username := r.FormValue("username")
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+		passwordConfirm := r.FormValue("confirmpassword")
 
-	name := r.FormValue("name")
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	passwordConfirm := r.FormValue("confirmpassword")
+		db, err := sql.Open("sqlite3", "./database/forum.db")
+		if err != nil {
+			http.Error(w, "Impossible d'ouvrir la DB", http.StatusInternalServerError)
+			return
+		}
+		defer db.Close()
 
-	var db *sql.DB
+		//Gestion d'erreur
+		erreur := utils.ValidName(username)
 
-	//Gestion d'erreur
-	erreur := utils.ValidName(name)
+		data := struct {
+			Error error
+		}{
+			Error: erreur,
+		}
 
-	data := struct {
-		Error error
-	}{
-		Error: erreur,
+		if erreur != nil {
+			registrationHtml.Execute(w, data)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		erreur = utils.ValidEmail(email)
+		if erreur != nil {
+			registrationHtml.Execute(w, data)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		erreur = utils.ValidPasswd(password, passwordConfirm)
+		if erreur != nil {
+			registrationHtml.Execute(w, data)
+			w.WriteHeader(http.StatusBadRequest)
+
+		}
+
+		_, err = db.Exec("INSERT INTO user(username, email, password) VALUES(?, ?, ?)", username, email, password)
+		if err != nil {
+			http.Error(w, "Erreur DB: "+err.Error(), http.StatusInternalServerError)
+			utils.InternalServError(w)
+			return
+		}
+
+		//est-ce que vraiment ça va marcher ou alors il faut mettre un if err == nil pour être sûr
+		fmt.Fprint(w, "Utilisateur ajouté") //renvoyer ça dans un template pour le stylisé ?
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	} else {
+
+		err := registrationHtml.Execute(w, nil)
+		if err != nil {
+			utils.InternalServError(w)
+			return
+		}
 	}
-
-	if erreur != nil {
-		templ.Execute(w, data)
-		w.WriteHeader(http.StatusBadRequest)
-	}
-
-	erreur = utils.ValidEmail(email)
-	if erreur != nil {
-		templ.Execute(w, data)
-		w.WriteHeader(http.StatusBadRequest)
-	}
-
-	erreur = utils.ValidPasswd(password, passwordConfirm)
-	if erreur != nil {
-		templ.Execute(w, data)
-		w.WriteHeader(http.StatusBadRequest)
-
-	}
-
-	_, err := db.Exec("INSERT INTO users(name, email, password) VALUES(?, ?, ?)", name, email, password)
-	if err != nil {
-		http.Error(w, "Erreur DB: "+err.Error(), http.StatusInternalServerError)
-		utils.InternalServError(w)
-		return
-	}
-
-	//est-ce que vraiment ça va marcher ou alors il faut mettre un if err == nil pour être sûr
-	fmt.Fprint(w, "Utilisateur ajouté") //renvoyer ça dans un template pour le stylisé ?
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
