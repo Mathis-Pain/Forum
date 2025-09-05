@@ -40,6 +40,14 @@
       </div>
       <a class="post-button" href="t{{.TopicID}}#{{.MessageID}}">Lire</a> 
     </div>
+    {{else}}
+      <div class="post-card">
+      <div class="post-content">
+        <div class="post-text">
+          <center>Il n'y a aucun message à afficher pour l'instant.</center>
+        </div>
+      </div>
+    </div>
 {{end}}
 
       </section>
