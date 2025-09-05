@@ -53,11 +53,11 @@
 
     <!-- Modal de connexion -->
     <div id="loginModal" class="modal">
-     {{template "loginModal" .Message}}
+     {{template "loginModal" .LoginData.Message}}
     </div>
 
     <script>
-     {{if .ShowLogin}}
+     {{if .LoginData.ShowLogin}}
       document.getElementById("loginModal").style.display = "block";
       {{end}}
     </script>
