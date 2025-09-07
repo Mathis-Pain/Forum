@@ -5,18 +5,12 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var registrationHtml = template.Must(template.ParseFiles("templates/registration.html"))
-
-// Struct pour transmettre les erreurs au template
-type FormDataError struct {
-	NameError  string
-	EmailError string
-	PassError  string
-}
 
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -34,7 +28,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	passwordConfirm := r.FormValue("confirmpassword")
 
 	// --- Struct pour stocker les erreurs ---
-	formData := FormDataError{
+	formData := models.FormDataError{
 		NameError:  utils.ValidName(username),
 		EmailError: utils.ValidEmail(email),
 		PassError:  utils.ValidPasswd(password, passwordConfirm),
