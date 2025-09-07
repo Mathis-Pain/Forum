@@ -22,7 +22,7 @@
                 <h2 class="modal-title-2">Inscription</h2><br>
                 <p class="modal-subtitle-2">Créez votre compte gratuitement</p><br>
 
-                <form id="registerForm" onsubmit="alert('Inscription réussie !')" method="POST">
+                <form id="registerForm" method="POST">
                     <div class="form-group">
                         <label class="form-label-2" for="registerName">Nom d'utilisateur</label>
 
@@ -58,6 +58,9 @@
                 </form>
             </div>
         </section>
+          {{if .Error}}
+          <div class="error-message">{{.Error}}</div>
+{{end}}
     </main>
 </body>
 </html>

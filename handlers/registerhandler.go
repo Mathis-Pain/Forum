@@ -26,8 +26,14 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		defer db.Close()
 
 		//Gestion d'erreur
+
 		erreur := utils.ValidName(username)
 
+		type FormDataError struct {
+			NameError  string
+			EmailError string
+			PassError  string
+		}
 		data := struct {
 			Error error
 		}{
@@ -35,21 +41,23 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if erreur != nil {
-			registrationHtml.Execute(w, data)
 			w.WriteHeader(http.StatusBadRequest)
+			registrationHtml.Execute(w, data)
+			return
 		}
 
 		erreur = utils.ValidEmail(email)
 		if erreur != nil {
-			registrationHtml.Execute(w, data)
 			w.WriteHeader(http.StatusBadRequest)
+			registrationHtml.Execute(w, data)
+			return
 		}
 
 		erreur = utils.ValidPasswd(password, passwordConfirm)
 		if erreur != nil {
-			registrationHtml.Execute(w, data)
 			w.WriteHeader(http.StatusBadRequest)
-
+			registrationHtml.Execute(w, data)
+			return
 		}
 
 		_, err = db.Exec("INSERT INTO user(username, email, password) VALUES(?, ?, ?)", username, email, password)
