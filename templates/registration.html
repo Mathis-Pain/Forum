@@ -22,45 +22,49 @@
                 <h2 class="modal-title-2">Inscription</h2><br>
                 <p class="modal-subtitle-2">Créez votre compte gratuitement</p><br>
 
-                <form id="registerForm" method="POST">
-                    <div class="form-group">
-                        <label class="form-label-2" for="registerName">Nom d'utilisateur</label>
+               <form id="registerForm" method="POST">
+    <div class="form-group">
+        <label class="form-label-2" for="registerName">Nom d'utilisateur</label>
+        <input type="text" value="username" name="username" id="registerName" class="form-input" placeholder="Votre Nom" required>
+        {{if .NameError}}
+        <div class="error-message">{{.NameError}}</div>
+        {{end}}
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label-2" for="registerEmail">Adresse e-mail</label>
+        <input type="email" value="email" name="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
+        {{if .EmailError}}
+        <div class="error-message">{{.EmailError}}</div>
+        {{end}}
+    </div>
 
-                        <input type="text" value="username" name="username" id="registerName" class="form-input" placeholder="Votre Nom" required>
-
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label-2" for="registerEmail">Adresse e-mail</label>
-                        <input type="email" value="email" name="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label-2" for="registerPic">Photo de profil (facultatif)</label>
-                        <input name="userimage" type="text" id="registerPic" class="form-input" placeholder="http:// url de l'image">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label-2" for="registerPassword">Mot de passe</label>
-                        <input type="password" value="password" name="password" id="registerPassword" class="form-input" placeholder="••••••••" required minlength="6">
-                       <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text">Afficher</span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label-2" for="confirmPassword">Confirmer le mot de passe</label>
-
-                        <input type="password" value="confirmpassword" name="confirmpassword" id="confirmPassword" class="form-input" placeholder="••••••••" required minlength="6"> 
-                        <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text">Afficher</span>
-                    </div>
-                    
-                    <button value="submit" class="form-button">Créer mon compte</button>
-                </form>
+    <div class="form-group">
+        <label class="form-label-2" for="registerPic">Photo de profil (facultatif)</label>
+        <input name="userimage" type="text" id="registerPic" class="form-input" placeholder="http:// url de l'image">
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label-2" for="registerPassword">Mot de passe</label>
+        <input type="password" value="password" name="password" id="registerPassword" class="form-input" placeholder="••••••••" required minlength="6">
+        <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> 
+        <span class="show-password-text">Afficher</span>
+        {{if .PassError}}
+        <div class="error-message">{{.PassError}}</div>
+        {{end}}
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label-2" for="confirmPassword">Confirmer le mot de passe</label>
+        <input type="password" value="confirmpassword" name="confirmpassword" id="confirmPassword" class="form-input" placeholder="••••••••" required minlength="6"> 
+        <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> 
+        <span class="show-password-text">Afficher</span>
+    </div>
+    
+    <button value="submit" class="form-button">Créer mon compte</button>
+</form>
             </div>
         </section>
-          {{if .Error}}
-          <div class="error-message">{{.Error}}</div>
-{{end}}
     </main>
 </body>
 </html>
