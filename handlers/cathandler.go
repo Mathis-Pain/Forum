@@ -5,8 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
@@ -27,8 +25,10 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	parts := strings.Split(r.URL.Path, "/")
+	/*parts := strings.Split(r.URL.Path, "/")
 	path := parts[len(parts)-1]
+
+	fmt.Println("path : ", path)
 
 	if !strings.Contains(path, "c") {
 		utils.NotFoundHandler(w)
@@ -39,9 +39,30 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		utils.InternalServError(w)
+	}*/
+
+	var category models.Category
+
+	// Préparer la requête
+	rows, err := db.Query("SELECT id FROM category")
+	if err != nil {
+		log.Println("Erreur lors de la requête à la db table category : ", err)
+		return
+	}
+	defer rows.Close()
+
+	// Parcourir les résultats
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			log.Println("Erreur, parcourir les données category : ", err)
+			return
+		}
+		// Appeler la fonction avec l’ID
+		category, err = utils.GetCatDetails(db, id)
 	}
 
-	category, err := utils.GetCatDetails(db, ID)
+	// Vérifier les erreurs après la boucle
 
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)

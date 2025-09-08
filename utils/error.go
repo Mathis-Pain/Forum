@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"html/template"
 	"net/http"
 
@@ -11,86 +12,87 @@ var (
 	ErrorHtml = template.Must(template.ParseFiles("templates/error/error.html"))
 )
 
-// Erreur 404 - Not Found
+// sendError est une fonction utilitaire pour rendre un template d'erreur
+func sendError(w http.ResponseWriter, code int, name, message, full string) {
+	data := models.HtmlError{
+		Code:      code,
+		ErrorName: name,
+		Message:   message,
+		ErrorFull: full,
+	}
+
+	// On écrit dans un buffer avant d'envoyer au client
+	var buf bytes.Buffer
+	if err := ErrorHtml.Execute(&buf, data); err != nil {
+		// Si le template échoue, on renvoie un 500
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
+		return
+	}
+
+	// Envoie le header et le contenu
+	w.WriteHeader(code)
+	w.Write(buf.Bytes())
+}
+
+// NotFoundHandler renvoie une erreur 404
 func NotFoundHandler(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      404,
-		ErrorName: "Page introuvable",
-		Message:   "Désolé, la page que vous recherchez n'existe pas.",
-		ErrorFull: "404 - Not Found",
-	}
-	w.WriteHeader(http.StatusNotFound)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusNotFound,
+		"Page introuvable",
+		"Désolé, la page que vous recherchez n'existe pas.",
+		"404 - Not Found",
+	)
 }
 
-// Erreur 400 - Bad Request
+// StatusBadRequest renvoie une erreur 400
 func StatusBadRequest(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      400,
-		ErrorName: "Requête non prise en charge",
-		Message:   "L'action que vous avez tenté d'effectuer n'est pas prise en charge.",
-		ErrorFull: "400 - Bad Request",
-	}
-	w.WriteHeader(http.StatusBadRequest)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusBadRequest,
+		"Requête non prise en charge",
+		"L'action que vous avez tenté d'effectuer n'est pas prise en charge.",
+		"400 - Bad Request",
+	)
 }
 
-// Erreur 500 - Erreur Serveur
+// InternalServError renvoie une erreur 500
 func InternalServError(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      500,
-		ErrorName: "Erreur interne au serveur",
-		Message:   "Le serveur a rencontré une erreur. Veuillez réessayer.",
-		ErrorFull: "500 - Internal Servor Error",
-	}
-	w.WriteHeader(http.StatusInternalServerError)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusInternalServerError,
+		"Erreur interne au serveur",
+		"Le serveur a rencontré une erreur. Veuillez réessayer.",
+		"500 - Internal Server Error",
+	)
 }
 
-// Erreur 405 - Méthode invalide
+// MethodNotAllowedError renvoie une erreur 405
 func MethodNotAllowedError(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      405,
-		ErrorName: "Méthode non autorisée",
-		Message:   "L'accès à cette page n'est pas autorisé avec cette méthode HTML.",
-		ErrorFull: "405 - Method Not Allowed",
-	}
-	w.WriteHeader(http.StatusMethodNotAllowed)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusMethodNotAllowed,
+		"Méthode non autorisée",
+		"L'accès à cette page n'est pas autorisé avec cette méthode HTML.",
+		"405 - Method Not Allowed",
+	)
 }
 
-// Erreur 401 - Connexion nécessaire
+// UnauthorizedError renvoie une erreur 401
 func UnauthorizedError(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      401,
-		ErrorName: "Connexion nécessaire",
-		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page. Veuillez vous connecter et réessayer.",
-		ErrorFull: "401 - Unauthorized",
-	}
-	w.WriteHeader(http.StatusUnauthorized)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusUnauthorized,
+		"Connexion nécessaire",
+		"Vous n'êtes pas autorisé.e à accéder à cette page. Veuillez vous connecter et réessayer.",
+		"401 - Unauthorized",
+	)
 }
 
-// Erreur 403 - Non autorisé
+// ForbiddenError renvoie une erreur 403
 func ForbiddenError(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      403,
-		ErrorName: "Accès interdit",
-		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page.",
-		ErrorFull: "403 - Forbidden",
-	}
-	w.WriteHeader(http.StatusForbidden)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusForbidden,
+		"Accès interdit",
+		"Vous n'êtes pas autorisé.e à accéder à cette page.",
+		"403 - Forbidden",
+	)
 }
 
-// Erreur 408 - Time Out
+// TimeOutError renvoie une erreur 408
 func TimeOutError(w http.ResponseWriter) {
-	data := models.HtmlError{
-		Code:      408,
-		ErrorName: "Communication trop lente",
-		Message:   "Le serveur a mis trop de temps à répondre à la requête.",
-		ErrorFull: "408 - Request Time Out",
-	}
-	w.WriteHeader(http.StatusRequestTimeout)
-	ErrorHtml.Execute(w, data)
+	sendError(w, http.StatusRequestTimeout,
+		"Communication trop lente",
+		"Le serveur a mis trop de temps à répondre à la requête.",
+		"408 - Request Time Out",
+	)
 }

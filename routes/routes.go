@@ -25,6 +25,7 @@ func InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/registration", handlers.SignUpSubmitHandler)
 	mux.HandleFunc("/profil", middleware.AuthMiddleware(handlers.ProfilHandler))
 	mux.HandleFunc("/login", handlers.LoginHandler)
+	mux.HandleFunc("/categorie", handlers.CategoriesHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
