@@ -7,12 +7,12 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-var signUpHtml = template.Must(template.ParseFiles("templates/signup.html"))
+var loginHtml = template.Must(template.ParseFiles("templates/login.html"))
 
-func SignUpHandler(w http.ResponseWriter, r *http.Request) {
+func SignUpFormHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		// afficher le formulaire
-		err := signUpHtml.Execute(w, nil)
+		err := loginHtml.Execute(w, nil)
 		if err != nil {
 			utils.InternalServError(w)
 

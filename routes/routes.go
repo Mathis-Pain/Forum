@@ -8,6 +8,7 @@ import (
 )
 
 func InitRoutes() *http.ServeMux {
+
 	mux := http.NewServeMux()
 
 	// Route Home
@@ -19,7 +20,9 @@ func InitRoutes() *http.ServeMux {
 		handlers.HomeHandler(w, r)
 	})
 
-	mux.HandleFunc("/signup/", handlers.SignUpHandler)
+	mux.HandleFunc("/signup", handlers.SignUpFormHandler)
+	mux.HandleFunc("/registration", handlers.SignUpSubmitHandler)
+	mux.HandleFunc("/profil", handlers.ProfilHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
