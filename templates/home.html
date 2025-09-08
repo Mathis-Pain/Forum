@@ -9,22 +9,10 @@
     <script src="static/script.js"></script>
   </head>
   <body>
-    <!-- Header -->
-    <header class="header">
-      <div class="logo-section">
-        <div class="logo"></div>
-        <div class="title">Forum</div>
-      </div>
-      <nav class="nav-section">
-        <a href="profil" class="nav-link">Profil</a>
-        <a href="categorie" class="nav-link">Catégories</a>
-        <input type="text" class="search-box" placeholder="search" />
-        <button class="login-btn" onclick="openLoginModal()">
-          login/register
-        </button>
-      </nav>
-    </header>
-
+     <!-- Header -->
+     {{template "ForumHeader"}}
+     <style>#nav-home {display: none};</style>
+     
     <!-- Main Content -->
     <main class="main-content">
       <!-- Posts Section -->
@@ -51,15 +39,6 @@
         {{end}}
       </section>
     </main>
-    <!-- Modal de connexion -->
-    <div id="loginModal" class="modal">
-      {{template "loginModal" .LoginData.Message}}
-    </div>
-
-    <script>
-      {{if .LoginData.ShowLogin}}
-       document.getElementById("loginModal").style.display = "block";
-       {{end}}
-    </script>
+   
   </body>
 </html>

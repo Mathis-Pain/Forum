@@ -11,7 +11,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles("templates/home.html", "templates/login.html"))
+var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles("templates/home.html", "templates/login.html", "templates/header.html"))
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
