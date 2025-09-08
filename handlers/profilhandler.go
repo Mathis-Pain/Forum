@@ -7,7 +7,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-var ProfilHtml = template.Must(template.ParseFiles("templates/profil.html"))
+var ProfilHtml = template.Must(template.New("profil.html").ParseFiles("templates/profil.html", "templates/login.html", "templates/header.html"))
 
 func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 
