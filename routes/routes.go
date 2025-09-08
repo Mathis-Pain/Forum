@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/handlers"
+	"github.com/Mathis-Pain/Forum/middleware"
+
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
@@ -21,7 +23,7 @@ func InitRoutes() *http.ServeMux {
 	})
 
 	mux.HandleFunc("/registration", handlers.SignUpSubmitHandler)
-	mux.HandleFunc("/profil", handlers.ProfilHandler)
+	mux.HandleFunc("/profil", middleware.AuthMiddleware(handlers.ProfilHandler))
 	mux.HandleFunc("/login", handlers.LoginHandler)
 
 	fs := http.FileServer(http.Dir("static"))

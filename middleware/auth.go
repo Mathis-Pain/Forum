@@ -1,8 +1,10 @@
-package sessions
+package middleware
 
 import (
 	"context"
 	"net/http"
+
+	"github.com/Mathis-Pain/Forum/sessions"
 )
 
 // AuthMiddleware protège les routes nécessitant une session
@@ -17,7 +19,7 @@ func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		// Récupère la session
-		session, err := GetSession(cookie.Value)
+		session, err := sessions.GetSession(cookie.Value)
 		if err != nil {
 			// Cookie invalide ou session expirée
 			http.Redirect(w, r, "/login", http.StatusFound)
