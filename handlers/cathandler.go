@@ -15,7 +15,11 @@ var funcMap = template.FuncMap{
 	"preview": utils.Preview,
 }
 
-var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles("templates/categorie.html"))
+var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
+	"templates/login.html",
+	"templates/header.html",
+	"templates/categorie.html",
+))
 
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./database/forum.db")
@@ -42,6 +46,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}*/
 
 	var category models.Category
+	var categories []models.Category
 
 	// Préparer la requête
 	rows, err := db.Query("SELECT id FROM category")
@@ -55,31 +60,33 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var id int
 		if err := rows.Scan(&id); err != nil {
-			log.Println("Erreur, parcourir les données category : ", err)
+			log.Println("Erreur récupération des données category : ", err)
 			return
 		}
 		// Appeler la fonction avec l’ID
 		category, err = utils.GetCatDetails(db, id)
+		categories = append(categories, category)
 	}
 
 	// Vérifier les erreurs après la boucle
 
 	if err == sql.ErrNoRows {
+		log.Printf("Lecture depuis bd (category) : aucun donnée correpondante, %v", err)
 		utils.NotFoundHandler(w)
 	} else if err != nil {
+		log.Printf("Erreur à l'appel de GetCatDetails : %v", err)
 		utils.InternalServError(w)
 	}
 
 	data := struct {
-		Category models.Category
+		Categories []models.Category
 	}{
-		Category: category,
+		Categories: categories,
 	}
 
 	err = CatHtml.Execute(w, data)
 	if err != nil {
 		log.Printf("Erreur lors de l'exécution du template <categorie.html> : %v\n", err)
-		utils.NotFoundHandler(w)
 	}
 
 }

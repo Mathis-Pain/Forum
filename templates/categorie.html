@@ -22,7 +22,12 @@
 
       <!-- Posts Section -->
       <section class="posts-section">
-        {{range .Category.Topics}}
+        {{ range .Categories }}
+        <h2>{{ .Name }}</h2>
+        <ul>
+          {{ range .Topics }}
+          <li>{{ . }}</li>
+        </ul>
         <div class="post-card">
           <div class="post-avatar"></div>
           <div class="post-content">
@@ -34,6 +39,7 @@
           </div>
           <a class="post-button" href="t{{.topicID}}">Ouvrir</a>
         </div>
+        {{ end }}
         {{end}}
       </section>
     </main>

@@ -25,7 +25,7 @@ func sendError(w http.ResponseWriter, code int, name, message, full string) {
 	var buf bytes.Buffer
 	if err := ErrorHtml.Execute(&buf, data); err != nil {
 		// Si le template échoue, on renvoie un 500
-		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
+		http.Error(w, message, http.StatusInternalServerError)
 		return
 	}
 
