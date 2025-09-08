@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// Création de la base de données si elle n'existe pas encore
 func InitDB() *sql.DB {
 	dbPath := "./database/forum.db"
 

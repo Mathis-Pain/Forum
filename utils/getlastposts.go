@@ -7,7 +7,10 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
-func GetLastPosts() ([]models.LastPost, error) { // Return a slice of messages, each with its topic name
+// Récupère les 7 derniers messages postés sur le forum pour pouvoir les afficher sur la page d'accueil
+// Le format LastPost est un format Message + titre du sujet
+func GetLastPosts() ([]models.LastPost, error) {
+	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Printf("<getlastposts.go> Could not open database: %v\n", err)
@@ -15,8 +18,10 @@ func GetLastPosts() ([]models.LastPost, error) { // Return a slice of messages, 
 	}
 	defer db.Close()
 
-	// Fetch the last 7 messages and their topic names in a single query
-	// We join the message table with the topic table
+	// Préparation de la requête sql :
+	// - Joint la section "message" et la section "topic" pour récupérer le titre du sujet et les infos du message en une seule requête
+	// - Récupère l'ID du message et celui du sujet, le contenu du message, la date de création, l'auteur du message et le titre du sujet
+	// - Commence par le plus récent et s'arrête maximum à 7 messages
 	sqlQuery := `
         SELECT
             m.id,
@@ -30,6 +35,7 @@ func GetLastPosts() ([]models.LastPost, error) { // Return a slice of messages, 
         ORDER BY m.created_at DESC
         LIMIT 7
     `
+
 	rows, err := db.Query(sqlQuery)
 	if err != nil {
 		log.Printf("<getlastposts.go> Error querying messages: %v\n", err)
@@ -39,6 +45,7 @@ func GetLastPosts() ([]models.LastPost, error) { // Return a slice of messages, 
 
 	var messagesWithTopics []models.LastPost
 
+	// Parcourt la base de données pour récupérer les informations
 	for rows.Next() {
 		var mw models.LastPost
 		if err := rows.Scan(&mw.MessageID, &mw.TopicID, &mw.Content, &mw.Created, &mw.Author, &mw.TopicName); err != nil {
@@ -48,7 +55,6 @@ func GetLastPosts() ([]models.LastPost, error) { // Return a slice of messages, 
 		messagesWithTopics = append(messagesWithTopics, mw)
 	}
 
-	// Check for errors during row iteration
 	if err = rows.Err(); err != nil {
 		log.Printf("<getlastposts.go> Error during rows iteration: %v\n", err)
 		return nil, err

@@ -1,5 +1,6 @@
 package models
 
+// Données d'un utilisateur
 type User struct {
 	ID        int
 	Username  string

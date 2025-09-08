@@ -1,5 +1,7 @@
 package models
 
+// Catégories, sujets et messages du forum
+
 type Category struct {
 	ID          int
 	Name        string

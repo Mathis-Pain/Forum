@@ -1,5 +1,6 @@
 package models
 
+// Erreurs HTML
 type HtmlError struct {
 	Code      int
 	ErrorName string
