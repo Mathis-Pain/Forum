@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="forum.css">
+<style>
+     .main-container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+        }
+</style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div class="title">TITLE</div>
+        </div>
+         <input type="text" class="search-box" placeholder="search">
+            <button class="login-btn" onclick="openRegisterModal()">login/register</button>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <p>>Dashboard</p>
+            
+            <!-- Menu déroulant Statistics -->
+            <details>
+                <summary>statistics</summary>
+                <a href="#" class="menu-item">total posts</a>
+                <a href="#" class="menu-item">active users</a>
+                <a href="#" class="menu-item">reported items</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des posts -->
+            <details>
+                <summary>gestion des posts</summary>
+                <a href="#" class="menu-item">all posts</a>
+                <a href="#" class="menu-item">add new posts</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des catégories -->
+            <details>
+                <summary>gestion des categories</summary>
+                <a href="#" class="menu-item">all categories</a>
+                <a href="#" class="menu-item">add categories</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des users -->
+            <details>
+                <summary>gestion des users</summary>
+                <a href="#" class="menu-item">all users</a>
+            </details>
+            
+            <!-- Lien simple -->
+            <p class="simple-link">>paramètres</p>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+            </div>
+
+            <!-- Recent Posts Table -->
+            <div class="table-container">
+                <div class="table-title">recent posts</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>title</th>
+                            <th>statut</th>
+                            <th>auteur</th>
+                            <th>interaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Forum Categories Table -->
+            <div class="table-container">
+                <div class="table-title">forum categories</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>nom</th>
+                            <th>description</th>
+                            <th>sujets liés</th>
+                            <th>interaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="add-btn">add new categories</button>
+            </div>
+        </div>
+    </div>
+     <!-- Modal de connexion -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeRegisterModal()">&times;</button>
+        <div class="modal-header">
+            <h2 class="modal-title">Connexion</h2>
+            <p class="modal-subtitle">Accédez à votre compte</p>
+        </div>
+        
+ <form id="loginForm" onsubmit="showLoginModal(); return false;">
+    <div class="form-group">
+        <label class="form-label" for="loginEmail">Identifiant</label>
+        <input type="text" id="loginEmail" class="form-input" placeholder="email/nom d'utilisateur" required>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label" for="loginPassword">Mot de passe</label>
+        <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required minlength="6">
+         <input type="checkbox" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"> <span class="show-password-text-2">Afficher</span>
+    </div>
+    
+   <button type="submit" class="form-button">Se connecter</button>
+</form>
+        
+        <div class="form-divider">
+            <span>Pas encore de compte ?</span>
+        </div>
+        
+    
+     <a href="s'inscrire.html">
+                <button class="secondary-button" type="button">S'inscrire</button>
+            </a>
+</div>
+</div>
+
+
+    <script>
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+            
+            alert('Inscription réussie !');
+            closeRegisterModal();
+        }
+
+        function showLoginModal() {
+            alert('Modal de connexion à implémenter');
+        }
+
+        // Fermer le modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('registerModal');
+            if (event.target === modal) {
+                closeRegisterModal();
+            }
+        }
+    </script>
+</body>
+</html>
