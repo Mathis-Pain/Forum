@@ -5,15 +5,15 @@
     <h2 class="modal-title">Connexion</h2>
     <p class="modal-subtitle">Accédez à votre compte</p>
   </div>
-  <form id="loginForm" method="post">
+  <form id="loginForm" method="post" action="/login">
     <div class="form-group">
-      <label class="form-label" for="loginEmail">Identifiant</label>
+      <label class="form-label" for="Username">Identifiant</label>
       <input
-        name="login"
+        name="username"
         type="text"
-        id="loginEmail"
+        id="username"
         class="form-input"
-        placeholder="email/nom d'utilisateur"
+        placeholder="nom d'utilisateur"
         required
       />
     </div>

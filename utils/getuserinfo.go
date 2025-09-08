@@ -8,13 +8,13 @@ import (
 
 // Récupère l'ID et le mot de passe (crypté) d'un utilisateur à partir de son identifiant (mail ou pseudo) pour la connexion
 func GetUserInfoFromLogin(db *sql.DB, login string) (models.User, error) {
-	// Préparation de la requête sql
-	sql := `SELECT id, password FROM user WHERE email = ? OR username = ?`
-	row := db.QueryRow(sql, login, login)
+	// Préparation de la requête SQL : récupérer id, username et password
+	sql := `SELECT id, username, password FROM user WHERE username = ?`
+	row := db.QueryRow(sql, login)
 
 	var user models.User
-	// Parcourt la base de données en cherchant un mail ou un nom d'utilisateur correspondant
-	err := row.Scan(&user.ID, &user.Password)
+	// Parcourt la base de données en cherchant le username correspondant
+	err := row.Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
 		return models.User{}, err
 	}
