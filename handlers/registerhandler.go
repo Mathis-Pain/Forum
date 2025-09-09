@@ -8,6 +8,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var registrationHtml = template.Must(template.ParseFiles("templates/registration.html"))
@@ -49,8 +50,13 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		utils.InternalServError(w)
+		return
+	}
 	// --- Insertion dans la DB ---
-	_, err = db.Exec("INSERT INTO user(username, email, password) VALUES(?, ?, ?)", username, email, password)
+	_, err = db.Exec("INSERT INTO user(username, email, password) VALUES(?, ?, ?)", username, email, hashedPassword)
 	if err != nil {
 		// Vérification UNIQUE (nom ou email déjà utilisé)
 		if err.Error() == "UNIQUE constraint failed: user.username" {

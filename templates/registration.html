@@ -7,15 +7,8 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="logo-section">
-            <div class="logo"></div>
-            <div class="title">TITLE</div>
-        </div>
-        <nav class="nav-section">
-            <a href="./home" class="nav-link">Retour</a>
-        </nav>
-    </header>
+    <!-- Header -->
+    {{template "ForumHeader"}}
 
     <main class="main-content">
         <section class="posts-section">
@@ -25,7 +18,7 @@
                <form id="registerForm" method="POST">
     <div class="form-group">
         <label class="form-label-2" for="registerName">Nom d'utilisateur</label>
-        <input type="text" value="username" name="username" id="registerName" class="form-input" placeholder="Votre Nom" required>
+        <input type="text"  name="username" id="registerName" class="form-input" placeholder="Votre Nom" required>
         {{if .NameError}}
         <div class="error-message">{{.NameError}}</div>
         {{end}}
@@ -33,7 +26,7 @@
     
     <div class="form-group">
         <label class="form-label-2" for="registerEmail">Adresse e-mail</label>
-        <input type="email" value="email" name="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
+        <input type="email" name="email" id="registerEmail" class="form-input" placeholder="@email.com" required>
         {{if .EmailError}}
         <div class="error-message">{{.EmailError}}</div>
         {{end}}

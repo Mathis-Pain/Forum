@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/Mathis-Pain/Forum/routes"
+	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
@@ -14,6 +16,13 @@ func main() {
 	db := utils.InitDB()
 	defer db.Close()
 	fmt.Println("Projet lancé, DB prête à l'emploi")
+	// Nettoyage des sessions expirées toutes les 5 minutes
+	go func() {
+		for {
+			time.Sleep(5 * time.Minute)
+			sessions.CleanupExpiredSessions()
+		}
+	}()
 
 	// initialisation des routes
 	mux := routes.InitRoutes()
