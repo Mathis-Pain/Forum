@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>Catégories :</h1>
+  <ul>
+    {{ range .Categories }}
+      <li>{{ .Name }}</li>
+    {{ end }}
+  </ul>
+</body>
+</html>
