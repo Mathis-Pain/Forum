@@ -10,18 +10,18 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-// Permet au HTMl d'utiliser la fonction preview
-var funcMap = template.FuncMap{
-	"preview": utils.Preview,
-}
-
-var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
-	"templates/login.html",
-	"templates/header.html",
-	"templates/categorie.html",
-))
-
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
+	// Permet au HTMl d'utiliser la fonction preview
+	var funcMap = template.FuncMap{
+		"preview": utils.Preview,
+	}
+
+	var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
+		"templates/login.html",
+		"templates/header.html",
+		"templates/categorie.html",
+	))
+
 	db, err := sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Printf("<cathandler.go> Could not open database : %v\n", err)

@@ -7,7 +7,14 @@
       </div>
       <nav class="nav-section">
         <a href="profil" class="nav-link">Profil</a>
-        <a href="categorie" class="nav-link">Catégories</a>
+        <li class="dropdown">
+          <a href="#">Catégories</a>
+          <ul class="dropdown-menu">
+           {{ range .Categories }}
+            <li><a href="/categorie/{{.ID}}">{{.Name}}</a></li>
+          {{ end }}
+          </ul>
+        </li>
         <input type="text" class="search-box" placeholder="search" />
         <button class="login-btn" onclick="openLoginModal()">
           Connexion/Inscription

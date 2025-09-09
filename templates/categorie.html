@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forum - {{.Category.Name}}</title>
+    <title>Forum - Categories</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
@@ -24,10 +24,7 @@
       <section class="posts-section">
         {{ range .Categories }}
         <h2>{{ .Name }}</h2>
-        <ul>
-          {{ range .Topics }}
-          <li>{{ . }}</li>
-        </ul>
+        {{ range .Topics }}
         <div class="post-card">
           <div class="post-avatar"></div>
           <div class="post-content">
@@ -37,7 +34,7 @@
             </div>
             <div class="post-author">{{(index .Messages 0).Author}}</div>
           </div>
-          <a class="post-button" href="t{{.topicID}}">Ouvrir</a>
+          <a class="post-button" href="t{{.TopicID}}">Ouvrir</a>
         </div>
         {{ end }}
         {{end}}
