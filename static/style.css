@@ -1,3 +1,31 @@
+:root {
+  /* Couleurs de fond */
+  --color-pageback :#2c2c2c;
+  --color-headerback :#f8f9fa;
+  --color-boxback: #fff;
+  --color-logoback : #ccc;
+  --color-logohover :#bbb;
+  --color-close : #999;
+  --color-avatar:#000;
+
+  /* Bordures et éléments en évidence */
+  --color-highlight : #007bff;
+  --color-big : #667eea;
+  --color-input:#ddd;
+  --color-btnhover:#0056b3;
+
+
+  /* Couleurs d'écriture */
+  --color-sidebar :#666;
+  --color-write : #333;
+  --color-modalwrite : whitesmoke;
+  --color-error : red;
+
+  /* Polices d'écriture */
+  --font-main :Arial, sans-serif;
+}
+
+/********* Bases de toutes les pages *********/
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +33,9 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #2c2c2c;
-  color: #333;
+  font-family: var(--font-main);
+  background-color: var(--color-pageback);
+  color: var(--color-write);
 }
 
 .container {
@@ -16,16 +44,28 @@ body {
   margin: 0 auto;
 }
 
-/* Header */
+/* Sélection de texte */
+::selection {
+  background-color: var(--color-highlight);
+  color: var(--color-pageback);
+}
+
+::-moz-selection {
+  background-color: var(--color-highlight);
+  color: var(--color-pageback);
+}
+
+/**** Header ****/
 .header {
-  background-color: #f8f9fa;
+  background-color: var(--color-headerback);
   padding: 15px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 3px solid #007bff;
+  border-bottom: 3px solid var(--color-highlight);
 }
 
+/* Lien du retour à l'accueil (logo + titre) */
 .logo-section {
   display: flex;
   align-items: center;
@@ -36,17 +76,18 @@ body {
 .logo {
   width: 50px;
   height: 50px;
-  background-color: #ccc;
+  background-color: var(--color-logoback);
   border-radius: 50%;
 }
 
 .title {
   font-size: 24px;
   font-weight: bold;
-  color: #333;
+  color: var(--color-write);
   font-variant: small-caps;
 }
 
+/* Liens de navigation (profil, catégories) */
 .nav-section {
   display: flex;
   align-items: center;
@@ -55,25 +96,27 @@ body {
 
 .nav-link {
   font-size: 18px;
-  color: #333;
+  color: var(--color-write);
   text-decoration: none;
   cursor: pointer;
 }
 
 .nav-link:hover {
-  color: #007bff;
+  color: var(--color-highlight);
 }
 
+/* Barre de recherche */
 .search-box {
   padding: 8px 15px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-logoback);
   border-radius: 20px;
   width: 200px;
   outline: none;
 }
 
+/* Bouton de connextion / Inscription */
 .login-btn {
-  background-color: #ccc;
+  background-color: var(--color-logoback);
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -82,10 +125,10 @@ body {
 }
 
 .login-btn:hover {
-  background-color: #bbb;
+  background-color: var(--color-logohover);
 }
 
-/* Main Content */
+/********* Bloc général de la page *********/
 .main-content {
   display: flex;
   max-width: 1200px;
@@ -94,40 +137,43 @@ body {
   padding: 0 20px;
 }
 
-/* Sidebar */
+/********* Barre latérale *********/
 .sidebar {
-  background-color: white;
+  background-color: var(--color-boxback);
   border-radius: 10px;
   padding: 20px;
   width: 200px;
   height: fit-content;
 }
 
+/* Titre de la barre latérale */
 .sidebar h3 {
   font-size: 18px;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--color-write);
 }
 
+/* Contenu de la barre latérale */
 .sidebar-item {
   display: block;
-  color: #666;
+  color: var(--color-sidebar);
   text-decoration: none;
   padding: 5px 0;
   cursor: pointer;
 }
 
 .sidebar-item:hover {
-  color: #007bff;
+  color: var(--color-highlight);
 }
 
-/* Posts Section */
+/********* Affichage d'un sujet *********/
 .posts-section {
   flex: 1;
 }
 
+/**** Affichage d'un message ****/
 .post-card {
-  background-color: white;
+  background-color: var(--color-boxback);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 15px;
@@ -136,10 +182,11 @@ body {
   gap: 15px;
 }
 
+/* Avatar du posteur */
 .post-avatar {
   width: 50px;
   height: 50px;
-  background-color: #000;
+  background-color: var(--color-avatar);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -148,21 +195,24 @@ body {
   flex: 1;
 }
 
+/* Titre du message */
 .post-title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #333;
+  color: var(--color-write);
 }
 
+/* Contenu du message */
 .post-text {
-  color: #666;
+  color: var(--color-sidebar);
   line-height: 1.4;
   word-break: break-all;
 }
 
+/* Boutons like/dislike */
 .post-button {
-  background-color: #ccc;
+  background-color: var(--color-logoback);
   border: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -172,11 +222,10 @@ body {
 }
 
 .post-button:hover {
-  background-color: #bbb;
+  background-color: var(--color-logohover);
 }
 
-/* Modal Styles */
-
+/********* Pop-up de connexion / réponse / etc *********/
 #loginModal {
   display: none;
 }
@@ -192,7 +241,7 @@ body {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-boxback);
   margin: 5% auto;
   padding: 30px;
   border-radius: 10px;
@@ -202,6 +251,7 @@ body {
   animation: slideIn 0.3s ease-out;
 }
 
+/* Animation */
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -213,6 +263,7 @@ body {
   }
 }
 
+/* Bouton de fermeture */
 .close-btn {
   position: absolute;
   right: 15px;
@@ -221,13 +272,14 @@ body {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #999;
+  color: var(--color-close);
 }
 
 .close-btn:hover {
-  color: #333;
+  color: var(--color-write);
 }
 
+/* Titre du pop-up */
 .modal-header {
   text-align: center;
   margin-bottom: 30px;
@@ -236,27 +288,28 @@ body {
 .modal-title {
   font-size: 24px;
   font-weight: bold;
-  color: #333;
+  color: var(--color-write);
   margin-bottom: 5px;
 }
 
 .modal-title-2 {
   font-size: 24px;
   font-weight: bold;
-  color: whitesmoke;
+  color: var(--color-modalwrite);
   margin-bottom: 5px;
 }
 
 .modal-subtitle {
-  color: #666;
+  color: var(--color-sidebar);
   font-size: 14px;
 }
 
 .modal-subtitle-2 {
-  color: white;
+  color: var(--color-boxback);
   font-size: 14px;
 }
 
+/* Titre des champs */
 .form-group {
   margin-bottom: 20px;
 }
@@ -265,28 +318,30 @@ body {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-write);
 }
 
 .form-label-2 {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
-  color: whitesmoke;
+  color: var(--color-modalwrite);
 }
 
+/* Affichage des mots de passe dans la connexion */
 .show-password-text {
-  color: whitesmoke;
+  color: var(--color-modalwrite);
 }
 
 .show-password-text-2 {
-  color: #333;
+  color: var(--color-write);
 }
 
+/* Champs de connexion */
 .form-input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-input);
   border-radius: 5px;
   font-size: 14px;
   outline: none;
@@ -294,13 +349,14 @@ body {
 }
 
 .form-input:focus {
-  border-color: #007bff;
+  border-color: var(--color-highlight);
 }
 
+/* Bouton de connexion */
 .form-button {
   width: 100%;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-highlight);
+  color: var(--color-boxback);
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -311,21 +367,22 @@ body {
 }
 
 .form-button:hover {
-  background-color: #0056b3;
+  background-color: var(--color-btnhover);
 }
 
 .form-divider {
   text-align: center;
   margin: 20px 0;
-  color: #666;
+  color: var(--color-sidebar);
   font-size: 14px;
 }
 
+/* Bouton inscrpiton */
 .secondary-button {
   width: 100%;
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ddd;
+  background-color: var(--color-headerback);
+  color: var(--color-write);
+  border: 1px solid var(--color-input);
   padding: 12px;
   border-radius: 5px;
   font-size: 16px;
@@ -339,12 +396,12 @@ body {
 
 .big {
   font-size: 80px;
-  color: #667eea;
+  color: var(--color-big);
   margin: 0;
 }
 
 .box {
-  background: white;
+  background: var(--color-boxback);
   padding: 30px;
   border-radius: 10px;
   max-width: 500px;
@@ -352,11 +409,12 @@ body {
 }
 
 .btn {
-  color: #667eea;
+  color: var(--color-big);
   text-decoration: none;
   padding: 5px 10px;
 }
 
+/********* Reponsive *********/
 @media (max-width: 768px) {
   .container {
     width: 95%;
@@ -429,6 +487,7 @@ body {
   }
 }
 
+/* Messages d'erreur */
 .error-message {
-  color: red !important;
+  color: var(--color-error) !important;
 }
