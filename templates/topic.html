@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Informations page (css, sript, etc) -->
+    {{template "InitPage"}}
+    <title>Forum - {{.Topic.Name}}</title>
+</head>
+<body>
+    <!-- Header -->
+   {{template "ForumHeader"}}
+
+<!-- Main Content -->
+<main class="main-content">
+  <!-- Posts Section -->
+   <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
+   
+        <section class="posts-section">
+            <div class="post-card">
+                <div class="post-avatar"></div>
+                <div class="post-content">
+                    <div class="post-title">X</div>
+                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                </div>
+
+                <div class="post-actions">
+                    <button class="action-btn" onclick="toggleLike(this)">
+                        <span>👍</span>
+                        <span>0</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleDislike(this)">
+                        <span>👎</span>
+                        <span>0</span>
+                    </button>
+                    
+                </div>
+            </div>
+
+        </section>
+        </main>
+    </div>
+
+    <!-- Modal de réponse -->
+   {{template "ReponseBox"}}
+
+     
+
+    <script>       
+        // Animation au scroll
+        window.addEventListener('scroll', () => {
+            const posts = document.querySelectorAll('.post');
+            posts.forEach(post => {
+                const rect = post.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    post.style.opacity = '1';
+                    post.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Recherche en temps réel (simulation)
+        document.querySelector('.search-bar').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const posts = document.querySelectorAll('.post');
+            
+            posts.forEach(post => {
+                const content = post.querySelector('.post-content').textContent.toLowerCase();
+                const username = post.querySelector('.username').textContent.toLowerCase();
+                
+                if (content.includes(query) || username.includes(query) || query === '') {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
