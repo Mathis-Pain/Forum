@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
@@ -22,6 +24,16 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		"templates/categorie.html",
 	))
 
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) != 2 {
+		utils.NotFoundHandler(w)
+	}
+
+	ID, err := strconv.Atoi(parts[len(parts)-1])
+	if err != nil {
+		utils.InternalServError(w)
+	}
+
 	db, err := sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Printf("<cathandler.go> Could not open database : %v\n", err)
@@ -29,64 +41,33 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	/*parts := strings.Split(r.URL.Path, "/")
-	path := parts[len(parts)-1]
-
-	fmt.Println("path : ", path)
-
-	if !strings.Contains(path, "c") {
-		utils.NotFoundHandler(w)
+	category, err := utils.GetCatDetails(db, ID)
+	if err != nil {
+		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
 	}
 
-	catID := strings.Trim(path, "c")
-	ID, err := strconv.Atoi(catID)
+	categories, err := utils.GetCatList()
 
 	if err != nil {
+		log.Printf("<homehandler.go> Could not operate GetCatList: %v\n", err)
 		utils.InternalServError(w)
-	}*/
-
-	var category models.Category
-	var categories []models.Category
-
-	// Préparer la requête
-	rows, err := db.Query("SELECT id FROM category")
-	if err != nil {
-		log.Println("Erreur lors de la requête à la db table category : ", err)
 		return
-	}
-	defer rows.Close()
-
-	// Parcourir les résultats
-	for rows.Next() {
-		var id int
-		if err := rows.Scan(&id); err != nil {
-			log.Println("Erreur récupération des données category : ", err)
-			return
-		}
-		// Appeler la fonction avec l’ID
-		category, err = utils.GetCatDetails(db, id)
-		categories = append(categories, category)
-	}
-
-	// Vérifier les erreurs après la boucle
-
-	if err == sql.ErrNoRows {
-		log.Printf("Lecture depuis bd (category) : aucun donnée correpondante, %v", err)
-		utils.NotFoundHandler(w)
-	} else if err != nil {
-		log.Printf("Erreur à l'appel de GetCatDetails : %v", err)
-		utils.InternalServError(w)
 	}
 
 	data := struct {
+		Category   models.Category
 		Categories []models.Category
+		LoginData  models.LoginData
 	}{
+		Category:   category,
 		Categories: categories,
+		LoginData:  models.LoginData{},
 	}
 
 	err = CatHtml.Execute(w, data)
 	if err != nil {
-		log.Printf("Erreur lors de l'exécution du template <categorie.html> : %v\n", err)
+		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
 	}
 
+	// erreur à gérer : ID introuvable
 }

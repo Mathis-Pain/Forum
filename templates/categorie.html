@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forum - Categories</title>
+    <title>Forum - {{.Category.Name}}</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
     <!-- Header -->
-   {{template "ForumHeader"}}
+   {{template "ForumHeader" .}}
 
     <!-- Main Content -->
     <main class="main-content">
@@ -22,9 +22,8 @@
 
       <!-- Posts Section -->
       <section class="posts-section">
-        {{ range .Categories }}
-        <h2>{{ .Name }}</h2>
-        {{ range .Topics }}
+        <h2>{{ .Category.Name }}</h2>
+        {{ range .Category.Topics }}
         <div class="post-card">
           <div class="post-avatar"></div>
           <div class="post-content">
@@ -36,7 +35,6 @@
           </div>
           <a class="post-button" href="t{{.TopicID}}">Ouvrir</a>
         </div>
-        {{ end }}
         {{end}}
       </section>
     </main>
