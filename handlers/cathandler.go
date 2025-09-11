@@ -49,8 +49,13 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	categories, err := utils.GetCatList()
 
 	if err != nil {
-		log.Printf("<homehandler.go> Could not operate GetCatList: %v\n", err)
+		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
 		utils.InternalServError(w)
+		return
+	}
+
+	if ID > len(categories) {
+		utils.NotFoundHandler(w)
 		return
 	}
 
@@ -69,5 +74,4 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
 	}
 
-	// erreur à gérer : ID introuvable
 }
