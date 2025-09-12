@@ -21,8 +21,15 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	// Parcourt la base de données et récupère les informations pour rajouter tous les messages dans la slice
 	for rows.Next() {
 		var message models.Message
-		if err := rows.Scan(&message.Created, &message.Author, &message.Content); err != nil {
+		user_id := 0
+		if err := rows.Scan(&message.Created, user_id, &message.Content); err != nil {
 			log.Printf("Error scanning message row: %v", err)
+			return nil, err
+		}
+
+		message.Author, err = GetUserInfoFromID(db, user_id)
+
+		if err != nil {
 			return nil, err
 		}
 		messages = append(messages, message)

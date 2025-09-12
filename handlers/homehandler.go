@@ -15,7 +15,7 @@ var funcMap = template.FuncMap{
 }
 
 var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles(
-	"templates/home.html", "templates/login.html", "templates/header.html",
+	"templates/home.html", "templates/login.html", "templates/header.html", "templates/initpage.html",
 ))
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
