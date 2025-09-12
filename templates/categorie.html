@@ -23,18 +23,18 @@
         <h2>{{ .Category.Name }}</h2>
         {{ range .Category.Topics }}
         <div class="post-card">
-          <div class="post-avatar"><img src="{{.Author.ProfilPic}}"/></div>
+          <img class="post-avatar" src="{{(index .Messages 0).Author.ProfilPic}}"/>
           <div class="post-content">
-            <div class="post-title">{{.Name}}</div>
+            <a class="post-title" href="topic/{{.TopicID}}">{{.Name}}</a>
+            <div class="post-author">Dernier message par {{(index .Messages .LastPost).Author.Username}}</div>
             <div class="post-text">
-              {{preview (index .Messages 0).Content 300}}
+              {{preview (index .Messages .LastPost).Content 300}}
             </div>
-            <div class="post-author">{{(index .Messages 0).Author.Username}}</div>
           </div>
-          <a class="post-button" href="t{{.TopicID}}">Ouvrir</a>
         </div>
         {{end}}
       </section>
     </main>
   </body>
+</html>
 </html>

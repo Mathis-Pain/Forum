@@ -14,6 +14,7 @@ type Topic struct {
 	TopicID  int
 	Name     string
 	Messages []Message
+	LastPost int
 }
 
 type Message struct {

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -27,8 +26,6 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		utils.NotFoundHandler(w)
 	}
 
-	fmt.Println(parts)
-
 	ID, err := strconv.Atoi(parts[len(parts)-1])
 	if err != nil {
 		utils.InternalServError(w)
@@ -48,6 +45,8 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	} else if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
 	}
+
+	// category.Topics = append(category.Topics, test.TestTopic())
 
 	categories, err := utils.GetCatList()
 

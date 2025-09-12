@@ -32,8 +32,8 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 		} else if err != nil {
 			return topics, nil
 		}
+		topic.LastPost = len(topic.Messages) - 1
 		topics = append(topics, topic)
-
 	}
 
 	return topics, nil
