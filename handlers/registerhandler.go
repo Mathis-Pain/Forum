@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var registrationHtml = template.Must(template.ParseFiles("templates/registration.html"))
+var registrationHtml = template.Must(template.New("registration.html").Funcs(funcMap).ParseFiles("templates/registration.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
 
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {

@@ -10,16 +10,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	var funcMap = template.FuncMap{
-		"preview": utils.Preview,
-	}
+var funcMap = template.FuncMap{
+	"preview": utils.Preview,
+}
 
-	var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles(
-		"templates/home.html",
-		"templates/login.html",
-		"templates/header.html",
-	))
+var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles(
+	"templates/home.html", "templates/login.html", "templates/header.html",
+))
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	// --- Récupération des derniers posts ---
 	lastPosts, err := utils.GetLastPosts()
