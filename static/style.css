@@ -84,6 +84,21 @@
             background-color: #bbb;
         }
 
+        .dropdown {
+            list-style: none;
+        }
+
+        .dropdown li {
+            position: relative;
+        }
+
+        .dropdown a {
+            text-decoration: none;
+        }
+
+        .dropdown a:hover {
+            background: #444;
+        }
         /* Main Content */
         .main-content {
             display: flex;
