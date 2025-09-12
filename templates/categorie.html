@@ -8,7 +8,7 @@
   </head>
   <body>
     <!-- Header -->
-   {{template "ForumHeader"}}
+   {{template "ForumHeader" .}}
 
     <!-- Main Content -->
     <main class="main-content">
@@ -22,7 +22,8 @@
 
       <!-- Posts Section -->
       <section class="posts-section">
-        {{range .Category.Topics}}
+        <h2>{{ .Category.Name }}</h2>
+        {{ range .Category.Topics }}
         <div class="post-card">
           <div class="post-avatar"></div>
           <div class="post-content">
@@ -32,7 +33,7 @@
             </div>
             <div class="post-author">{{(index .Messages 0).Author}}</div>
           </div>
-          <a class="post-button" href="t{{.topicID}}">Ouvrir</a>
+          <a class="post-button" href="t{{.TopicID}}">Ouvrir</a>
         </div>
         {{end}}
       </section>

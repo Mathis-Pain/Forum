@@ -12,14 +12,28 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-// Permet au HTMl d'utiliser la fonction preview
-var funcMap = template.FuncMap{
-	"preview": utils.Preview,
-}
-
-var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles("templates/categorie.html"))
-
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
+	// Permet au HTMl d'utiliser la fonction preview
+	var funcMap = template.FuncMap{
+		"preview": utils.Preview,
+	}
+
+	var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
+		"templates/login.html",
+		"templates/header.html",
+		"templates/categorie.html",
+	))
+
+	parts := strings.Split(r.URL.Path, "/")
+	if len(parts) != 2 {
+		utils.NotFoundHandler(w)
+	}
+
+	ID, err := strconv.Atoi(parts[len(parts)-1])
+	if err != nil {
+		utils.InternalServError(w)
+	}
+
 	db, err := sql.Open("sqlite3", "./database/forum.db")
 	if err != nil {
 		log.Printf("<cathandler.go> Could not open database : %v\n", err)
@@ -27,38 +41,37 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	parts := strings.Split(r.URL.Path, "/")
-	path := parts[len(parts)-1]
-
-	if !strings.Contains(path, "c") {
-		utils.NotFoundHandler(w)
+	category, err := utils.GetCatDetails(db, ID)
+	if err != nil {
+		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
 	}
 
-	catID := strings.Trim(path, "c")
-	ID, err := strconv.Atoi(catID)
+	categories, err := utils.GetCatList()
 
 	if err != nil {
+		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
 		utils.InternalServError(w)
+		return
 	}
 
-	category, err := utils.GetCatDetails(db, ID)
-
-	if err == sql.ErrNoRows {
+	if ID > len(categories) {
 		utils.NotFoundHandler(w)
-	} else if err != nil {
-		utils.InternalServError(w)
+		return
 	}
 
 	data := struct {
-		Category models.Category
+		Category   models.Category
+		Categories []models.Category
+		LoginData  models.LoginData
 	}{
-		Category: category,
+		Category:   category,
+		Categories: categories,
+		LoginData:  models.LoginData{},
 	}
 
 	err = CatHtml.Execute(w, data)
 	if err != nil {
-		log.Printf("Erreur lors de l'exécution du template <categorie.html> : %v\n", err)
-		utils.NotFoundHandler(w)
+		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
 	}
 
 }
