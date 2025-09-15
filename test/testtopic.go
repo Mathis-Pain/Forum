@@ -10,6 +10,9 @@ func TestTopic() models.Topic {
 	testtopic.Name = "Test"
 
 	testtopic.Messages = append(testtopic.Messages, TestMessage())
+	testtopic.Messages = append(testtopic.Messages, TestMessage2())
+
+	testtopic.LastPost = len(testtopic.Messages) - 1
 
 	return testtopic
 }

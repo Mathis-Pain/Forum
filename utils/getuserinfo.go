@@ -25,7 +25,7 @@ func GetUserInfoFromLogin(db *sql.DB, login string) (models.User, error) {
 // Récupère le nom d'utilisateur et la photo de profil d'un utilisateur à partir de son ID
 func GetUserInfoFromID(db *sql.DB, ID int) (models.User, error) {
 	// Préparation de la requête sql
-	sql := `SELECT username, profilpic FROM users WHERE id = ?`
+	sql := `SELECT username, profilpic FROM user WHERE id = ?`
 	row := db.QueryRow(sql, ID)
 
 	var user models.User

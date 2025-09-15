@@ -7,4 +7,5 @@ type User struct {
 	Password  string
 	Email     string
 	ProfilPic string
+	Status    string
 }

@@ -12,26 +12,25 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 )
 
-func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
-	// Permet au HTMl d'utiliser la fonction preview
-	var funcMap = template.FuncMap{
-		"preview": utils.Preview,
-	}
+var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
+	"templates/login.html",
+	"templates/header.html",
+	"templates/categorie.html",
+	"templates/initpage.html",
+))
 
-	var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
-		"templates/login.html",
-		"templates/header.html",
-		"templates/categorie.html",
-	))
+func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(r.URL.Path, "/")
-	if len(parts) != 2 {
+	if len(parts) != 3 {
 		utils.NotFoundHandler(w)
+		return
 	}
 
 	ID, err := strconv.Atoi(parts[len(parts)-1])
 	if err != nil {
-		utils.InternalServError(w)
+		utils.NotFoundHandler(w)
+		return
 	}
 
 	db, err := sql.Open("sqlite3", "./database/forum.db")
@@ -42,8 +41,13 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	category, err := utils.GetCatDetails(db, ID)
-	if err != nil {
+	if err == sql.ErrNoRows {
+		utils.NotFoundHandler(w)
+		return
+	} else if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
+		utils.InternalServError(w)
+		return
 	}
 
 	categories, err := utils.GetCatList()
@@ -51,11 +55,6 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
 		utils.InternalServError(w)
-		return
-	}
-
-	if ID > len(categories) {
-		utils.NotFoundHandler(w)
 		return
 	}
 
@@ -72,6 +71,8 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	err = CatHtml.Execute(w, data)
 	if err != nil {
 		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
+		utils.InternalServError(w)
+		return
 	}
 
 }

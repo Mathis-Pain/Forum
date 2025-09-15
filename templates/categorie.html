@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head><!-- Informations page (css, sript, etc) -->
+    {{template "InitPage"}}
     <title>Forum - {{.Category.Name}}</title>
-    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
     <!-- Header -->
@@ -14,29 +12,34 @@
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <h3>New Posts</h3>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
+        <h3>{{ .Category.Name }}</h3>
+        <div>{{.Category.Description}}</div>
       </aside>
 
       <!-- Posts Section -->
       <section class="posts-section">
-        <h2>{{ .Category.Name }}</h2>
         {{ range .Category.Topics }}
         <div class="post-card">
-          <div class="post-avatar"></div>
+          <img class="post-avatar" src="{{(index .Messages 0).Author.ProfilPic}}"/>
           <div class="post-content">
-            <div class="post-title">{{.Name}}</div>
+            <a class="post-title" href="topic/{{.TopicID}}">{{.Name}}</a>
+            <div class="post-author">Dernier message par <a href="user/{{(index .Messages .LastPost).Author.ID}}">{{(index .Messages .LastPost).Author.Username}}</a></div>
             <div class="post-text">
-              {{preview (index .Messages 0).Content 300}}
+              {{preview (index .Messages .LastPost).Content 300}}
             </div>
-            <div class="post-author">{{(index .Messages 0).Author}}</div>
           </div>
-          <a class="post-button" href="t{{.TopicID}}">Ouvrir</a>
+        </div>
+        {{else}}
+         <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              Cette catégorie ne contient pour l'instant aucun sujet.
+            </div>
+          </div>
         </div>
         {{end}}
       </section>
     </main>
   </body>
+</html>
 </html>

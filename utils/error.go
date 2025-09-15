@@ -7,9 +7,12 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
-var (
-	ErrorHtml = template.Must(template.ParseFiles("templates/error/error.html"))
-)
+var ErrorHtml = template.Must(template.New("error.html").ParseFiles(
+	"templates/login.html",
+	"templates/header.html",
+	"templates/error.html",
+	"templates/initpage.html",
+))
 
 // Erreur 404 - Not Found
 func NotFoundHandler(w http.ResponseWriter) {
@@ -19,7 +22,6 @@ func NotFoundHandler(w http.ResponseWriter) {
 		Message:   "Désolé, la page que vous recherchez n'existe pas.",
 		ErrorFull: "404 - Not Found",
 	}
-	w.WriteHeader(http.StatusNotFound)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -31,7 +33,6 @@ func StatusBadRequest(w http.ResponseWriter) {
 		Message:   "L'action que vous avez tenté d'effectuer n'est pas prise en charge.",
 		ErrorFull: "400 - Bad Request",
 	}
-	w.WriteHeader(http.StatusBadRequest)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -43,7 +44,6 @@ func InternalServError(w http.ResponseWriter) {
 		Message:   "Le serveur a rencontré une erreur. Veuillez réessayer.",
 		ErrorFull: "500 - Internal Servor Error",
 	}
-	w.WriteHeader(http.StatusInternalServerError)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -55,7 +55,6 @@ func MethodNotAllowedError(w http.ResponseWriter) {
 		Message:   "L'accès à cette page n'est pas autorisé avec cette méthode HTML.",
 		ErrorFull: "405 - Method Not Allowed",
 	}
-	w.WriteHeader(http.StatusMethodNotAllowed)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -67,7 +66,6 @@ func UnauthorizedError(w http.ResponseWriter) {
 		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page. Veuillez vous connecter et réessayer.",
 		ErrorFull: "401 - Unauthorized",
 	}
-	w.WriteHeader(http.StatusUnauthorized)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -79,7 +77,6 @@ func ForbiddenError(w http.ResponseWriter) {
 		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page.",
 		ErrorFull: "403 - Forbidden",
 	}
-	w.WriteHeader(http.StatusForbidden)
 	ErrorHtml.Execute(w, data)
 }
 
@@ -91,6 +88,5 @@ func TimeOutError(w http.ResponseWriter) {
 		Message:   "Le serveur a mis trop de temps à répondre à la requête.",
 		ErrorFull: "408 - Request Time Out",
 	}
-	w.WriteHeader(http.StatusRequestTimeout)
 	ErrorHtml.Execute(w, data)
 }

@@ -14,13 +14,14 @@ type Topic struct {
 	TopicID  int
 	Name     string
 	Messages []Message
+	LastPost int
 }
 
 type Message struct {
 	TopicID   int
 	MessageID int
 	Created   string
-	Author    int
+	Author    User
 	Likes     int
 	Dislikes  int
 	Content   string
