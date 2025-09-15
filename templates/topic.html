@@ -15,25 +15,28 @@
    <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
    
         <section class="posts-section">
+            <h2>{{.Topic.Name}}</h2>
+            {{range .Topic.Messages}}
             <div class="post-card">
-                <div class="post-avatar"></div>
+                <div class="post-avatar">{{.Author.ProfilPic}}</div>
                 <div class="post-content">
-                    <div class="post-title">X</div>
-                    <div class="post-text">cebcniuezf hev effe f kezof ezu bfuezjncdsijcnzec<br>ceu vbce nccb cebucenifcjoiezkfcfpozeffc z*sc</div>
+                    <div class="post-title">{{.Author.Username}}</div>
+                    <div class="post-text">{{.Content}}</div>
                 </div>
 
                 <div class="post-actions">
                     <button class="action-btn" onclick="toggleLike(this)">
                         <span>👍</span>
-                        <span>0</span>
+                        <span>{{.Likes}}</span>
                     </button>
                     <button class="action-btn" onclick="toggleDislike(this)">
                         <span>👎</span>
-                        <span>0</span>
+                        <span>{{.Dislikes}}</span>
                     </button>
                     
                 </div>
             </div>
+            {{end}}
 
         </section>
         </main>
