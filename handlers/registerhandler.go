@@ -27,6 +27,11 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	passwordConfirm := r.FormValue("confirmpassword")
+	profilPic := r.FormValue("userimage")
+
+	if profilPic == "" {
+		profilPic = "static/noprofilpic.png"
+	}
 
 	// --- Struct pour stocker les erreurs ---
 	formData := models.FormDataError{

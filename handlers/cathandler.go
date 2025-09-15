@@ -22,13 +22,14 @@ var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseF
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 	parts := strings.Split(r.URL.Path, "/")
-	if len(parts) != 2 {
+	if len(parts) != 3 {
 		utils.NotFoundHandler(w)
+		return
 	}
 
 	ID, err := strconv.Atoi(parts[len(parts)-1])
 	if err != nil {
-		utils.InternalServError(w)
+		utils.NotFoundHandler(w)
 		return
 	}
 
@@ -41,23 +42,19 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 	category, err := utils.GetCatDetails(db, ID)
 	if err == sql.ErrNoRows {
-		log.Print("Pas de catégorie trouvée")
+		utils.NotFoundHandler(w)
+		return
 	} else if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
+		utils.InternalServError(w)
+		return
 	}
-
-	// category.Topics = append(category.Topics, test.TestTopic())
 
 	categories, err := utils.GetCatList()
 
 	if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
 		utils.InternalServError(w)
-		return
-	}
-
-	if ID > len(categories) {
-		utils.NotFoundHandler(w)
 		return
 	}
 
@@ -74,6 +71,8 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	err = CatHtml.Execute(w, data)
 	if err != nil {
 		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
+		utils.InternalServError(w)
+		return
 	}
 
 }

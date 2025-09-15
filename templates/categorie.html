@@ -12,23 +12,28 @@
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <h3>New Posts</h3>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
-        <a href="#" class="sidebar-item">&gt; sujet</a>
+        <h3>{{ .Category.Name }}</h3>
+        <div>{{.Category.Description}}</div>
       </aside>
 
       <!-- Posts Section -->
       <section class="posts-section">
-        <h2>{{ .Category.Name }}</h2>
         {{ range .Category.Topics }}
         <div class="post-card">
           <img class="post-avatar" src="{{(index .Messages 0).Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="topic/{{.TopicID}}">{{.Name}}</a>
-            <div class="post-author">Dernier message par {{(index .Messages .LastPost).Author.Username}}</div>
+            <div class="post-author">Dernier message par <a href="user/{{(index .Messages .LastPost).Author.ID}}">{{(index .Messages .LastPost).Author.Username}}</a></div>
             <div class="post-text">
               {{preview (index .Messages .LastPost).Content 300}}
+            </div>
+          </div>
+        </div>
+        {{else}}
+         <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              Cette catégorie ne contient pour l'instant aucun sujet.
             </div>
           </div>
         </div>

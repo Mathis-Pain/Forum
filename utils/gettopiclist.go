@@ -22,7 +22,7 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 	for rows.Next() {
 		var topic models.Topic
 		if err := rows.Scan(&topic.TopicID, &topic.Name); err != nil {
-			log.Printf("Error scanning topic row: %v", err)
+			log.Printf("<gettopiclist.go> Error scanning topic row: %v", err)
 			return nil, err
 		}
 		// Récupère la liste des messages du sujet
@@ -33,6 +33,9 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 			return topics, nil
 		}
 		topic.LastPost = len(topic.Messages) - 1
+		if topic.LastPost < 0 {
+			topic.LastPost = 0
+		}
 		topics = append(topics, topic)
 	}
 

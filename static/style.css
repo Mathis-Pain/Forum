@@ -271,7 +271,8 @@ body {
   background-color: var(--color-boxback);
   border-radius: 10px;
   padding: 20px;
-  width: 200px;
+  width: 300px;
+  min-height:120px;
   height: fit-content;
 }
 
@@ -309,6 +310,7 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 15px;
+  min-height:120px;
 }
 
 /* Avatar du posteur */
@@ -330,6 +332,20 @@ body {
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--color-write);
+  text-decoration: none;
+}
+
+/* Auteur du message */
+.post-author {
+  font-size: 14px;
+  font-style: italic;
+}
+
+.post-author a {
+  color:var(--color-avatar);
+  font-weight: bold;
+  text-decoration: none;
+  font-style: initial;
 }
 
 /* Contenu du message */

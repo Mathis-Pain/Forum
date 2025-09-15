@@ -22,8 +22,8 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	for rows.Next() {
 		var message models.Message
 		user_id := 0
-		if err := rows.Scan(&message.Created, user_id, &message.Content); err != nil {
-			log.Printf("Error scanning message row: %v", err)
+		if err := rows.Scan(&message.Created, &user_id, &message.Content); err != nil {
+			log.Printf("<getmessagelist.go> Error scanning message row: %v", err)
 			return nil, err
 		}
 
