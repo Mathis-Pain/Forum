@@ -3,7 +3,11 @@ CREATE TABLE user (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username TEXT NOT NULL UNIQUE,
 	email TEXT NOT NULL UNIQUE,
-	password TEXT NOT NULL
+	password TEXT NOT NULL,
+	profilpic TEXT DEFAULT './static/noprofilpic.png'
+	role TEXT DEFAULT ,
+	role_id INTEGER NOT NULL DEFAULT 1,
+  FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 CREATE TABLE category (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,4 +35,7 @@ CREATE TABLE message (
 	CONSTRAINT message_users_FK FOREIGN KEY (user_id) REFERENCES user(id)
 	);
 
-
+CREATE TABLE roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="forum.css">
+<style>
+     .main-container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+        }
+</style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div class="title">TITLE</div>
+        </div>
+         <nav class="nav-section">
+            <a href="admin.html" class="nav-link">dashboard</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <p>>Dashboard</p>
+
+            
+            <!-- Menu déroulant Gestion des posts -->
+            <details>
+                <summary>gestion des posts</summary>
+                <a href="all-post.html" class="menu-item">all posts</a>
+                <a href="add-posts.html" class="menu-item">add new posts</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des catégories -->
+            <details>
+                <summary>gestion des categories</summary>
+                <a href="all-categories.html" class="menu-item">all categories</a>
+                <a href="add-category.html" class="menu-item">add categories</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des users -->
+            <details>
+                <summary>gestion des users</summary>
+                <a href="all-users.html" class="menu-item">all users</a>
+            </details>
+            
+            <!-- Lien simple -->
+            <p class="simple-link">>paramètres</p>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Header -->
+            <section class="posts-section">
+        <h2 class="modal-title-2">Add category</h2><br>
+
+
+<div class="form-container">
+        <form>
+            <div class="form-field">
+                <label for="post-title">titre de la categorie</label>
+                <input type="text" id="post-title" placeholder="category title">
+            </div>
+
+             <div class="form-field">
+                        <label for="post-content">description</label>
+                        <textarea id="post-content" placeholder="Écrivez votre description ici..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">poster</button>
+                    <button type="submit" class="submit-btn">sauvegarder</button>
+        </form>
+    </div>
+</div>
+
+<!--sidebar droite-->
+<div class="sidebar-right">
+    <!--section avtive-->
+    <div class="categories-section">
+        <h3>statut</h3>
+        <div class="categories-list">
+            <div class="category-item">
+                    <input type="checkbox" id="tech" name="category" value="tech">
+                    <label for="tech">active</label>
+            </div>
+            <div class="category-item">
+                    <input type="checkbox" id="tech" name="category" value="tech">
+                    <label for="tech">passive</label>
+            </div>
+        </div>
+    </div>    
+
+    <!--section avtive-->
+    <div class="categories-section">
+        <h3>permission</h3>
+        <div class="categories-list">
+            <div class="category-item">
+                    <input type="checkbox" id="tech" name="category" value="tech">
+                    <label for="tech">public</label>
+            </div>
+            <div class="category-item">
+                    <input type="checkbox" id="tech" name="category" value="tech">
+                    <label for="tech">private</label>
+            </div>
+        </div>
+    </div>    
+</div>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="forum.css">
+<style>
+     .main-container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+        }
+</style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-section">
+            <div class="logo"></div>
+            <div class="title">TITLE</div>
+        </div>
+         <nav class="nav-section">
+            <a href="admin.html" class="nav-link">dashboard</a>
+       </nav> 
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <p>>Dashboard</p>
+
+            
+            <!-- Menu déroulant Gestion des posts -->
+            <details>
+                <summary>gestion des posts</summary>
+                <a href="all-post.html" class="menu-item">all posts</a>
+                <a href="add-posts" class="menu-item">add new posts</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des catégories -->
+            <details>
+                <summary>gestion des categories</summary>
+                <a href="all-categories.html" class="menu-item">all categories</a>
+                <a href="add-category" class="menu-item">add categories</a>
+            </details>
+            
+            <!-- Menu déroulant Gestion des users -->
+            <details>
+                <summary>gestion des users</summary>
+                <a href="all-users.html" class="menu-item">all users</a>
+            </details>
+            
+            <!-- Lien simple -->
+            <p class="simple-link">>paramètres</p>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>All post</h1>
+            </div>
+
+<input type="text" class="search-box" placeholder="search">
+
+<div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>auteurs</th>
+                            <th>statut</th>
+                            <th>date</th>
+                            <th>vus</th>
+                            <th>reponses</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>                   
+
+           <td class="actions-column">
+                        <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;"> Modifier</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Bannir</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Supprimer</button>
+                            </div>
+                        </div>
+                    </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                           <td class="actions-column">
+                        <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;"> Modifier</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Bannir</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Supprimer</button>
+                            </div>
+                        </div>
+                    </td>
+                         <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="actions-column">
+                        <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;"> Modifier</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Bannir</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Supprimer</button>
+                            </div>
+                        </div>
+                    </td>
+
+        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                             <td class="actions-column">
+                        <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;"> Modifier</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Bannir</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Supprimer</button>
+                            </div>
+                        </div>
+                    </td>
+        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                             <td class="actions-column">
+                        <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;"> Modifier</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Bannir</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">Supprimer</button>
+                            </div>
+                        </div>
+                    </td>
+                    </tbody>
+                </table>
+            </div>
+
+<script>
+document.querySelectorAll(".menu-btn").forEach(btn=>{
+  btn.addEventListener("click", e=>{
+    e.stopPropagation(); // empêche la propagation
+    const menu = btn.closest(".menu");
+
+    // fermer les autres menus
+    document.querySelectorAll(".menu").forEach(m=>{
+      if(m !== menu) m.classList.remove("active");
+    });
+
+    // toggle ce menu
+    menu.classList.toggle("active");
+  });
+});
+
+// clic à l'extérieur → ferme tout
+document.addEventListener("click", ()=>{
+  document.querySelectorAll(".menu").forEach(m=>m.classList.remove("active"));
+});
+</script>
+</body>
+</html>
