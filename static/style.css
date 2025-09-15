@@ -355,6 +355,11 @@ body {
   word-break: break-all;
 }
 
+a.post-text {
+  display: block;
+  text-decoration: none;
+}
+
 /* Boutons like/dislike */
 .post-button {
   background-color: var(--color-logoback);

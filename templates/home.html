@@ -18,12 +18,11 @@
 
         {{range .Posts}}
         <div class="post-card">
-          <div class="post-avatar"></div>
+          <div class="post-avatar">{{.Author.ProfilPic}}</div>
           <div class="post-content">
-            <div class="post-title">{{.TopicName}}</div>
-            <div class="post-text">{{preview .Content 300}}</div>
+            <div class="post-title">{{.Author.Username}} a posté dans {{.TopicName}}</div>
+            <a class="post-text" href="topic/{{.TopicID}}#{{.MessageID}}">{{preview .Content 300}}</a>
           </div>
-          <a class="post-button" href="t{{.TopicID}}#{{.MessageID}}">Lire</a>
         </div>
         {{else}}
         <div class="post-card">

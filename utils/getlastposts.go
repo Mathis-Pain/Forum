@@ -48,10 +48,12 @@ func GetLastPosts() ([]models.LastPost, error) {
 	// Parcourt la base de données pour récupérer les informations
 	for rows.Next() {
 		var mw models.LastPost
-		if err := rows.Scan(&mw.MessageID, &mw.TopicID, &mw.Content, &mw.Created, &mw.Author, &mw.TopicName); err != nil {
+		var user_id int
+		if err := rows.Scan(&mw.MessageID, &mw.TopicID, &mw.Content, &mw.Created, &user_id, &mw.TopicName); err != nil {
 			log.Printf("<getlastposts.go> Error scanning message row: %v\n", err)
 			return nil, err
 		}
+		mw.Author, err = GetUserInfoFromID(db, user_id)
 		messagesWithTopics = append(messagesWithTopics, mw)
 	}
 
