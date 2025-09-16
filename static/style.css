@@ -63,6 +63,8 @@ body {
   align-items: center;
   justify-content: space-between;
   border-bottom: 3px solid var(--color-highlight);
+  position: sticky;
+  top:0;
 }
 
 /* Lien du retour à l'accueil (logo + titre) */
@@ -329,6 +331,8 @@ body {
   width: 300px;
   min-height:120px;
   height: fit-content;
+  position: sticky;
+  top:150px;
 }
 
 /* Titre de la barre latérale */
@@ -366,6 +370,7 @@ body {
   align-items: flex-start;
   gap: 15px;
   min-height:120px;
+  scroll-margin-top:100px;
 }
 
 /* Avatar du posteur */
@@ -617,6 +622,27 @@ a.post-text {
   color: var(--color-big);
   text-decoration: none;
   padding: 5px 10px;
+}
+
+/*********** Affichage d'un sujet ***********/
+
+.topic-top {
+  margin:auto;
+  margin-top: 10px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.topic-top h2{
+  color:var(--color-headerback)
+}
+
+.respond-btn {
+  background-color: var(--color-highlight);
+  border-radius: 5px;
+  margin-left: 100px;
+  padding:10px;
 }
 
 /********* Reponsive *********/
