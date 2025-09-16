@@ -2,6 +2,7 @@ package utils
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/Mathis-Pain/Forum/models"
@@ -20,22 +21,28 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 
 	// Parcourt le fichier et stocke chaque sujet dans la slice topics
 	for rows.Next() {
+		fmt.Println("debut boucle")
 		var topic models.Topic
 		if err := rows.Scan(&topic.TopicID, &topic.Name); err != nil {
 			log.Printf("<gettopiclist.go> Error scanning topic row: %v", err)
 			return nil, err
 		}
+		fmt.Println(topic.Name)
+
 		// Récupère la liste des messages du sujet
 		topic.Messages, err = GetMessageList(db, topic.TopicID)
+
 		if err == sql.ErrNoRows {
 			topic.Messages = []models.Message{}
 		} else if err != nil {
-			return topics, nil
+			return topics, err
 		}
+
 		topic.LastPost = len(topic.Messages) - 1
 		if topic.LastPost < 0 {
 			topic.LastPost = 0
 		}
+
 		topics = append(topics, topic)
 	}
 
