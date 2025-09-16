@@ -6,76 +6,28 @@
   </head>
   <body>
     <!-- Header -->
-    {{template "ForumHeader"}}
+    {{template "ForumHeader" .}}
 
     <!-- Main Content -->
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">
         <h3>profil</h3>
-        <div class="post-avatar"></div>
-        <p>nom d'utilisateur</p>
-        <p>adresse e-mail</p>
-        <p>date de naissance</p>
+        <div class="post-avatar">{{.ProfilPic}}</div>
+        <p>{{.Username}}</p>
+        <p>{{.Email}}</p>
       </aside>
       <section class="posts-section">
         <div class="post-card">
-          <div class="post-avatar"></div>
+          <div class="post-avatar">{{.ProfilPic}}</div>
           <div class="post-content">
-            <div class="post-title">post</div>
+            {{range .Posts}}
+            <div class="post-title">{{.TopicName}}</div>
             <div class="post-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum. Sed
-              ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam.
+              {{.Content}}
             </div>
           </div>
-          <button class="post-button">ouvrir</button>
-        </div>
-
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">post</div>
-            <div class="post-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
-
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">post</div>
-            <div class="post-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-            </div>
-          </div>
-          <button class="post-button">ouvrir</button>
-        </div>
-
-        <div class="post-card">
-          <div class="post-avatar"></div>
-          <div class="post-content">
-            <div class="post-title">post</div>
-            <div class="post-text">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation.
-            </div>
-          </div>
-          <button class="post-button">ouvrir</button>
+          <button class="post-button" href="topic/{{.TopicID}}#{{.MessageID}}">ouvrir</button>
         </div>
       </section>
     </main>
