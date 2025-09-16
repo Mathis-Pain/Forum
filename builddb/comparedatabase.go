@@ -33,8 +33,6 @@ func CompareDB() error {
 			fmt.Printf("La table '%s' diffère du schéma attendu\nColonnes attendues : %v\nColonnes réelles : %v\n",
 				table, expectedCols, actualCols)
 			compareErr = fmt.Errorf("schéma différent pour la table '%s'", table)
-		} else {
-			fmt.Printf("La table '%s' correspond au schéma attendu\n", table)
 		}
 	}
 
