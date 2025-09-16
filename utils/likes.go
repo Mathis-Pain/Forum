@@ -8,40 +8,63 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
-func ChangeLikes(db *sql.DB, postID, userID int, post models.Message) (models.Message, error) {
-	// Vérifie si le post actuel a déjà été liké par l'utilisateur connecté
-	notliked, err := getdata.CheckIfLiked(db, postID, userID)
+func ChangeLikes(db *sql.DB, userID int, post models.Message) error {
+	notliked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
 		log.Print(err)
-		return models.Message{}, err
+		return err
 	}
 
-	// Vérifie si le post actuel a été disliké par l'utilisateur connecté
 	var notdisliked bool
-	notdisliked, err = getdata.CheckIfDisliked(db, postID, userID)
+	notdisliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
 		log.Print(err)
-		return models.Message{}, err
+		return err
 	}
 
+	// Stocke le nombre de likes et de dislikes dans des variables temporaires
+	newlikes := post.Likes
+	newdislikes := post.Dislikes
 	if notliked && notdisliked {
-		// Si le post n'a été ni liké ni disliké, rajoute le like
-		post.Likes += 1
+		// Si le post n'était pas déjà liké ou disliké, rajoute un like
+		newlikes += 1
 	} else if notliked && !notdisliked {
-		// Si le post était disliké, retire le dislike et rajoute le like
-		post.Dislikes -= 1
-		post.Likes += 1
-	} else if !notliked {
-		// Si le post est déjà liké, le compte de likes ne bouge pas
-		log.Printf("<countlikes.go> L'utilisateur %d a déjà aimé ce post.", post.Author.ID)
-		return post, nil
+		// Si le post était disliké, retire le dislike et ajoute un like
+		newdislikes -= 1
+		newlikes += 1
+	} else if notliked && !notdisliked {
+		// Si le post était liké, retire le like
+		newlikes -= 1
 	}
 
-	// Met à jour la base de données
-	if UpdateLikesAndDislikes(db, postID, userID, post.Likes, post.Dislikes, "likes") != nil {
-		return post, err
+	// Vérifie les changements et met à jour les bases de données likes et dislikes
+	if newlikes > post.Likes {
+		// Si un like a été ajouté, ajoute le post dans la base de données des likes
+		if err := AddLikesAndDislikes(db, post.MessageID, userID, "likes"); err != nil {
+			return err
+		}
+		if newdislikes < post.Dislikes {
+			// Si le post était liké avant d'être disliké, retire le post de la liste des dislikes
+			if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "dislikes"); err != nil {
+				return err
+			}
+
+		}
+	} else if newlikes < post.Likes {
+		// Si le post était déjà liké, annule le like et le retire de la liste
+		if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "likes"); err != nil {
+			return err
+		}
 	}
 
-	// Renvoie la structure mise à jour au serveur
-	return post, nil
+	// Met à jour la base de données pour le message liké
+	if err = UpdateLikesAndDislikes(db, post.MessageID, userID, newlikes, newdislikes, "likes"); err != nil {
+		return err
+	}
+
+	// Met à jour la structure pour la renvoyer au handler
+	post.Likes = newlikes
+	post.Dislikes = newdislikes
+
+	return nil
 }
