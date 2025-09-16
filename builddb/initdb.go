@@ -18,14 +18,14 @@ func InitDB() (*sql.DB, error) {
 
 	recreateDB := false
 	if !dbExists {
-		// Pas de DB → il faut la créer
+		// DB inexistante → création nécessaire
 		recreateDB = true
 	} else {
 		// Vérifier le schéma existant
 		if err := CompareDB(); err != nil {
 			fmt.Println("Schéma différent :", err)
 
-			// Faire un backup avant de recréer
+			// Faire le backup uniquement si le schéma est différent
 			if err := BackupDB(dbPath); err != nil {
 				fmt.Println("Backup non effectué:", err)
 			}
@@ -66,7 +66,7 @@ func InitDB() (*sql.DB, error) {
 		return db, nil
 	}
 
-	// Ouvrir la DB existante
+	// Ouvrir la DB existante (schéma correct)
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("erreur ouverture DB: %w", err)
