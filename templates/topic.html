@@ -10,14 +10,27 @@
    {{template "ForumHeader"}}
 
 <!-- Main Content -->
+
+  <div class="topic-top">
+    <h2>{{.Topic.Name}}</h2>
+     <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
+            
+            </div>
 <main class="main-content">
+
+    <!-- Sidebar -->
+      <aside class="sidebar">
+        {{range .Topic.Messages}}
+        • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par <a href="/user/{{.Author.ID}}">{{.Author.Username}}</a>
+      <br>
+      {{end}}
+      </aside>
+
   <!-- Posts Section -->
-   <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
    
         <section class="posts-section">
-            <h2>{{.Topic.Name}}</h2>
             {{range .Topic.Messages}}
-            <div class="post-card">
+            <div class="post-card" id="{{.MessageID}}">
                 <div class="post-avatar">{{.Author.ProfilPic}}</div>
                 <div class="post-content">
                     <div class="post-title">{{.Author.Username}}</div>

@@ -10,7 +10,7 @@ import (
 // Récupère la liste complète des messages (date de création, auteur, contenu) pour un sujet
 func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	// Préparation de la requête sql
-	sqlQuery := `SELECT created_at,user_id, content, likes, dislikes FROM message WHERE topic_id = ?`
+	sqlQuery := `SELECT created_at,user_id, content, likes, dislikes, id FROM message WHERE topic_id = ?`
 	rows, err := db.Query(sqlQuery, topicID)
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	for rows.Next() {
 		var message models.Message
 		user_id := 0
-		if err := rows.Scan(&message.Created, &user_id, &message.Content, &message.Likes, &message.Dislikes); err != nil {
+		if err := rows.Scan(&message.Created, &user_id, &message.Content, &message.Likes, &message.Dislikes, &message.MessageID); err != nil {
 			log.Printf("<getmessagelist.go> Error scanning message row: %v", err)
 			return nil, err
 		}
