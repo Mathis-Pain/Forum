@@ -22,8 +22,8 @@
         <div class="post-card">
           <img class="post-avatar" src="{{(index .Messages 0).Author.ProfilPic}}"/>
           <div class="post-content">
-            <a class="post-title" href="topic/{{.TopicID}}">{{.Name}}</a>
-            <div class="post-author">Dernier message par <a href="user/{{(index .Messages .LastPost).Author.ID}}">{{(index .Messages .LastPost).Author.Username}}</a></div>
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
+            <div class="post-author">Dernier message par <a href="/user/{{(index .Messages .LastPost).Author.ID}}">{{(index .Messages .LastPost).Author.Username}}</a></div>
             <div class="post-text">
               {{preview (index .Messages .LastPost).Content 300}}
             </div>
