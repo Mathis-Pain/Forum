@@ -20,19 +20,19 @@ func GetUserInfoFromSess(sessId string) (models.User, error) {
 		return models.User{}, err
 	}
 
-	for key := range currentSession.Data {
-		username = key
+	for _, name := range currentSession.Data {
+		username = name.(string)
 	}
 
 	// ** Récupération des données du user **
 
-	db, err := sql.Open("sqlite3", "./database/forum.db")
+	db, err := sql.Open("sqlite3", "forum.db")
 	if err != nil {
 		return models.User{}, err
 	}
 	defer db.Close()
 
-	sql := `SELECT id, username, email, profilpic FROM user where username = ?`
+	sql := `SELECT id, username, email, profilpic FROM user WHERE username = ?`
 	row := db.QueryRow(sql, username)
 
 	err = row.Scan(&user.ID, &user.Username, &user.Email, &user.ProfilPic)
@@ -46,7 +46,7 @@ func GetUserInfoFromSess(sessId string) (models.User, error) {
 func GetUserPosts(userId int) ([]models.LastPost, error) {
 	var posts []models.LastPost
 	var post models.LastPost
-	db, err := sql.Open("sqlite3", "./database/forum.db")
+	db, err := sql.Open("sqlite3", "forum.db")
 	if err != nil {
 		log.Printf("<getuserposts.go> Could not open database: %v\n", err)
 		return nil, err
@@ -59,12 +59,11 @@ func GetUserPosts(userId int) ([]models.LastPost, error) {
             m.topic_id,
             m.content,
             m.created_at,
-            m.user_id,
             t.name
         FROM message m
         JOIN topic t ON m.topic_id = t.id
+		WHERE m.user_id = ?
         ORDER BY m.created_at DESC
-		WHERE user_id = ?
     `
 
 	rows, err := db.Query(sqlQuery, userId)
@@ -76,6 +75,11 @@ func GetUserPosts(userId int) ([]models.LastPost, error) {
 	for rows.Next() {
 		if err := rows.Scan(&post.MessageID, &post.TopicID, &post.Content, &post.Created, &post.TopicName); err != nil {
 			log.Printf("<getuserposts.go> Error scanning message row: %v\n", err)
+			return nil, err
+		}
+		post.Author, err = GetUserInfoFromID(db, userId)
+		if err != nil {
+			log.Printf("<getuserposts.go> Could not execute GetUserInfoFromID: %v\n", err)
 			return nil, err
 		}
 

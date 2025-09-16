@@ -2,7 +2,7 @@
 <html lang="fr">
   <head><!-- Informations page (css, sript, etc) -->
     {{template "InitPage"}}
-    <title>Profil - {{.Username}}</title>
+    <title>Profil - {{.User.Username}}</title>
   </head>
   <body>
     <!-- Header -->
@@ -12,25 +12,34 @@
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <h3>profil</h3>
-        <div class="post-avatar">{{.ProfilPic}}</div>
-        <p>{{.Username}}</p>
-        <p>{{.Email}}</p>
+        <h3>Profil</h3>
+        <div class="post-avatar" src="{{.User.ProfilPic}}"></div>
+        <p>{{.User.Username}}</p>
+        <p>{{.User.Email}}</p>
       </aside>
       <section class="posts-section">
+        {{range .Posts}}
         <div class="post-card">
-          <div class="post-avatar">{{.ProfilPic}}</div>
+          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
           <div class="post-content">
-            {{range .Posts}}
             <div class="post-title">{{.TopicName}}</div>
             <div class="post-text">
               {{.Content}}
             </div>
           </div>
           <button class="post-button" href="topic/{{.TopicID}}#{{.MessageID}}">ouvrir</button>
-          {{end}}
         </div>
+        {{else}}
+        <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              <center>Il n'y a aucun message à afficher pour l'instant.</center>
+            </div>
+          </div>
+        </div>
+        {{end}}
       </section>
+      
     </main>
   </body>
 </html>

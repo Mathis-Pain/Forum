@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -47,17 +48,20 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	// ** Renvoi des données dans le template **
 
 	data := struct {
-		Categories []models.Category
 		User       models.User
 		Posts      []models.LastPost
+		LoginData  models.LoginData
+		Categories []models.Category
 	}{
-		Categories: categories,
 		User:       user,
 		Posts:      userPosts,
+		LoginData:  models.LoginData{},
+		Categories: categories,
 	}
 
 	err = ProfilHtml.Execute(w, data)
 	if err != nil {
+		fmt.Println(err)
 		utils.InternalServError(w)
 	}
 }
