@@ -1,4 +1,4 @@
-package utils
+package getdata
 
 import (
 	"database/sql"

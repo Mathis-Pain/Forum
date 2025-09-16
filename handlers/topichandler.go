@@ -5,11 +5,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 var TopicHtml = template.Must(template.New("topic.html").ParseFiles(
@@ -21,14 +20,8 @@ var TopicHtml = template.Must(template.New("topic.html").ParseFiles(
 ))
 
 func TopicHandler(w http.ResponseWriter, r *http.Request) {
-	parts := strings.Split(r.URL.Path, "/")
-	if len(parts) != 3 {
-		utils.NotFoundHandler(w)
-		return
-	}
-
-	ID, err := strconv.Atoi(parts[len(parts)-1])
-	if err != nil {
+	ID := utils.GetPageID(r)
+	if ID == 0 {
 		utils.NotFoundHandler(w)
 		return
 	}
@@ -40,7 +33,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	topic, err := utils.GetTopicInfo(db, ID)
+	topic, err := getdata.GetTopicInfo(db, ID)
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)
 		return
@@ -50,7 +43,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, err := utils.GetCatList()
+	categories, err := getdata.GetCatList()
 
 	if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
