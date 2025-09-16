@@ -5,11 +5,12 @@ import (
 	"log"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 func ChangeLikes(db *sql.DB, postID, userID int, post models.Message) (models.Message, error) {
 	// Vérifie si le post actuel a déjà été liké par l'utilisateur connecté
-	notliked, err := CheckIfLiked(db, postID, userID)
+	notliked, err := getdata.CheckIfLiked(db, postID, userID)
 	if err != nil {
 		log.Print(err)
 		return models.Message{}, err
@@ -17,7 +18,7 @@ func ChangeLikes(db *sql.DB, postID, userID int, post models.Message) (models.Me
 
 	// Vérifie si le post actuel a été disliké par l'utilisateur connecté
 	var notdisliked bool
-	notdisliked, err = CheckIfDisliked(db, postID, userID)
+	notdisliked, err = getdata.CheckIfDisliked(db, postID, userID)
 	if err != nil {
 		log.Print(err)
 		return models.Message{}, err

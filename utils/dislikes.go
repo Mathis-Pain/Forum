@@ -5,17 +5,18 @@ import (
 	"log"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 func ChangeDisLikes(db *sql.DB, postID, userID int, post models.Message) error {
-	notliked, err := CheckIfLiked(db, postID, userID)
+	notliked, err := getdata.CheckIfLiked(db, postID, userID)
 	if err != nil {
 		log.Print(err)
 		return err
 	}
 
 	var notdisliked bool
-	notdisliked, err = CheckIfDisliked(db, postID, userID)
+	notdisliked, err = getdata.CheckIfDisliked(db, postID, userID)
 	if err != nil {
 		log.Print(err)
 		return err

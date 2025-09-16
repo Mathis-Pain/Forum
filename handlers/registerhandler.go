@@ -34,7 +34,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Struct pour stocker les erreurs ---
-	formData := models.FormDataError{
+	formData := models.RegisterDataError{
 		NameError:  utils.ValidName(username),
 		EmailError: utils.ValidEmail(email),
 		PassError:  utils.ValidPasswd(password, passwordConfirm),
