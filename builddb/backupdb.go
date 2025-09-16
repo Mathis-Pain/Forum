@@ -10,13 +10,19 @@ import (
 
 // BackupDB crée une copie du fichier DB existant
 func BackupDB(dbPath string) error {
+	backDbPath := "backforum.db"
 	// Vérifier si le fichier existe
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
 		// Pas de fichier à sauvegarder
 		return nil
 	}
+	// Vérifier si un backup existe déjà
+	if _, err := os.Stat(backDbPath); err == nil {
+		fmt.Println("Un backup existe déjà :", backDbPath)
+		return nil
+	}
 
-	backupPath := "bak" + dbPath // ex: forum.db.bak
+	backupPath := "back" + dbPath // ex: forum.db.bak
 
 	// Copier le contenu du fichier existant
 	srcFile, err := os.Open(dbPath)

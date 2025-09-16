@@ -16,20 +16,20 @@ func InitDB() (*sql.DB, error) {
 		dbExists = false
 	}
 
-	// Faire un backup si la DB existe
-	if dbExists {
-		if err := BackupDB(dbPath); err != nil {
-			fmt.Println("Backup non effectué:", err)
-		}
-	}
-
 	recreateDB := false
 	if !dbExists {
+		// Pas de DB → il faut la créer
 		recreateDB = true
 	} else {
 		// Vérifier le schéma existant
 		if err := CompareDB(); err != nil {
 			fmt.Println("Schéma différent :", err)
+
+			// Faire un backup avant de recréer
+			if err := BackupDB(dbPath); err != nil {
+				fmt.Println("Backup non effectué:", err)
+			}
+
 			recreateDB = true
 		}
 	}
@@ -72,5 +72,6 @@ func InitDB() (*sql.DB, error) {
 		return nil, fmt.Errorf("erreur ouverture DB: %w", err)
 	}
 
+	fmt.Println("DB existante correcte, aucun backup nécessaire")
 	return db, nil
 }
