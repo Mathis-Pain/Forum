@@ -40,6 +40,8 @@ CREATE TABLE message (
     content TEXT NOT NULL,
     created_at TEXT DEFAULT (CURRENT_TIMESTAMP),
     user_id INTEGER NOT NULL,
+    likes INTEGER,
+    dislikes INTEGER,
     FOREIGN KEY (topic_id) REFERENCES topic(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
