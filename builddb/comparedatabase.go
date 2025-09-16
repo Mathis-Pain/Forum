@@ -14,27 +14,22 @@ func CompareDB() error {
 		return fmt.Errorf("erreur ouverture DB pour comparaison: %w", err)
 	}
 	defer db.Close()
-
-	missingTables := []string{}
-	diffTables := []string{}
+	var compareErr error
 
 	for table, expectedCols := range expectedSchema {
 		createSQL, err := getTableSQL(db, table)
 		if err != nil {
-			missingTables = append(missingTables, table)
+			fmt.Printf("Erreur : table '%s' manquante !\n", table)
+			compareErr = fmt.Errorf("table '%s' manquante", table)
 			continue
 		}
 		actualCols := extractColumns(createSQL)
 		if !compareColumns(expectedCols, actualCols) {
-			diffTables = append(diffTables, table)
+			fmt.Printf("La table '%s' diffère du schéma attendu\nColonnes attendues : %v\nColonnes réelles : %v\n",
+				table, expectedCols, actualCols)
+			compareErr = fmt.Errorf("schéma différent pour la table '%s'", table)
 		}
 	}
 
-	if len(missingTables) > 0 || len(diffTables) > 0 {
-		return fmt.Errorf(
-			"tables manquantes: %v, tables différentes: %v",
-			missingTables, diffTables,
-		)
-	}
-	return nil
+	return compareErr
 }

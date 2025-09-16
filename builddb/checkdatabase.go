@@ -14,7 +14,7 @@ import (
 var expectedSchema map[string][]string
 
 // ExtractSql lit le fichier schema.sql et construit la map des tables et colonnes
-func ExtractSql(string) map[string][]string {
+func ExtractSql(filePath string) map[string][]string {
 	data, err := os.ReadFile("forumdbschema.sql")
 	if err != nil {
 		log.Fatal(err)
@@ -23,36 +23,55 @@ func ExtractSql(string) map[string][]string {
 	sqlContent := string(data)
 	schema := make(map[string][]string)
 
-	// Séparer le contenu par "CREATE TABLE"
 	parts := strings.Split(sqlContent, "CREATE TABLE")
-	for _, part := range parts[1:] { // ignorer le premier split vide
+	for _, part := range parts[1:] {
 		part = strings.TrimSpace(part)
 		if part == "" {
 			continue
 		}
 
-		// Extraire le nom de la table
 		openParen := strings.Index(part, "(")
 		if openParen == -1 {
 			continue
 		}
 		tableName := strings.TrimSpace(part[:openParen])
 
-		// Extraire les colonnes et contraintes
 		closeParen := strings.LastIndex(part, ")")
 		if closeParen == -1 {
 			continue
 		}
 		columnsPart := part[openParen+1 : closeParen]
 
-		// Nettoyer et séparer les lignes
-		lines := strings.Split(columnsPart, ",")
+		// Nouvelle logique : gérer les parenthèses
 		var columns []string
-		for _, line := range lines {
-			line = strings.TrimSpace(line)
-			if line != "" {
-				columns = append(columns, line)
+		var current strings.Builder
+		parentheses := 0
+
+		for _, r := range columnsPart {
+			switch r {
+			case '(':
+				parentheses++
+				current.WriteRune(r)
+			case ')':
+				parentheses--
+				current.WriteRune(r)
+			case ',':
+				if parentheses == 0 {
+					col := strings.TrimSpace(current.String())
+					if col != "" {
+						columns = append(columns, normalizeColumn(col))
+					}
+					current.Reset()
+				} else {
+					current.WriteRune(r)
+				}
+			default:
+				current.WriteRune(r)
 			}
+		}
+		// Ajouter le dernier élément
+		if current.Len() > 0 {
+			columns = append(columns, normalizeColumn(current.String()))
 		}
 
 		schema[tableName] = columns
