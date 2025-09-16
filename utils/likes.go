@@ -32,7 +32,7 @@ func ChangeLikes(db *sql.DB, userID int, post models.Message) error {
 		// Si le post était disliké, retire le dislike et ajoute un like
 		newdislikes -= 1
 		newlikes += 1
-	} else if notliked && !notdisliked {
+	} else if !notliked && notdisliked {
 		// Si le post était liké, retire le like
 		newlikes -= 1
 	}
