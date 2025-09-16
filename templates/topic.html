@@ -10,12 +10,13 @@
    {{template "ForumHeader"}}
 
 <!-- Main Content -->
-
+<div class="dashboard-header">
   <div class="topic-top">
     <h2>{{.Topic.Name}}</h2>
      <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
-            
-            </div>
+  </div>
+</div>
+
 <main class="main-content">
 
     <!-- Sidebar -->
@@ -35,6 +36,15 @@
                 <div class="post-content">
                     <div class="post-title">{{.Author.Username}}</div>
                     <div class="post-text">{{.Content}}</div>
+                <div class="actions-column">
+                      <div class="menu">
+                            <button class="menu-btn">⋮</button>
+                            <div class="menu-options">
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">supprimer</button>
+                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">signaler</button>
+                            </div>
+                        </div>
+                </div>
                 </div>
 
                 <div class="post-actions">

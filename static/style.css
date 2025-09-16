@@ -333,6 +333,8 @@ body {
   height: fit-content;
   position: sticky;
   top:150px;
+  height: 100vh;
+  overflow: auto;
 }
 
 /* Titre de la barre latérale */
