@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 // Obtenir les infos du User depuis la session
@@ -77,7 +78,7 @@ func GetUserPosts(userId int) ([]models.LastPost, error) {
 			log.Printf("<getuserposts.go> Error scanning message row: %v\n", err)
 			return nil, err
 		}
-		post.Author, err = GetUserInfoFromID(db, userId)
+		post.Author, err = getdata.GetUserInfoFromID(db, userId)
 		if err != nil {
 			log.Printf("<getuserposts.go> Could not execute GetUserInfoFromID: %v\n", err)
 			return nil, err

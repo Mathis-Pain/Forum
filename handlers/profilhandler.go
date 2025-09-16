@@ -8,13 +8,14 @@ import (
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 var ProfilHtml = template.Must(template.New("profil.html").ParseFiles("templates/profil.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
 
 func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	// ** Récupération des catégories pour le header **
-	categories, err := utils.GetCatList()
+	categories, err := getdata.GetCatList()
 
 	if err != nil {
 		log.Printf("<profilhandler.go> Could not operate GetCatList: %v\n", err)
