@@ -5,11 +5,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
@@ -20,27 +19,20 @@ var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseF
 ))
 
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
-
-	parts := strings.Split(r.URL.Path, "/")
-	if len(parts) != 3 {
+	ID := utils.GetPageID(r)
+	if ID == 0 {
 		utils.NotFoundHandler(w)
 		return
 	}
 
-	ID, err := strconv.Atoi(parts[len(parts)-1])
-	if err != nil {
-		utils.NotFoundHandler(w)
-		return
-	}
-
-	db, err := sql.Open("sqlite3", "./database/forum.db")
+	db, err := sql.Open("sqlite3", "forum.db")
 	if err != nil {
 		log.Printf("<cathandler.go> Could not open database : %v\n", err)
 		return
 	}
 	defer db.Close()
 
-	category, err := utils.GetCatDetails(db, ID)
+	category, err := getdata.GetCatDetails(db, ID)
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)
 		return
@@ -50,7 +42,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, err := utils.GetCatList()
+	categories, err := getdata.GetCatList()
 
 	if err != nil {
 		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
@@ -66,6 +58,18 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		Category:   category,
 		Categories: categories,
 		LoginData:  models.LoginData{},
+	}
+
+	// --- Si POST, on remplit LoginData ---
+
+	if r.Method == "POST" {
+		loginData, err := utils.LoginPopUp(r, w)
+		if err == nil {
+			data.LoginData = loginData
+		}
+
+		// Connexion réussie (ouverture de session, accès aux boutons, etc, à ajouter ici)
+
 	}
 
 	err = CatHtml.Execute(w, data)
