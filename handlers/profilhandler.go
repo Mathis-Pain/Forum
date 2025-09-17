@@ -33,13 +33,13 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	user, err := utils.GetUserInfoFromSess(sessCookie.Value)
+	user, err := getdata.GetUserInfoFromSess(sessCookie.Value)
 	if err != nil {
 		log.Printf("<profilhandler.go> Could not operate GetUserInfoFromSess: %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
-	userPosts, err := utils.GetUserPosts(user.ID)
+	userPosts, err := getdata.GetUserPosts(user.ID)
 	if err != nil {
 		log.Printf("<profilhandler.go> Could not operate GetUserPosts: %v\n", err)
 		utils.InternalServError(w)
