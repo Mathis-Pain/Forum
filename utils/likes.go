@@ -9,7 +9,10 @@ import (
 )
 
 // Fonction pour mettre à jour le nombre de likes
+// Fonction pour mettre à jour le nombre de likes
 func ChangeLikes(db *sql.DB, userID int, post models.Message) error {
+	// Vérifie si le post a déjà été liké par l'utilisateur connecté
+	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	// Vérifie si le post a déjà été liké par l'utilisateur connecté
 	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
@@ -20,21 +23,27 @@ func ChangeLikes(db *sql.DB, userID int, post models.Message) error {
 	var disliked bool
 	// Vérifie ensuite si le post a déjà été disliké par l'utilisateur
 	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
+	var disliked bool
+	// Vérifie ensuite si le post a déjà été disliké par l'utilisateur
+	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
 		log.Print(err)
 		return err
 	}
 
 	// Stocke le nombre de likes et de dislikes dans des variables temporaires pour future comparaison
+	// Stocke le nombre de likes et de dislikes dans des variables temporaires pour future comparaison
 	newlikes := post.Likes
 	newdislikes := post.Dislikes
-	if liked && !disliked {
+	if !liked && !disliked {
 		// Si le post n'était pas déjà liké ou disliké, rajoute un like
 		newlikes += 1
+	} else if !liked && disliked {
 	} else if !liked && disliked {
 		// Si le post était disliké, retire le dislike et ajoute un like
 		newdislikes -= 1
 		newlikes += 1
+	} else if liked && !disliked {
 	} else if liked && !disliked {
 		// Si le post était liké, retire le like
 		newlikes -= 1
