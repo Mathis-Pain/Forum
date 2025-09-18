@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"html/template"
 	"net/http"
-	"time"
 
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
@@ -14,29 +13,27 @@ var loginHtml = template.Must(template.ParseFiles("templates/login.html"))
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	// si l'utilisateur demande le formulaire
 	case http.MethodGet:
-		// Affiche le formulaire de login
 		if err := loginHtml.Execute(w, nil); err != nil {
-			utils.InternalServError(w)
-		}
-
-	case http.MethodPost:
-		// Parse les données
-		err := r.ParseForm()
-		if err != nil {
 			utils.InternalServError(w)
 			return
 		}
-
+		// Si l'utilisateur envoi le formulaire
+	case http.MethodPost:
+		if err := r.ParseForm(); err != nil {
+			utils.InternalServError(w)
+			return
+		}
+		// Verification username et password non nul
 		username := r.FormValue("username")
 		password := r.FormValue("password")
-
 		if username == "" || password == "" {
 			http.Error(w, "Tous les champs sont requis", http.StatusBadRequest)
 			return
 		}
 
-		// Connexion DB
+		// Vérifie login + mot de passe (utils.Authentification s’occupe de la DB)
 		db, err := sql.Open("sqlite3", "forum.db")
 		if err != nil {
 			utils.InternalServError(w)
@@ -44,36 +41,41 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 
-		// Vérifie login + mot de passe
 		user, err := utils.Authentification(db, username, password)
 		if err != nil {
-			// Mauvais login ou mot de passe
 			http.Error(w, "Nom d’utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
 			return
 		}
-
-		// Crée la session
-		sessionData := map[string]interface{}{
-			"user": user.Username, // ou user.ID si tu préfères
+		//Invalider toutes les sessions existantes
+		if err := sessions.InvalidateUserSessions(user.ID); err != nil {
+			utils.InternalServError(w)
+			return
 		}
 
-		sessionID, err := sessions.CreateSession(sessionData)
+		// Créer une nouvelle session
+		session, err := sessions.CreateSession(user.ID)
 		if err != nil {
 			utils.InternalServError(w)
 			return
 		}
 
-		// Ajoute le cookie
+		// Ajoute des infos dans la session
+		session.Data["user"] = user.Username
+		if err := sessions.SaveSessionToDB(session); err != nil {
+			utils.InternalServError(w)
+			return
+		}
+
+		// Pose le cookie
 		http.SetCookie(w, &http.Cookie{
 			Name:     "session_id",
-			Value:    sessionID,
-			Expires:  time.Now().Add(24 * time.Hour),
+			Value:    session.ID,
+			Expires:  session.ExpiresAt,
 			HttpOnly: true,
-			Secure:   false, // true si HTTPS
+			Secure:   false, // ⚠️ false en local, true si HTTPS
 			Path:     "/",
 		})
 
-		// Redirection vers /home
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	default:
