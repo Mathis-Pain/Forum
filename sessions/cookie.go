@@ -1,17 +1,17 @@
-package utils
+package sessions
 
 import (
 	"net/http"
 	"time"
 )
 
-func SetSecureCookie(w http.ResponseWriter, name, value string) {
+func SetCookie(w http.ResponseWriter, name, value string, secure bool) {
 	cookie := &http.Cookie{
 		Name:     name,
 		Value:    value,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,
-		Secure:   true, // HTTPS uniquement
+		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
 		Path:     "/",
 	}
