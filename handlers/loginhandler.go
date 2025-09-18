@@ -34,7 +34,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Vérifie login + mot de passe (utils.Authentification s’occupe de la DB)
-		db, err := sql.Open("sqlite3", "/data/forum.db")
+		db, err := sql.Open("sqlite3", "./data/forum.db")
 		if err != nil {
 			utils.InternalServError(w)
 			return
@@ -72,7 +72,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			Value:    session.ID,
 			Expires:  session.ExpiresAt,
 			HttpOnly: true,
-			Secure:   false, // ⚠️ false en local, true si HTTPS
+			Secure:   false, // false en local, true si HTTPS
 			Path:     "/",
 		})
 

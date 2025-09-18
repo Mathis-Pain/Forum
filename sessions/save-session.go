@@ -8,7 +8,7 @@ import (
 )
 
 // chemin d'acces a la db
-const dbPath = "/data/forum.db"
+const dbPath = "./data/forum.db"
 
 // SaveSession sauvegarde ou met à jour une session
 // Transforme les données Go en text Json pour pouvoir les sotcker dans la db
