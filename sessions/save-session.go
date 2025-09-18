@@ -11,6 +11,7 @@ import (
 const dbPath = "forum.db"
 
 // SaveSession sauvegarde ou met à jour une session
+// Transforme les données Go en text Json pour pouvoir les sotcker dans la db
 func SaveSession(db *sql.DB, session models.Session) error {
 	dataJSON, err := json.Marshal(session.Data)
 	if err != nil {

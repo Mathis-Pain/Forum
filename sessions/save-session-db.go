@@ -6,6 +6,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
+// ouvre juste la db pour sauvegarder la session via SaveSession
 func SaveSessionToDB(session models.Session) error {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
