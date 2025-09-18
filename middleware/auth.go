@@ -7,27 +7,34 @@ import (
 	"github.com/Mathis-Pain/Forum/sessions"
 )
 
+// key type pour le contexte afin d'éviter les collisions
+type contextKey string
+
+const userIDKey contextKey = "userID"
+
 // AuthMiddleware protège les routes nécessitant une session
-func AuthMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Récupère le cookie
+func AuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("session_id")
-		if err != nil {
-			// Pas de cookie → redirige vers login
+		if err != nil || cookie == nil {
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
-		// Récupère la session
 		session, err := sessions.GetSession(cookie.Value)
-		if err != nil {
-			// Cookie invalide ou session expirée
+		if err != nil || session.UserID == 0 {
 			http.Redirect(w, r, "/login", http.StatusFound)
 			return
 		}
 
-		// Ajoute les infos utilisateur dans le contexte
-		ctx := context.WithValue(r.Context(), "user", session.Data["user"])
+		// Passer UserID via contexte type-safe
+		ctx := context.WithValue(r.Context(), userIDKey, session.UserID)
 		next.ServeHTTP(w, r.WithContext(ctx))
-	}
+	})
+}
+
+// UserIDFromContext récupère le UserID depuis le contexte
+func UserIDFromContext(ctx context.Context) (int, bool) {
+	userID, ok := ctx.Value(userIDKey).(int)
+	return userID, ok
 }

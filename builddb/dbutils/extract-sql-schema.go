@@ -8,7 +8,7 @@ import (
 
 // ExtractSql lit le fichier schema.sql et construit la map des tables et colonnes
 func ExtractSql(filePath string) map[string][]string {
-	data, err := os.ReadFile("forumdbschema.sql")
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
