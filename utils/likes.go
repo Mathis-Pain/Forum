@@ -50,25 +50,25 @@ func ChangeLikes(userID int, post models.Message) error {
 	// Vérifie les changements et met à jour les bases de données likes et dislikes
 	if newlikes > post.Likes {
 		// Si un like a été ajouté, ajoute le post dans la base de données des likes
-		if err := AddLikesAndDislikes(db, post.MessageID, userID, "likes"); err != nil {
+		if err := AddLikesAndDislikes(db, post.MessageID, userID, "like"); err != nil {
 			return err
 		}
 		if newdislikes < post.Dislikes {
 			// Si le post était liké avant d'être disliké, retire le post de la liste des dislikes
-			if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "dislikes"); err != nil {
+			if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "dislike"); err != nil {
 				return err
 			}
 
 		}
 	} else if newlikes < post.Likes {
 		// Si le post était déjà liké, annule le like et le retire de la liste
-		if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "likes"); err != nil {
+		if err := RemoveLikesAndDislikes(db, post.MessageID, userID, "like"); err != nil {
 			return err
 		}
 	}
 
 	// Met à jour la base de données pour le message liké
-	if err = UpdateLikesAndDislikes(db, post.MessageID, userID, newlikes, newdislikes, "likes"); err != nil {
+	if err = UpdateLikesAndDislikes(db, post.MessageID, userID, newlikes, newdislikes, "like"); err != nil {
 		return err
 	}
 

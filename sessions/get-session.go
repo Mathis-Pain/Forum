@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/Mathis-Pain/Forum/models"
@@ -28,6 +29,7 @@ func GetSession(sessionID string) (models.Session, error) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
+			log.Print("<get-session.go> Erreur dans la récupération de session, aucune session trouvée :", err)
 			return models.Session{}, errors.New("session not found")
 		}
 		return models.Session{}, err
@@ -38,6 +40,7 @@ func GetSession(sessionID string) (models.Session, error) {
 	}
 
 	if err := json.Unmarshal([]byte(dataJSON), &session.Data); err != nil {
+		log.Print("<get-session.go> Erreur dans la récupération de session :", err)
 		return models.Session{}, err
 	}
 

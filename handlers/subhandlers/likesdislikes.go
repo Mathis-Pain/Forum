@@ -47,11 +47,12 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	cookie, _ := r.Cookie("session_id")
 	session, err := sessions.GetSession(cookie.Value)
 	if err != nil {
+		log.Print("<likesdislikes.go> Erreur dans la récupération de session : ", err)
 		return 0, models.Message{}, err
 	}
 	userID := session.UserID
 
-	postID, err := strconv.Atoi(r.FormValue("postID"))
+	postID, _ := strconv.Atoi(r.FormValue("postID"))
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Printf("<topichandler.go> Could not open database : %v\n", err)
@@ -60,6 +61,9 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	defer db.Close()
 
 	post, err := getdata.GetMessageLikesAndDislikes(db, postID)
+	if err != nil {
+		log.Print("<likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
+	}
 
 	return userID, post, nil
 }

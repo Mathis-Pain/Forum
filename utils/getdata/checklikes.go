@@ -10,7 +10,7 @@ import (
 // Renvoie "true" si le post a été liké
 func CheckIfLiked(db *sql.DB, postID, userID int) (bool, error) {
 	// Vérifie si l'utilisateur n'a pas déjà liké ce post
-	sqlQuery := `SELECT post_id FROM likes WHERE user_id = ?`
+	sqlQuery := `SELECT message_id FROM like WHERE user_id = ?`
 	rows, err := db.Query(sqlQuery, userID)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func CheckIfLiked(db *sql.DB, postID, userID int) (bool, error) {
 // Vérifie si l'utilisateur n'a pas disliké le post
 // Renvoie "true" si le post a été dislike
 func CheckIfDisliked(db *sql.DB, postID, userID int) (bool, error) {
-	sqlQuery := `SELECT post_id FROM dislikes WHERE user_id = ?`
+	sqlQuery := `SELECT message_id FROM dislike WHERE user_id = ?`
 	rows, err := db.Query(sqlQuery, userID)
 
 	if err != nil {
