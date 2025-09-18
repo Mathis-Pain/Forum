@@ -333,7 +333,7 @@ td {
   height: fit-content;
   position: sticky;
   top: 150px;
-  height: 78vh;
+  height: 100vh;
   overflow: auto;
 }
 
@@ -430,19 +430,11 @@ a.post-text {
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
-  margin-top: 15px;
+  margin-left: auto;
 }
 
 .post-button:hover {
   background-color: var(--color-logohover);
-}
-
-/* Affichage boutons page profil */
-
-.profil-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
 }
 
 /********* Pop-up de connexion / réponse / etc *********/

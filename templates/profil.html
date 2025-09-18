@@ -27,19 +27,7 @@
               {{.Content}}
             </div>
           </div>
-          <div class="profil-btn">
-            <div class="post-actions">
-              <button class="action-btn" onclick="toggleLike(this)">
-                  <span>👍</span>
-                  <span>{{.Likes}}</span>
-              </button>
-              <button class="action-btn" onclick="toggleDislike(this)">
-                  <span>👎</span>
-                  <span>{{.Dislikes}}</span>
-              </button>              
-            </div>
-            <button class="post-button" href="topic/{{.TopicID}}#{{.MessageID}}">ouvrir</button>
-          </div>
+          <button class="post-button" href="topic/{{.TopicID}}#{{.MessageID}}">ouvrir</button>
         </div>
         {{else}}
         <div class="post-card">

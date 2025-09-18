@@ -1,4 +1,4 @@
-package getdata
+package utils
 
 import (
 	"database/sql"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 // Obtenir les infos du User depuis la session
@@ -59,8 +60,6 @@ func GetUserPosts(userId int) ([]models.LastPost, error) {
             m.topic_id,
             m.content,
             m.created_at,
-			m.likes,
-			m.dislikes,
             t.name
         FROM message m
         JOIN topic t ON m.topic_id = t.id
@@ -75,19 +74,11 @@ func GetUserPosts(userId int) ([]models.LastPost, error) {
 	}
 
 	for rows.Next() {
-		if err := rows.Scan(
-			&post.MessageID,
-			&post.TopicID,
-			&post.Content,
-			&post.Created,
-			&post.Likes,
-			&post.Dislikes,
-			&post.TopicName,
-		); err != nil {
+		if err := rows.Scan(&post.MessageID, &post.TopicID, &post.Content, &post.Created, &post.TopicName); err != nil {
 			log.Printf("<getuserposts.go> Error scanning message row: %v\n", err)
 			return nil, err
 		}
-		post.Author, err = GetUserInfoFromID(db, userId)
+		post.Author, err = getdata.GetUserInfoFromID(db, userId)
 		if err != nil {
 			log.Printf("<getuserposts.go> Could not execute GetUserInfoFromID: %v\n", err)
 			return nil, err
