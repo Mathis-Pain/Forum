@@ -8,8 +8,8 @@ import (
 
 // InitDB initialise la base SQLite. Elle crée ou recrée la DB si nécessaire.
 func InitDB() (*sql.DB, error) {
-	dbPath := "forum.db"
-	schemaPath := "forumdbschema.sql"
+	dbPath := "data/forum.db"
+	schemaPath := "data/forumdbschema.sql"
 
 	dbExists := true
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {

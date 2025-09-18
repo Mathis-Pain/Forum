@@ -11,7 +11,7 @@ func CompareDB() error {
 	dbPath := "forum.db"
 
 	// Générer expectedSchema depuis le fichier schema.sql
-	expectedSchema := dbutils.ExtractSql("forumdbschema.sql")
+	expectedSchema := dbutils.ExtractSql("data/forumdbschema.sql")
 
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
