@@ -48,14 +48,20 @@
                 </div>
 
                 <div class="post-actions">
-                    <button class="action-btn" onclick="toggleLike(this)">
-                        <span>👍</span>
-                        <span>{{.Likes}}</span>
-                    </button>
-                    <button class="action-btn" onclick="toggleDislike(this)">
-                        <span>👎</span>
-                        <span>{{.Dislikes}}</span>
-                    </button>
+                   <form method="POST" action="/like" class="like-form">
+            <input type="hidden" name="postID" value="{{.MessageID}}">
+            <button type="submit" class="action-btn">
+                <span>👍</span>
+                <span>{{.Likes}}</span>
+            </button>
+                    </form>
+                    <form method="POST" action="/dislike" class="like-form">
+            <input type="hidden" name="postID" value="{{.MessageID}}">
+            <button type="submit" class="action-btn">
+                <span>👎</span>
+                <span>{{.Dislikes}}</span>
+            </button>
+                    </form>
                     
                 </div>
             </div>

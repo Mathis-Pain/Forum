@@ -8,7 +8,14 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
-func ChangeDisLikes(db *sql.DB, userID int, post models.Message) error {
+func ChangeDisLikes(userID int, post models.Message) error {
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		log.Printf("<topichandler.go> Could not open database : %v\n", err)
+		return err
+	}
+	defer db.Close()
+
 	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
 		log.Print(err)

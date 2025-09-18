@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/handlers"
+	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/middleware"
 	"github.com/Mathis-Pain/Forum/sessions"
 
@@ -30,6 +31,9 @@ func InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/categorie/", handlers.CategoriesHandler)
 	mux.HandleFunc("/topic/", handlers.TopicHandler)
 	mux.HandleFunc("/test", handlers.TestHandler)
+
+	mux.HandleFunc("/like", subhandlers.LikePostHandler)
+	mux.HandleFunc("/dislike", subhandlers.DislikePostHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
