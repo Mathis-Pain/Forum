@@ -414,7 +414,8 @@ td {
 .post-text {
   color: var(--color-sidebar);
   line-height: 1.4;
-  word-break: break-all;
+  white-space: pre-wrap;
+  text-align: justify;
 }
 
 a.post-text {
