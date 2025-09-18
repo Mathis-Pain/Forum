@@ -1,1 +1,1 @@
-docker build -f Dockerfile.dev -t forum-app-dev .
+docker build -f Dockerfile -t forum .

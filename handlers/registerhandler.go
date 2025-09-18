@@ -48,7 +48,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Ouverture de la DB ---
-	db, err := sql.Open("sqlite3", "data/forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		utils.InternalServError(w)
 		return

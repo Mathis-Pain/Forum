@@ -8,10 +8,10 @@ import (
 )
 
 func CompareDB() error {
-	dbPath := "forum.db"
+	dbPath := "./data/forum.db"
 
 	// Générer expectedSchema depuis le fichier schema.sql
-	expectedSchema := dbutils.ExtractSql("data/forumdbschema.sql")
+	expectedSchema := dbutils.ExtractSql("./data/forumdbschema.sql")
 
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {

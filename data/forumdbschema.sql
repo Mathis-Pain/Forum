@@ -73,5 +73,3 @@ CREATE TABLE sessions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Date de création
 );
 
-/* a mettre si la base d'utilisateur devient grande pour accelerer la recherche de suppression de dession expiré
- CREATE INDEX idx_sessions_expires ON sessions(expires_at);  */

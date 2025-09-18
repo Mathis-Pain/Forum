@@ -12,7 +12,7 @@ func GetCatList() ([]models.Category, error) {
 
 	// --- Ouverture de la db ---
 
-	db, err := sql.Open("sqlite3", "forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		return []models.Category{}, err
 	}

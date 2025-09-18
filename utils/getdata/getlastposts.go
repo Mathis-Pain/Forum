@@ -11,7 +11,7 @@ import (
 // Le format LastPost est un format Message + titre du sujet
 func GetLastPosts() ([]models.LastPost, error) {
 	// Ouverture de la base de données
-	db, err := sql.Open("sqlite3", "forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Printf("<getlastposts.go> Could not open database: %v\n", err)
 		return nil, err

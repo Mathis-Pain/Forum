@@ -12,7 +12,7 @@ import (
 // Fonction d'affichage du popup de connexion
 func LoginPopUp(r *http.Request, w http.ResponseWriter) (models.LoginData, error) {
 	// Ouverture de la base de données
-	db, err := sql.Open("sqlite3", "forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Printf("<login.go> Could not open database: %v\n", err)
 		InternalServError(w)
