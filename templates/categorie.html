@@ -9,6 +9,12 @@
    {{template "ForumHeader" .}}
 
     <!-- Main Content -->
+     <div class="dashboard-header">
+  <div class="topic-top">
+    <h2>{{ .Category.Name }}</h2>
+     <button class="respond-btn" onclick="showResponseBox(this)">Ouvrir un nouveau sujet</button>
+  </div>
+</div>
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">

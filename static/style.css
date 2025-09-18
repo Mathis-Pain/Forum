@@ -332,8 +332,8 @@ td {
   min-height: 120px;
   height: fit-content;
   position: sticky;
-  top: 150px;
-  height: 100vh;
+  top: 15%;
+  max-height: 75vh;
   overflow: auto;
 }
 
