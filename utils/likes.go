@@ -9,7 +9,14 @@ import (
 )
 
 // Fonction pour mettre à jour le nombre de likes
-func ChangeLikes(db *sql.DB, userID int, post models.Message) error {
+func ChangeLikes(userID int, post models.Message) error {
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		log.Printf("<topichandler.go> Could not open database : %v\n", err)
+		return err
+	}
+	defer db.Close()
+
 	// Vérifie si le post a déjà été liké par l'utilisateur connecté
 	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
