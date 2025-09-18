@@ -26,7 +26,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db, err := sql.Open("sqlite3", "./data/forum.db")
+	db, err := sql.Open("sqlite3", "/data/forum.db")
 	if err != nil {
 		log.Printf("<topichandler.go> Could not open database : %v\n", err)
 		return

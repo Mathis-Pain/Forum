@@ -27,7 +27,7 @@ func GetUserInfoFromSess(sessId string) (models.User, error) {
 
 	// ** Récupération des données du user **
 
-	db, err := sql.Open("sqlite3", "./data/forum.db")
+	db, err := sql.Open("sqlite3", "/data/forum.db")
 	if err != nil {
 		return models.User{}, err
 	}
@@ -47,7 +47,7 @@ func GetUserInfoFromSess(sessId string) (models.User, error) {
 func GetUserPosts(userId int) ([]models.LastPost, error) {
 	var posts []models.LastPost
 	var post models.LastPost
-	db, err := sql.Open("sqlite3", "./data/forum.db")
+	db, err := sql.Open("sqlite3", "/data/forum.db")
 	if err != nil {
 		log.Printf("<getuserposts.go> Could not open database: %v\n", err)
 		return nil, err
