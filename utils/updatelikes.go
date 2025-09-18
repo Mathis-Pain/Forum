@@ -9,18 +9,18 @@ import (
 func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	var sqlUpdate string
 	switch table {
-	case "likes":
-		sqlUpdate = `INSERT INTO likes (user_id, message_id) VALUES(?, ?)`
-	case "dislikes":
-		sqlUpdate = `INSERT INTO dislikes (user_id, message_id) VALUES(?, ?)`
+	case "like":
+		sqlUpdate = `INSERT INTO like (user_id, message_id) VALUES(?, ?)`
+	case "dislike":
+		sqlUpdate = `INSERT INTO dislike (user_id, message_id) VALUES(?, ?)`
 	}
 	result, err := db.Exec(sqlUpdate, userID, postID)
 	if err != nil {
-		log.Printf("<updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v", postID, err)
+		log.Printf("<updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v\n", postID, err)
 		return err
 	}
 	n, _ := result.RowsAffected()
-	log.Printf("<updatelikes.go> %d lignes ont été rajoutées à la table %s (message ID : %d, par l'utilisateur n°%d)", n, table, postID, userID)
+	log.Printf("<updatelikes.go> %d %s ajouté sur le message %d par l'utilisateur n°%d)\n", n, table, postID, userID)
 
 	return nil
 }
@@ -29,9 +29,9 @@ func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	var sqlUpdate string
 	switch table {
-	case "likes":
+	case "like":
 		sqlUpdate = `DELETE FROM like WHERE user_id = ? AND message_id = ?`
-	case "dislikes":
+	case "dislike":
 		sqlUpdate = `DELETE FROM dislike WHERE user_id = ? AND message_id = ?`
 	}
 	result, err := db.Exec(sqlUpdate, userID, postID)
@@ -40,7 +40,7 @@ func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error 
 		return err
 	}
 	n, _ := result.RowsAffected()
-	log.Printf("<updatelikes.go> %d lignes ont été supprimées de la table %s (message ID : %d, par l'utilisateur n°%d)", n, table, postID, userID)
+	log.Printf("<updatelikes.go> %d %s supprimé sur le message %d par l'utilisateur n°%d)", n, table, postID, userID)
 
 	return nil
 }
