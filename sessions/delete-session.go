@@ -2,7 +2,7 @@ package sessions
 
 import "database/sql"
 
-// DeleteSession supprime une session
+// Supprime une session
 func DeleteSession(sessionID string) error {
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {

@@ -24,7 +24,7 @@ func CreateSession(userID int) (models.Session, error) {
 		ID:        sessionID,
 		UserID:    userID,
 		Data:      make(map[string]interface{}),
-		ExpiresAt: time.Now().Add(24 * time.Hour),
+		ExpiresAt: time.Now().Add(4 * time.Hour),
 		CreatedAt: time.Now(),
 	}
 
