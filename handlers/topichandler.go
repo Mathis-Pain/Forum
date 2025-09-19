@@ -51,14 +51,22 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userLoggedIn := false
+	_, err = r.Cookie("session_id")
+	if err == nil {
+		userLoggedIn = true
+	}
+
 	data := struct {
 		Topic      models.Topic
 		Categories []models.Category
 		LoginData  models.LoginData
+		LogStatus  bool
 	}{
 		Topic:      topic,
 		Categories: categories,
 		LoginData:  models.LoginData{},
+		LogStatus:  userLoggedIn,
 	}
 
 	err = TopicHtml.Execute(w, data)

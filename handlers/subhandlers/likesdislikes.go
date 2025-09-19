@@ -63,6 +63,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	post, err := getdata.GetMessageLikesAndDislikes(db, postID)
 	if err != nil {
 		log.Print("<likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
+		return userID, models.Message{}, err
 	}
 
 	return userID, post, nil
