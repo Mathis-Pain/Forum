@@ -20,7 +20,7 @@ func NotFoundHandler(w http.ResponseWriter) {
 		Code:      404,
 		ErrorName: "Page introuvable",
 		Message:   "Désolé, la page que vous recherchez n'existe pas.",
-		ErrorFull: "404 - Not Found",
+		PageName:  "404 - Not Found",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -31,7 +31,7 @@ func StatusBadRequest(w http.ResponseWriter) {
 		Code:      400,
 		ErrorName: "Requête non prise en charge",
 		Message:   "L'action que vous avez tenté d'effectuer n'est pas prise en charge.",
-		ErrorFull: "400 - Bad Request",
+		PageName:  "400 - Bad Request",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -42,7 +42,7 @@ func InternalServError(w http.ResponseWriter) {
 		Code:      500,
 		ErrorName: "Erreur interne au serveur",
 		Message:   "Le serveur a rencontré une erreur. Veuillez réessayer.",
-		ErrorFull: "500 - Internal Servor Error",
+		PageName:  "500 - Internal Servor Error",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -53,7 +53,7 @@ func MethodNotAllowedError(w http.ResponseWriter) {
 		Code:      405,
 		ErrorName: "Méthode non autorisée",
 		Message:   "L'accès à cette page n'est pas autorisé avec cette méthode HTML.",
-		ErrorFull: "405 - Method Not Allowed",
+		PageName:  "405 - Method Not Allowed",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -64,7 +64,7 @@ func UnauthorizedError(w http.ResponseWriter) {
 		Code:      401,
 		ErrorName: "Connexion nécessaire",
 		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page. Veuillez vous connecter et réessayer.",
-		ErrorFull: "401 - Unauthorized",
+		PageName:  "401 - Unauthorized",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -75,7 +75,7 @@ func ForbiddenError(w http.ResponseWriter) {
 		Code:      403,
 		ErrorName: "Accès interdit",
 		Message:   "Vous n'êtes pas autorisé.e à accéder à cette page.",
-		ErrorFull: "403 - Forbidden",
+		PageName:  "403 - Forbidden",
 	}
 	ErrorHtml.Execute(w, data)
 }
@@ -86,7 +86,7 @@ func TimeOutError(w http.ResponseWriter) {
 		Code:      408,
 		ErrorName: "Communication trop lente",
 		Message:   "Le serveur a mis trop de temps à répondre à la requête.",
-		ErrorFull: "408 - Request Time Out",
+		PageName:  "408 - Request Time Out",
 	}
 	ErrorHtml.Execute(w, data)
 }

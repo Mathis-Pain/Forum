@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head><!-- Informations page (css, sript, etc) -->
-    {{template "InitPage"}}
-    <title>Forum - Erreur {{.Code}}</title>
-</head>
+    {{template "InitPage" .}}
 <body>
     <!-- Header -->
     {{template "ForumHeader"}}
@@ -16,7 +13,7 @@
         
         <hr>
         
-        <p><strong>Code d'erreur :</strong> {{.ErrorFull}}</p><br>
+        <p><strong>Code d'erreur :</strong> {{.PageName}}</p><br>
         <p><em>Si le problème persiste, contactez l'administrateur du site.</em></p>
 
     </div>

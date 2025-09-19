@@ -32,9 +32,9 @@
       {{template "loginModal" .LoginData.Message}}
     </div>
 
-    <script>
       {{if .LoginData.ShowLogin}}
+    <script>
        document.getElementById("loginModal").style.display = "block";
-       {{end}}
     </script>
+       {{end}}
 {{end}}
