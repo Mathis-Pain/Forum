@@ -50,11 +50,13 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// --- Structure de données ---
 
 	data := struct {
+		PageName    string
 		LoginData   models.LoginData
 		Posts       []models.LastPost
 		Categories  []models.Category
 		CurrentUser models.UserLoggedIn
 	}{
+		PageName:    "Forum",
 		LoginData:   models.LoginData{},
 		Posts:       lastPosts,
 		Categories:  categories,

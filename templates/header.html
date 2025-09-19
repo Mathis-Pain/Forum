@@ -6,7 +6,7 @@
         <div class="title">Forum</div>
       </div>
       <nav class="nav-section">
-       {{.CurrentUser.LogStatus}} <a href="/profil/{{.CurrentUser.ID}}" class="nav-link">Profil</a>{{end}}
+       {{if .CurrentUser.LogStatus}} <a href="/profil" class="nav-link">Profil</a>{{end}}
         <li class="dropdown">
           <a href="#">Catégories</a>
           <ul class="dropdown-menu">

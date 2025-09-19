@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head><!-- Informations page (css, sript, etc) -->
-    {{template "InitPage"}}
-    <title>Forum - {{.Category.Name}}</title>
-  </head>
+ {{template "InitPage" .}}
   <body>
     <!-- Header -->
    {{template "ForumHeader" .}}

@@ -11,7 +11,6 @@ import (
 
 // Obtenir les infos du User depuis la session
 func GetUserInfoFromSess(sessId string) (models.User, error) {
-
 	var user models.User
 	var username string
 

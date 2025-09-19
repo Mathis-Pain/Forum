@@ -52,11 +52,13 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
+		PageName    string
 		Topic       models.Topic
 		Categories  []models.Category
 		LoginData   models.LoginData
 		CurrentUser models.UserLoggedIn
 	}{
+		PageName:    topic.Name,
 		Topic:       topic,
 		Categories:  categories,
 		LoginData:   models.LoginData{},

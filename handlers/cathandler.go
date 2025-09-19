@@ -51,11 +51,13 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
+		PageName    string
 		Category    models.Category
 		Categories  []models.Category
 		LoginData   models.LoginData
 		CurrentUser models.UserLoggedIn
 	}{
+		PageName:    category.Name,
 		Category:    category,
 		Categories:  categories,
 		LoginData:   models.LoginData{},
