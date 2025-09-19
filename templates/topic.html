@@ -7,13 +7,13 @@
 </head>
 <body>
     <!-- Header -->
-   {{template "ForumHeader"}}
+   {{template "ForumHeader" .}}
 
 <!-- Main Content -->
 <div class="dashboard-header">
   <div class="topic-top">
     <h2>{{.Topic.Name}}</h2>
-     <button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>
+     {{if .LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>{{end}}
   </div>
 </div>
 
@@ -47,7 +47,7 @@
                 </div>
                 </div>
 
-                <div class="post-actions">
+                {{if $.LogStatus}}<div class="post-actions">
                    <form method="POST" action="/like" class="like-form">
             <input type="hidden" name="postID" value="{{.MessageID}}">
             <button type="submit" class="action-btn">
@@ -64,6 +64,7 @@
                     </form>
                     
                 </div>
+                {{end}}
             </div>
             {{end}}
 
