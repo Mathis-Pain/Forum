@@ -9,3 +9,9 @@ type User struct {
 	ProfilPic string
 	Status    string
 }
+
+type UserLoggedIn struct {
+	ID        int
+	Username  string
+	LogStatus bool
+}

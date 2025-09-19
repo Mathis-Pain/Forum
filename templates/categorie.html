@@ -12,7 +12,7 @@
      <div class="dashboard-header">
   <div class="topic-top">
     <h2>{{ .Category.Name }}</h2>
-     <button class="respond-btn" onclick="showResponseBox(this)">Ouvrir un nouveau sujet</button>
+     {{if .CurrentUser.LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Ouvrir un nouveau sujet</button> {{end}}
   </div>
 </div>
     <main class="main-content">
@@ -30,9 +30,7 @@
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
             <div class="post-author">Dernier message par <a href="/user/{{(index .Messages .LastPost).Author.ID}}">{{(index .Messages .LastPost).Author.Username}}</a></div>
-            <div class="post-text">
-              {{preview (index .Messages .LastPost).Content 300}}
-            </div>
+            <pre class="post-text">{{preview (index .Messages .LastPost).Content 300}}</pre>
           </div>
         </div>
         {{else}}

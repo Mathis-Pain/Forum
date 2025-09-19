@@ -6,7 +6,7 @@
         <div class="title">Forum</div>
       </div>
       <nav class="nav-section">
-        <a href="profil" class="nav-link">Profil</a>
+        <a href="/profil/{{.CurrentUser.ID}}" class="nav-link">Profil</a>
         <li class="dropdown">
           <a href="#">Catégories</a>
           <ul class="dropdown-menu">
@@ -16,9 +16,14 @@
           </ul>
         </li>
         <input type="text" class="search-box" placeholder="search" />
+        {{if .CurrentUser.LogStatus}} <button class="login-btn">
+          Connecté en tant que {{.CurrentUser.Username}}
+        </button>
+        {{else}}
         <button class="login-btn" onclick="openLoginModal()">
           Connexion/Inscription
         </button>
+        {{end}}
       </nav>
     </header>
 

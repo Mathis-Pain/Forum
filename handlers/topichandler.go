@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
@@ -43,30 +44,23 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, err := getdata.GetCatList()
-
+	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
+		log.Printf("<cathandler.go> Erreur dans la construction du header : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
 
-	userLoggedIn := false
-	_, err = r.Cookie("session_id")
-	if err == nil {
-		userLoggedIn = true
-	}
-
 	data := struct {
-		Topic      models.Topic
-		Categories []models.Category
-		LoginData  models.LoginData
-		LogStatus  bool
+		Topic       models.Topic
+		Categories  []models.Category
+		LoginData   models.LoginData
+		CurrentUser models.UserLoggedIn
 	}{
-		Topic:      topic,
-		Categories: categories,
-		LoginData:  models.LoginData{},
-		LogStatus:  userLoggedIn,
+		Topic:       topic,
+		Categories:  categories,
+		LoginData:   models.LoginData{},
+		CurrentUser: currentUser,
 	}
 
 	err = TopicHtml.Execute(w, data)

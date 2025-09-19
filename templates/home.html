@@ -10,11 +10,15 @@
      <!-- Header -->
      {{template "ForumHeader" .}}
      
+    
+       <div class="dashboard-header">
+  <div class="topic-top"> <h2>Derniers messages</h2>
+    </div></div>
     <!-- Main Content -->
-    <main class="main-content">
+     <main class="main-content">
       <!-- Posts Section -->
       <section class="posts-section">
-        <h2>Derniers messages</h2>
+        
 
         {{range .Posts}}
         <div class="post-card">

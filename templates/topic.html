@@ -13,7 +13,7 @@
 <div class="dashboard-header">
   <div class="topic-top">
     <h2>{{.Topic.Name}}</h2>
-     {{if .LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>{{end}}
+     {{if .CurrentUser.LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>{{end}}
   </div>
 </div>
 
@@ -47,7 +47,7 @@
                 </div>
                 </div>
 
-                {{if $.LogStatus}}<div class="post-actions">
+                {{if $.CurrentUser.LogStatus}}<div class="post-actions">
                    <form method="POST" action="/like" class="like-form">
             <input type="hidden" name="postID" value="{{.MessageID}}">
             <button type="submit" class="action-btn">

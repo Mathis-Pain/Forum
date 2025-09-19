@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"database/sql"
 	"html/template"
 	"log"
 	"net/http"
 
+	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
@@ -31,11 +33,16 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Récupération des catégories ---
-
-	categories, err := getdata.GetCatList()
-
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("<homehandler.go> Could not operate GetCatList: %v\n", err)
+		log.Printf("<cathandler.go> Could not open database : %v\n", err)
+		return
+	}
+	defer db.Close()
+
+	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	if err != nil {
+		log.Printf("<cathandler.go> Erreur dans la construction du header : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
@@ -43,13 +50,15 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// --- Structure de données ---
 
 	data := struct {
-		LoginData  models.LoginData
-		Posts      []models.LastPost
-		Categories []models.Category
+		LoginData   models.LoginData
+		Posts       []models.LastPost
+		Categories  []models.Category
+		CurrentUser models.UserLoggedIn
 	}{
-		LoginData:  models.LoginData{},
-		Posts:      lastPosts,
-		Categories: categories,
+		LoginData:   models.LoginData{},
+		Posts:       lastPosts,
+		Categories:  categories,
+		CurrentUser: currentUser,
 	}
 
 	// --- Si POST, on remplit LoginData ---
