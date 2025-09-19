@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
@@ -37,27 +38,28 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		utils.NotFoundHandler(w)
 		return
 	} else if err != nil {
-		log.Printf("<cathandler.go> Could not operate GetCatDetails: %v\n", err)
+		log.Printf("<cathandler.go> Erreur dans la récupération de la catégorie : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
 
-	categories, err := getdata.GetCatList()
-
+	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("<cathandler.go> Could not operate GetCatList: %v\n", err)
+		log.Printf("<cathandler.go> Erreur dans la construction du header : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
 
 	data := struct {
-		Category   models.Category
-		Categories []models.Category
-		LoginData  models.LoginData
+		Category    models.Category
+		Categories  []models.Category
+		LoginData   models.LoginData
+		CurrentUser models.UserLoggedIn
 	}{
-		Category:   category,
-		Categories: categories,
-		LoginData:  models.LoginData{},
+		Category:    category,
+		Categories:  categories,
+		LoginData:   models.LoginData{},
+		CurrentUser: currentUser,
 	}
 
 	// --- Si POST, on remplit LoginData ---
