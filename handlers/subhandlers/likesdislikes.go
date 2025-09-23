@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
 // Gestion des likes sur les posts
@@ -22,7 +23,7 @@ func LikePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ChangeLikes(userID, likedPost)
+	postactions.ChangeLikes(userID, likedPost)
 	url := fmt.Sprintf("/topic/%d#%d", likedPost.TopicID, likedPost.MessageID)
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
@@ -36,7 +37,7 @@ func DislikePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.ChangeDisLikes(userID, likedPost)
+	postactions.ChangeDisLikes(userID, likedPost)
 	url := fmt.Sprintf("/topic/%d#%d", likedPost.TopicID, likedPost.MessageID)
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }

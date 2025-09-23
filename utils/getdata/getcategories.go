@@ -6,6 +6,35 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
+func GetCatList() ([]models.Category, error) {
+	var category models.Category
+	var categories []models.Category
+
+	// --- Ouverture de la db ---
+
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		return []models.Category{}, err
+	}
+	defer db.Close()
+
+	// Préparer la requête
+	rows, err := db.Query("SELECT id, name FROM category")
+	if err != nil {
+		return []models.Category{}, err
+	}
+	defer rows.Close()
+
+	// Parcourir les résultats
+	for rows.Next() {
+		if err := rows.Scan(&category.ID, &category.Name); err != nil {
+			return []models.Category{}, err
+		}
+		categories = append(categories, category)
+	}
+	return categories, nil
+}
+
 // Récupère le titre, la description et la liste des sujets d'une catégorie
 func GetCatDetails(db *sql.DB, catID int) (models.Category, error) {
 	// Création de la requête sql
