@@ -1,4 +1,4 @@
-package utils
+package subhandlers
 
 import (
 	"net/http"

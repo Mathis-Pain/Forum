@@ -21,7 +21,7 @@ var TopicHtml = template.Must(template.New("topic.html").ParseFiles(
 ))
 
 func TopicHandler(w http.ResponseWriter, r *http.Request) {
-	ID := utils.GetPageID(r)
+	ID := subhandlers.GetPageID(r)
 	if ID == 0 {
 		utils.NotFoundHandler(w)
 		return

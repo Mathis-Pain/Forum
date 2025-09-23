@@ -39,8 +39,6 @@ func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error 
 		log.Printf("<updatelikes.go> Erreur dans la suppression du like/dislike sur le post %d : %v", postID, err)
 		return err
 	}
-	// n, _ := result.RowsAffected()
-	// log.Printf("<updatelikes.go> %d %s supprimé sur le message %d par l'utilisateur n°%d)", n, table, postID, userID)
 
 	return nil
 }
@@ -59,8 +57,6 @@ func UpdateLikesAndDislikes(db *sql.DB, postID, userID, likes, dislikes int, tab
 		log.Print(err)
 		return err
 	}
-	// n, _ := result.RowsAffected()
-	// log.Printf("<updatelikes.go> La table message a été mise à jour sur %d lignes (message ID : %d)", n, postID)
 
 	return nil
 }

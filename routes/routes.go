@@ -27,7 +27,7 @@ func InitRoutes() *http.ServeMux {
 
 	mux.HandleFunc("/registration", handlers.SignUpSubmitHandler)
 	mux.Handle("/profil", middleware.AuthMiddleware(http.HandlerFunc(handlers.ProfilHandler)))
-	mux.HandleFunc("/login", handlers.LoginHandler)
+	mux.HandleFunc("/login", subhandlers.LoginHandler)
 	mux.HandleFunc("/categorie/", handlers.CategoriesHandler)
 	mux.HandleFunc("/topic/", handlers.TopicHandler)
 	mux.HandleFunc("/test", handlers.TestHandler)

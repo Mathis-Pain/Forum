@@ -14,3 +14,8 @@ type Stats struct {
 	TotalUsers    int
 	Reported      int
 }
+
+type Likes struct {
+	UserID     int
+	LikedPosts []int
+}

@@ -1,7 +1,9 @@
 package sessions
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"time"
 
 	"github.com/Mathis-Pain/Forum/models"
@@ -33,4 +35,13 @@ func CreateSession(userID int) (models.Session, error) {
 	}
 
 	return session, nil
+}
+
+// GenerateSessionID génère un ID de session aléatoire
+func GenerateSessionID() (string, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(b), nil
 }

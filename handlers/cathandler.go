@@ -20,7 +20,7 @@ var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseF
 ))
 
 func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
-	ID := utils.GetPageID(r)
+	ID := subhandlers.GetPageID(r)
 	if ID == 0 {
 		utils.NotFoundHandler(w)
 		return
