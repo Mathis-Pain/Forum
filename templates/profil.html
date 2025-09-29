@@ -19,12 +19,11 @@
         <div class="post-card">
           <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
           <div class="post-content">
-            <div class="post-title">{{.TopicName}}</div>
-            <div class="post-text">
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
+            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">
               {{.Content}}
-            </div>
+            </a>
           </div>
-          <button class="post-button" href="topic/{{.TopicID}}#{{.MessageID}}">ouvrir</button>
         </div>
         {{else}}
         <div class="post-card">

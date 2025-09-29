@@ -42,6 +42,7 @@ CREATE TABLE message (
     user_id INTEGER NOT NULL,
     likes INTEGER,
     dislikes INTEGER,
+    warning INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (topic_id) REFERENCES topic(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );

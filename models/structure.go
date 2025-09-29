@@ -26,4 +26,5 @@ type Message struct {
 	Likes     int
 	Dislikes  int
 	Content   string
+	Warning   int
 }

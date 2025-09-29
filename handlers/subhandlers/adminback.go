@@ -9,17 +9,21 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
+// Fonction pour vérifier s'il y a eu une modification d'une catégorie par le formulaire
 func AdminIsCatModified(r *http.Request, categories []models.Category) (models.Category, bool, error) {
+	// Récupère les données du formulaire
 	name := r.FormValue("name")
 	description := r.FormValue("description")
 	stringID := r.FormValue("catID")
 
+	// Convertit l'ID récupéré de la catégorie en int pour les comparaisons
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("<adminback.go> Erreur dans la récupération de l'ID ce catégorie : ", err)
+		log.Print("<adminback.go> Erreur dans la récupération de l'ID de catégorie : ", err)
 		return models.Category{}, false, err
 	}
 
+	// Récupère la catégorie concernée par la modification
 	var categ models.Category
 
 	for _, current := range categories {
@@ -29,6 +33,7 @@ func AdminIsCatModified(r *http.Request, categories []models.Category) (models.C
 		}
 	}
 
+	// Compare le nom et la description. Si les deux sont les mêmes qu'avant, c'est que la catégorie n'a pas été modifiée
 	if categ.Name == name && categ.Description == description {
 		return categ, false, nil
 	}
@@ -37,6 +42,7 @@ func AdminIsCatModified(r *http.Request, categories []models.Category) (models.C
 
 }
 
+// Fonction pour supprimer tous les messages d'un sujet particulier
 func AdminDeleteMessages(db *sql.DB, ID int) error {
 	sqlUpdate := `DELETE FROM message WHERE topic_id = ?`
 

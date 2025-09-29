@@ -16,7 +16,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	newtopic.Name = topicName
 
 	// Ouverture de la base de données
-	db, err := sql.Open("sqlite3", "forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Println("<newtopic.go> Could not open database : ", err)
 		return err
@@ -24,7 +24,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	defer db.Close()
 
 	// Ajoute les informations du sujet à la base de données (titre, créateur, catégorie)
-	err = addTopicToDatabase(db, newtopic)
+	err = addTopicToDatabase(db, newtopic, userID)
 	if err != nil {
 		log.Println("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
 		return err
@@ -33,14 +33,14 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	// Récupère l'ID du topic pour pouvoir ajouter le premier message dans la BDD des messages
 	newtopic.TopicID, err = getTopicID(db, newtopic.Name)
 	if err != nil {
-		log.Println("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
+		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message(recuperation de l'id):", err)
 		return err
 	}
 
 	// Ajout du premier message du sujet dans la BDD
 	err = NewPost(userID, newtopic.TopicID, message)
 	if err != nil {
-		log.Println("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
+		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message :", err)
 		return err
 	}
 
@@ -48,19 +48,19 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 }
 
 // Fonction pour ajouter le nouveau sujet dans la BDD
-func addTopicToDatabase(db *sql.DB, newtopic models.Topic) error {
+func addTopicToDatabase(db *sql.DB, newtopic models.Topic, userID int) error {
 	sqlUpdate := `INSERT INTO topic (category_id, name, user_id) VALUES(?, ?, ?)`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
 		return err
 	}
 
-	result, err := stmt.Exec(newtopic.CatID, newtopic.Name, newtopic.Messages[0].Author.ID)
+	result, err := stmt.Exec(newtopic.CatID, newtopic.Name, userID)
 	if err != nil {
 		return err
 	}
 	n, _ := result.RowsAffected()
-	log.Printf("<newtopic.go> %d nouveau sujet : %s. Ajouté à la catégorie %d par l'utilisateur n°%d)", n, newtopic.Name, newtopic.CatID, newtopic.Messages[0].Author.ID)
+	log.Printf("<newtopic.go> %d nouveau sujet : %s. Ajouté à la catégorie %d par l'utilisateur n°%d)", n, newtopic.Name, newtopic.CatID, userID)
 
 	return nil
 }
@@ -68,7 +68,7 @@ func addTopicToDatabase(db *sql.DB, newtopic models.Topic) error {
 // Fonction pour récupérer l'ID du sujet que l'on vient d'ouvrir
 func getTopicID(db *sql.DB, name string) (int, error) {
 	var topicID int
-	sqlQuery := "SELECT id FROM topics WHERE name = ?"
+	sqlQuery := "SELECT id FROM topic WHERE name = ?"
 	row := db.QueryRow(sqlQuery, name)
 
 	err := row.Scan(&topicID)

@@ -27,22 +27,35 @@
    
         <section class="posts-section">
             {{range .Topic.Messages}}
-            <div class="post-card" id="{{.MessageID}}">
+            <div class="post-card 
+            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}} {{if eq .Warning 1}} warning {{end}} {{end}}"
+             id="{{.MessageID}}" >
                 <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
                 <div class="post-content">
                     <div class="post-title">{{.Author.Username}}</div>
-                    <pre class="post-text">{{.Content}}</pre>
+                    <pre class="post-text">
+{{.Content}}</pre>
                 <div class="actions-column">
-                      <div class="menu">
-                            <button class="menu-btn">⋮</button>
-                            <div class="menu-options">
-                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">supprimer</button>
-                                <button style="display:block; width:100%; padding:10px; border:none; background:none; text-align:left; cursor:pointer;">signaler</button>
-                            </div>
-                        </div>
+                            <form method="POST" action="/messageactions">
+                                <input type="hidden" name="postID" value="{{.MessageID}}">
+                                <input type="hidden" name="topicID" value="{{$.Topic.TopicID}}">
+                               {{if eq $.CurrentUser.UserType 1}} <button name="action" style=" cursor:pointer;" type="submit" value ="delete" title="Supprimer le message">🗑️</button> 
+                               {{if eq .Warning 1}} <button name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
+                               {{end}}
+                               
+                    {{if eq $.CurrentUser.UserType 2}} 
+                    {{if eq .Warning 0}} <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message">⚠️</button> {{end}} 
+                    {{end}}
+                   
+                               {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}} 
+                               <button name="action" style="cursor: pointer;" type="submit" value="edit" title="Modifier le message">📝</button> {{end}}
+                            </form>
                 </div>
                 </div>
 
+            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}}    
+                {{if eq .Warning 1}} <span style="cursor:default" title="Ce message a été signalé comme potentiellement problématique">‼️</span>  {{end}}
+            {{end}}
                 {{if $.CurrentUser.LogStatus}}<div class="post-actions">
                    <form method="POST" action="/like" class="like-form">
             <input type="hidden" name="postID" value="{{.MessageID}}">
@@ -60,6 +73,13 @@
                     </form>
                     
                 </div>
+                {{else }}
+                <div>
+                  <span>👍</span>
+                <span>{{.Likes}}</span>
+                </div>
+                <div> <span>👎</span>
+                <span>{{.Dislikes}}</span></div>
                 {{end}}
             </div>
             {{end}}
@@ -71,6 +91,12 @@
     <!-- Modal de réponse -->
    {{template "ReponseBox"}}
 
+
+   <style>.posts-section .post-card:first-child {
+  /* border-bottom:10px solid var(--color-highlight); */
+  border-left:7px solid var(--color-highlight);
+  margin-bottom: 25px;
+}</style>
      
 
     <script>       

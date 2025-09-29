@@ -13,7 +13,7 @@ func NewPost(userID, topicID int, message string) error {
 	newpost.TopicID = topicID
 	newpost.Content = message
 
-	db, err := sql.Open("sqlite3", "forum.db")
+	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Println("<newpost.go> Could not open database : ", err)
 		return err

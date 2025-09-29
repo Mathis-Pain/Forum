@@ -31,6 +31,7 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 
 		if err == sql.ErrNoRows {
 			topic.Messages = []models.Message{}
+			return topics, err
 		} else if err != nil {
 			return topics, err
 		}

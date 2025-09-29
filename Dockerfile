@@ -20,23 +20,24 @@ RUN go mod download
 COPY . .
 
 # run lance le compile de l'application, CGO dit a go d'inclure la partie C pour sqlite. goos compile pour linux et nom du binaire final /forum
-RUN CGO_ENABLED=1 GOOS=linux go build -o /forum
+RUN CGO_ENABLED=1 GOOS=linux go build -o /app/forum
 
 # On cree une image tres legere basé seulement sur alpine linux (pour ne pas inclure go et tout les outils de compilation dans limage final)
 FROM alpine:3.20
 
 # Installe SQLite dans l’image finale
 RUN apk add --no-cache sqlite
-
+# Répertoire de travail dans le conteneur final
+WORKDIR /app
 # Copier le binaire compilé
 # 1er /forum (source) → c’est le binaire Go compilé dans le conteneur builder.
 # 2eme /forum (destination) → emplacement dans l’image finale.
-COPY --from=builder /forum /forum
-
 # Copier templates et static
 # Ces fichiers ne sont pas compilés, mais l'application web en a besoin à runtime (utiliser par le programme lorsqu'il tourne).
-COPY --from=builder /app/templates /templates
-COPY --from=builder /app/static /static
+COPY --from=builder /app/forum /app/forum
+COPY --from=builder /app/templates /app/templates
+COPY --from=builder /app/static /app/static
+COPY --from=builder /app/data/forumdbschema.sql /app/data/forumdbschema.sql
 
 # Créer dossier pour la DB et config utilisateur non-root
 # Crée un dossier pour les données persistantes
@@ -44,7 +45,7 @@ RUN mkdir -p /data \
 # Crée un utilisateur non-root pour plus de sécurité
     && adduser -D appuser \
 #  Donne la propriété du dossier /data à cet utilisateur
-    && chown -R appuser /data
+    && chown -R appuser /data /app
 # Informer le programme que toute commandes seront executer par appuser et pas root (appuser :utilisateur d'application)
 USER appuser
 
@@ -53,8 +54,8 @@ VOLUME /data
 
 # Exposer le port
 # Informe Docker que le conteneur écoute sur le port 5090.
-EXPOSE 5090
+EXPOSE 5080
 
 # Lancer le binaire
 # Définit le programme qui se lance automatiquement quand le conteneur démarre
-ENTRYPOINT ["/forum"]
+ENTRYPOINT ["/app/forum"]

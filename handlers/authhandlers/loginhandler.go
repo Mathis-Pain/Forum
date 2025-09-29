@@ -1,4 +1,4 @@
-package subhandlers
+package authhandlers
 
 import (
 	"database/sql"

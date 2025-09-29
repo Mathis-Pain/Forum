@@ -16,18 +16,23 @@
           </ul>
         </li>
         <input type="text" class="search-box" placeholder="search" />
-        {{if .CurrentUser.LogStatus}} <button class="login-btn">
+        {{if .CurrentUser.LogStatus}} 
+        <li class="dropdown">
+        <button class="login-btn user-actions">
           Connecté en tant que {{.CurrentUser.Username}}
         </button>
+          <ul class="dropdown-menu">
+            <li><form action="/logout" method="POST">
+  <button type="submit">Se déconnecter</button>
+</form>
+          {{if eq .CurrentUser.UserType 1}}<a href="/admin">Panneau d'administration</a>{{end}}
+          </li>
+          </ul>
+        </li>
         {{else}}
-        {{if .CurrentUser.LogStatus}} <button class="login-btn">
-          Connecté en tant que {{.CurrentUser.Username}}
-        </button>
-        {{else}}
-        <button class="login-btn" onclick="openLoginModal()">
+        <button class="login-btn log-me-in">
           Connexion/Inscription
         </button>
-        {{end}}
         {{end}}
       </nav>
     </header>

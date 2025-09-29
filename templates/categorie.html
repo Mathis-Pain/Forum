@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
- {{template "InitPage" .}}
+  {{template "InitPage" .}}
   <body>
     <!-- Header -->
-   {{template "ForumHeader" .}}
+    {{template "ForumHeader" .}}
 
     <!-- Main Content -->
-     <div class="dashboard-header">
-  <div class="topic-top">
-    <h2>{{ .Category.Name }}</h2>
-     {{if .CurrentUser.LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Ouvrir un nouveau sujet</button> {{end}}
-  </div>
-</div>
+    <div class="dashboard-header">
+      <div class="topic-top">
+        <h2>{{ .Category.Name }}</h2>
+        {{if .CurrentUser.LogStatus}}
+        <form action="/new-topic" method="GET">
+          <input type="hidden" name="category_id" value="{{.Category.ID}}" />
+          <button type="submit" class="respond-btn">
+            Ouvrir un nouveau sujet
+          </button>
+        </form>
+        {{end}}
+      </div>
+    </div>
     <main class="main-content">
       <!-- Sidebar -->
       <aside class="sidebar">
@@ -23,31 +30,33 @@
       <section class="posts-section">
         {{ range .Category.Topics }}
         <div class="post-card">
-            {{ if gt (len .Messages) 0 }}
-              <img class="post-avatar" src="{{(index .Messages 0).Author.ProfilPic}}" />
-              <div class="post-content">
-                <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
-                <div class="post-author">
-                  Dernier message par
-                  <a href="/user/{{(index .Messages .LastPost).Author.ID}}">
-                    {{(index .Messages .LastPost).Author.Username}}
-                  </a>
-                </div>
-                <div class="post-text">
-                  {{preview (index .Messages .LastPost).Content 300}}
-                </div>
-              </div>
-            {{ else }}
-              <div class="post-content">
-                <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
-                <div class="post-text">
-                  Aucun message pour l’instant.
-                </div>
-              </div>
-            {{ end }}
+          {{ if gt (len .Messages) 0 }}
+          <img
+            class="post-avatar"
+            src="{{(index .Messages 0).Author.ProfilPic}}"
+          />
+          <div class="post-content">
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
+            <div class="post-author">
+              Dernier message par {{(index .Messages
+              .LastPost).Author.Username}}
+            </div>
+            <a
+              class="post-text"
+              href="/topic/{{.TopicID}}#{{(index .Messages .LastPost).MessageID}}"
+            >
+              {{preview (index .Messages .LastPost).Content 300}}
+            </a>
+          </div>
+          {{ else }}
+          <div class="post-content">
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
+            <div class="post-text">Aucun message pour l’instant.</div>
+          </div>
+          {{ end }}
         </div>
         {{else}}
-         <div class="post-card">
+        <div class="post-card">
           <div class="post-content">
             <div class="post-text">
               Cette catégorie ne contient pour l'instant aucun sujet.

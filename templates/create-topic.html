@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+ {{template "InitPage" .}}
+  <body>
+      
+    <!-- Header -->
+   {{template "ForumHeader" .}}
+
+
+    <main class="main-content">
+     <!-- Sidebar -->
+      <aside class="sidebar">  
+        <h3>{{.Category.Name }}</h3>
+        <div>{{.Category.Description }}</div>
+      </aside>
+   
+<form class="create-topic-form" method="POST">
+  <input type="hidden" name="Category_id" value="{{.Category.ID}}"/>
+  <input type="text" class="input-name-topic" name="title" placeholder="Entrer le nom du topic" required/>
+ <input type="text" class="input-description-topic" name="message" placeholder="Entrer votre message" required/>
+  <div class="create-topic-form-button"><button type="submit"> Envoyer</button></div>
+</form>
+   
+    </main>
+  </body>
+</html>
+</html>

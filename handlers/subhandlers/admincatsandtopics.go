@@ -2,7 +2,6 @@ package subhandlers
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,17 +10,21 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
+// Fonction pour modifier une catégorie
 func EditCatHandler(r *http.Request, categ models.Category) error {
+	// Récupère le nouveau nom et la nouvelle description dans le formulaire
 	name := r.FormValue("name")
 	description := r.FormValue("description")
+
+	// Modifie le nom et la description s'ils ont été changés
 	if name != "" {
 		categ.Name = name
 	}
-
 	if description != "" {
 		categ.Description = description
 	}
 
+	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Print("<admincatsandtopics.go> Erreur à l'ouverture de la base de données :", err)
@@ -29,6 +32,7 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 	}
 	defer db.Close()
 
+	// Met à jour la catégorie dans la base de données
 	sqlUpdate := `UPDATE category SET name = ?, description = ? WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
@@ -46,7 +50,9 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 	return nil
 }
 
+// Fonction pour supprimer une catégorie
 func DeleteCatHandler(stringID string) error {
+	// Récupère l'ID (sous forme de string) et le convertit en int pour les comparaisons
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
 		log.Print("<admincatsandtopics.go> Erreur dans la récupération de la catégorie à supprimer", err)
@@ -60,6 +66,7 @@ func DeleteCatHandler(stringID string) error {
 	}
 	defer db.Close()
 
+	// Supprime la catégorie dans la base de données
 	sqlUpdate := `DELETE FROM category WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
@@ -73,11 +80,13 @@ func DeleteCatHandler(stringID string) error {
 		return err
 	}
 
+	// Récupère tous les sujets présents dans la catégorie
 	topicList, err := getdata.GetTopicList(db, ID)
 	if err != nil {
 		return err
 	}
 
+	// Supprime de la BDD tous les messages de ces sujets
 	for i := 0; i < len(topicList); i++ {
 		err := AdminDeleteMessages(db, topicList[i].TopicID)
 		if err != nil {
@@ -86,6 +95,7 @@ func DeleteCatHandler(stringID string) error {
 		}
 	}
 
+	// Supprime ensuite de la BDD les sujets de la catégorie
 	sqlUpdate = `DELETE FROM topic WHERE category_id = ?`
 	stmt, err = db.Prepare(sqlUpdate)
 	if err != nil {
@@ -99,12 +109,15 @@ func DeleteCatHandler(stringID string) error {
 		return err
 	}
 
+	// Confirme la suppression de la catégorie et de tout ce qu'elle contenait
 	log.Print("Catégorie et sujets liés supprimés avec succès.")
 
 	return nil
 }
 
+// Fonction pour ajouter une catégorie
 func AddCatHandler(r *http.Request) error {
+	// Récupère le nom et la description de la nouvelle catégorie
 	name := r.FormValue("newcatname")
 	description := r.FormValue("newcatdesc")
 
@@ -114,6 +127,7 @@ func AddCatHandler(r *http.Request) error {
 	}
 	defer db.Close()
 
+	// Ajoute le nom et la description à la BDD
 	sqlUpdate := `INSERT INTO category (name, description) VALUES(?, ?)`
 	_, err = db.Exec(sqlUpdate, name, description)
 	if err != nil {
@@ -123,11 +137,14 @@ func AddCatHandler(r *http.Request) error {
 	return nil
 }
 
+// Fonction pour modifier un sujet (titre et catégorie)
 func EditTopicHandler(r *http.Request, topics []models.Topic) error {
+	// Récupère le nom du sujet, l'ID du sujet et celui de la catégorie
 	name := r.FormValue("topicname")
 	topicID := r.FormValue("topicID")
 	stringID := r.FormValue("catID")
 
+	// Convertit les deux ID au format int pour les comparaisons
 	ID, err := strconv.Atoi(topicID)
 	if err != nil {
 		return nil
@@ -138,6 +155,7 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 		return nil
 	}
 
+	// Repère le sujet à modifier à partir de son ID
 	var topic models.Topic
 	for _, current := range topics {
 		if current.TopicID == ID {
@@ -146,6 +164,7 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 		}
 	}
 
+	// Si le nom a été modifié, change le nom
 	if name != "" {
 		topic.Name = name
 	}
@@ -157,6 +176,7 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 	}
 	defer db.Close()
 
+	// Met à jour le sujet dans la base de données
 	sqlUpdate := `UPDATE topic SET name = ?, category_id = ? WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
@@ -174,14 +194,13 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 	return nil
 }
 
+// Fonction pour supprimer un sujet
 func DeleteTopicHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
 		log.Print("<admincatsandtopics.go> Erreur dans la récupération du sujet à supprimer", err)
 		return err
 	}
-
-	fmt.Println(ID)
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
@@ -190,6 +209,7 @@ func DeleteTopicHandler(stringID string) error {
 	}
 	defer db.Close()
 
+	// Supprime le sujet de la base de données
 	sqlUpdate := `DELETE FROM topic WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
@@ -202,12 +222,14 @@ func DeleteTopicHandler(stringID string) error {
 		return err
 	}
 
+	// Supprime tous les messages du sujet de la BDD
 	err = AdminDeleteMessages(db, ID)
 	if err != nil {
 		log.Print("<admincatsandtopics.go> Erreur dans la suppression des messagesS", err)
 		return err
 	}
 
+	// Confirmation des modifications
 	log.Print("Sujets et messages supprimés avec succès.")
 
 	return nil

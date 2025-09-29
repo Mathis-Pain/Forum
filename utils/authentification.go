@@ -8,6 +8,7 @@ import (
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+
 	"golang.org/x/crypto/bcrypt"
 )
 

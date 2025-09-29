@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
@@ -35,12 +36,23 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	topic, err := getdata.GetTopicInfo(db, ID)
+
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)
 		return
 	} else if err != nil {
 		log.Printf("<topichandler.go> Could not operate GetTopicInfo: %v\n", err)
 		utils.InternalServError(w)
+		return
+	}
+
+	topic.TopicID = ID
+
+	// Supprime le sujet et redirige vers la page d'accueil s'il ne contient aucun message (sécurité anti bug de la BDD)
+	if len(topic.Messages) == 0 {
+		ID := strconv.Itoa(topic.TopicID)
+		subhandlers.DeleteTopicHandler(ID)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 

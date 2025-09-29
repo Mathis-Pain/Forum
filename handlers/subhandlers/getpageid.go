@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Récupère l'ID de la page (pour les catégories et les sujets)
 func GetPageID(r *http.Request) int {
 	parts := strings.Split(r.URL.Path, "/")
 	if len(parts) != 3 {

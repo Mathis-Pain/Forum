@@ -27,3 +27,24 @@ func CheckIfAdmin(username string) (bool, error) {
 
 	return true, nil
 }
+
+func GetUserType(username string) (int, error) {
+	var role int
+	// ** Récupération du rôle**
+
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	sql := `SELECT role_id FROM user WHERE username = ?`
+	row := db.QueryRow(sql, username)
+
+	err = row.Scan(&role)
+	if err != nil {
+		return 0, err
+	}
+
+	return role, nil
+}

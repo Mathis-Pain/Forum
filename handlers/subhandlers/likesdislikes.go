@@ -42,6 +42,7 @@ func DislikePostHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusSeeOther)
 }
 
+// Récupère les données de l'utilisateur et celles du post pour pouvoir mettre à jour les likes et dislikes
 func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	// Récupère l'ID de l'utilisateur connecté
 	cookie, _ := r.Cookie("session_id")

@@ -20,7 +20,7 @@
         <div class="post-card">
           <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
-            <div class="post-title">{{.Author.Username}} a posté dans {{.TopicName}}</div>
+            <div class="post-title">{{.Author.Username}} a posté dans <a href="topic/{{.TopicID}}">{{.TopicName}}</a></div>
             <a class="post-text" href="topic/{{.TopicID}}#{{.MessageID}}">{{preview .Content 300}}</a>
           </div>
         </div>
