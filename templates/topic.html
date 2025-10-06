@@ -43,25 +43,25 @@
                                 <input type="hidden" name="postID" value="{{$message.MessageID}}">
                                 <input type="hidden" name="topicID" value="{{$.Topic.TopicID}}">
                                {{if eq $.CurrentUser.UserType 1}}  
-                               {{if eq $message.Warning 1}} <button name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
+                               {{if eq $message.Warning 1}} <button class="action-btn" name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
                                {{if ne $index 0}}
-                               <button class="cancelmove is-hidden" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
+                               <button class="cancelmove is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
                                <select name="topicindex" class="topicindex is-hidden" title="Choisissez le sujet où placer le message">
                                 <option value=""></option>
                                     {{range $.AllTopics}}
                                     <option value="{{.TopicID}}">{{.Name}}</option>
                                     {{end}}
                                 </select>
-                                <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
+                                <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton action-btn" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
                                 
                             {{end}}
                                {{end}}
                                
                     {{if eq $.CurrentUser.UserType 2}} 
                     {{if eq $message.Warning 0}}
-                    <button class="cancelwarn is-hidden" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
-                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden">
-                    <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton">⚠️</button> {{end}} 
+                    <button class="cancelwarn is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
+                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden action-btn">
+                    <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton action-btn">⚠️</button> {{end}} 
                     {{end}}
                    
                                {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} 
@@ -78,13 +78,13 @@
                 </div>
             </div>
 
-                    <button style="cursor:pointer;" class="delete-btn" type="button"  title="Supprimer le message">🗑️</button>
+                    <button style="cursor:pointer;" class="delete-btn action-btn" type="button"  title="Supprimer le message">✂️</button>
 
 
                     
-                    <button class="canceledit is-hidden" type="button" style="cursor:pointer;" title="Annuler les modifications" onclick="CancelEdit(this)">✖️</button>
-                    <button class="send-edit is-hidden" style="cursor: pointer;" name="action" type="submit" value="edit" onclick="MessageEdited(this)" title="Valider les modifications">✅</button>
-                    <button name="action" style="cursor: pointer;" type="button" class="editbutton" onclick="EditMessage(this)" title="Modifier le message">📝</button> {{end}}
+                    <button class="canceledit is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler les modifications" onclick="CancelEdit(this)">✖️</button>
+                    <button class="send-edit is-hidden action-btn" style="cursor: pointer;" name="action" type="submit" value="edit" onclick="MessageEdited(this)" title="Valider les modifications">✅</button>
+                    <button name="action" style="cursor: pointer;" type="button" class="editbutton action-btn" onclick="EditMessage(this)" title="Modifier le message">📝</button> {{end}}
                 
             </div>
             </div></form>
