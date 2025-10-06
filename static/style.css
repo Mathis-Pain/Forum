@@ -34,6 +34,7 @@
 body {
   font-family: var(--font-main);
   background-color: var(--color-pageback);
+  background-image: url('/static/pageback.jpg');
   color: var(--color-write);
 }
 
