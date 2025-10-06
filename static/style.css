@@ -1,23 +1,18 @@
 /********* Initialisation des variables *********/
 :root {
   /* Couleurs de fond */
-  --color-pageback: #2c2c2c;
-  --color-headerback: #f8f9fa;
-  --color-boxback: #fff;
-  --color-logoback: #ccc;
-  --color-logohover: #bbb;
-  --color-close: #999;
-  --color-avatar: #000;
-
+  --color-pageback: #835f3e;
+  --color-headerback: #ebe3d0;
+  --color-dropdown: #bb9b76;
+  --color-logohover: #b6a287;
+ 
   /* Bordures et éléments en évidence */
-  --color-highlight: #007bff;
-  --color-input: #ddd;
-  --color-btnhover: #0056b3;
+  --color-highlight: #cba830;
+  --color-btnhover: #dc8828;
 
   /* Couleurs d'écriture */
-  --color-sidebar: #666;
   --color-write: #333;
-  --color-modalwrite: whitesmoke;
+  --color-modalwrite: whitesmoke;/*on y revient aprés*/
   --color-error: red;
 
   /* Polices d'écriture */
@@ -81,7 +76,7 @@ body {
 .logo {
   width: 50px;
   height: 50px;
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border-radius: 50%;
 }
 
@@ -141,7 +136,7 @@ body {
   border-radius: 5px;
   margin: 0;
   padding: 0;
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   min-width: 130px;
   max-height: 60vh;
   overflow-y: auto;
@@ -179,7 +174,7 @@ body {
 /* Barre de recherche */
 .search-box {
   padding: 8px 15px;
-  border: 1px solid var(--color-logoback);
+  border: 1px solid var(--color-dropdown);
   border-radius: 20px;
   width: 200px;
   outline: none;
@@ -187,7 +182,7 @@ body {
 
 /* Bouton de connexion / Inscription */
 .login-btn {
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -211,7 +206,7 @@ body {
 
 /* Sidebar */
 .sidebar {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
   width: 300px;
@@ -225,7 +220,7 @@ body {
 
 .sidebar > p {
   font-weight: bold;
-  color: #333;
+  color: var(--color-write);
   margin-top: 15px;
   margin-bottom: 15px;
   font-size: 16px;
@@ -241,7 +236,7 @@ body {
 /* Contenu de la barre latérale */
 .sidebar-item {
   display: block;
-  color: var(--color-sidebar);
+  color: var(--color-write);
   text-decoration: none;
   padding: 5px 0;
   cursor: pointer;
@@ -253,14 +248,14 @@ body {
 
 details {
   margin: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid lightgray;
 }
 
 summary {
   font-weight: bold;
   cursor: pointer;
   padding: 8px 0;
-  color: #333;
+  color: var(--color-write);
   list-style: none;
   position: relative;
 }
@@ -278,7 +273,7 @@ details[open] summary:before {
 
 .menu-item {
   display: block;
-  color: #666;
+  color: var(--color-write);
   text-decoration: none;
   padding: 5px 0 5px 15px;
   font-size: 14px;
@@ -286,12 +281,12 @@ details[open] summary:before {
 }
 
 .menu-item:hover {
-  color: #007bff;
+  color: var(--color-highlight);
 }
 
 .simple-link {
   font-weight: bold;
-  color: #333;
+  color: var(--color-write);
   padding: 8px 0;
   display: block;
   font-size: 14px;
@@ -306,20 +301,20 @@ details[open] summary:before {
 }
 
 .dashboard-header {
-  background-color: #d0d0d0;
+  background-color: var(--color-logohover);
   padding: 20px;
   border-radius: 10px;
 }
 
 .dashboard-header h1 {
   font-size: 28px;
-  color: #333;
+  color: var(--color-write);
   font-weight: normal;
 }
 
 /* Tables */
 .table-container {
-  background-color: white;
+  background-color: var(--color-headerback);
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -327,7 +322,7 @@ details[open] summary:before {
 
 .table-title {
   font-size: 18px;
-  color: #333;
+  color: var(--color-write);
   margin-bottom: 15px;
   font-weight: normal;
 }
@@ -338,22 +333,22 @@ table {
 }
 
 th {
-  background-color: #e8e8e8;
-  color: #333;
+  background-color:var(--color-logohover);
+  color: var(--color-write);
   padding: 12px;
   text-align: left;
   font-weight: normal;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid lightgray;
 }
 
 td {
   padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  color: #666;
+  border-bottom: 1px solid lightgrey;
+  color: var(--color-write);
 }
 
 .add-btn {
-  background-color: #ccc;
+  background-color: var(--color-logohover);
   border: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -370,7 +365,7 @@ td {
 
 /**** Affichage d'un message ****/
 .post-card {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 15px;
@@ -387,7 +382,7 @@ td {
   margin-top: 50px;
 }
 .input-name-topic {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
   margin: 20px auto 15px auto;
@@ -399,7 +394,7 @@ td {
   width: 70%;
 }
 .input-description-topic {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
   margin: 20px auto 15px auto;
@@ -421,7 +416,7 @@ td {
   width: 40%;
   background-color: var(--color-headerback);
   color: var(--color-write);
-  border: 1px solid var(--color-input);
+  border: 1px solid light-grey;
   padding: 12px;
   border-radius: 5px;
   font-size: 16px;
@@ -429,11 +424,11 @@ td {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-/* Avatar du posteur */
-.post-avatar {
+/* dropdown du posteur */
+.post-dropdown {
   width: 50px;
   height: 50px;
-  background-color: var(--color-avatar);
+  background-color: var(--color-dropdown);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -458,7 +453,7 @@ td {
 }
 
 .post-author a {
-  color: var(--color-avatar);
+  color: var(--color-dropdown);
   font-weight: bold;
   text-decoration: none;
   font-style: initial;
@@ -466,7 +461,7 @@ td {
 
 /* Contenu du message */
 .post-text {
-  color: var(--color-sidebar);
+  color: var(--color-write);
   line-height: 1.4;
   white-space: pre-wrap;
   text-align: justify;
@@ -486,7 +481,7 @@ a.post-text {
 
 /* Boutons like/dislike */
 .post-button {
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -515,7 +510,7 @@ a.post-text {
 }
 
 .modal-content {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   margin: 5% auto;
   padding: 30px;
   border-radius: 10px;
@@ -538,7 +533,7 @@ a.post-text {
 }
 
 /* Bouton de fermeture */
-.close-login {
+.close-btn {
   position: absolute;
   right: 15px;
   top: 15px;
@@ -546,7 +541,7 @@ a.post-text {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--color-close);
+  color: grey;
 }
 
 .close-btn:hover {
@@ -574,12 +569,12 @@ a.post-text {
 }
 
 .modal-subtitle {
-  color: var(--color-sidebar);
+  color: var(--color-write);
   font-size: 14px;
 }
 
 .modal-subtitle-2 {
-  color: var(--color-boxback);
+  color: var(--color-headerback);
   font-size: 14px;
 }
 
@@ -615,7 +610,7 @@ a.post-text {
 .form-input {
   width: 100%;
   padding: 12px 15px;
-  border: 1px solid var(--color-input);
+  border: 1px solid lightgrey;
   border-radius: 5px;
   font-size: 14px;
   outline: none;
@@ -630,7 +625,7 @@ a.post-text {
 .form-button {
   width: 100%;
   background-color: var(--color-highlight);
-  color: var(--color-boxback);
+  color: var(--color-headerback);
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -647,7 +642,7 @@ a.post-text {
 .form-divider {
   text-align: center;
   margin: 20px 0;
-  color: var(--color-sidebar);
+  color: var(--color-write);
   font-size: 14px;
 }
 
@@ -656,7 +651,7 @@ a.post-text {
   width: 100%;
   background-color: var(--color-headerback);
   color: var(--color-write);
-  border: 1px solid var(--color-input);
+  border: 1px solid lightgrey;
   padding: 12px;
   border-radius: 5px;
   font-size: 16px;
@@ -665,7 +660,7 @@ a.post-text {
 }
 
 .secondary-button:hover {
-  background-color: #e9ecef;
+  background-color: var(--color-logohover);
 }
 
 .big {
@@ -675,7 +670,7 @@ a.post-text {
 }
 
 .box {
-  background: var(--color-boxback);
+  background: var(--color-headerback);
   padding: 30px;
   border-radius: 10px;
   max-width: 500px;
