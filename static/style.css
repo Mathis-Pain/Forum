@@ -865,3 +865,8 @@ a.post-text:hover{
   margin:20px 10% 5px 10%;
 }
 
+.nav-cat{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: context-menu;
+}
