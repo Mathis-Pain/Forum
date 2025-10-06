@@ -3,6 +3,7 @@ package getdata
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
 )
@@ -37,4 +38,24 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	}
 
 	return messages, nil
+}
+
+func FormatDate(messages []models.Message) []models.Message {
+	for i := 0; i < len(messages); i++ {
+		parts := strings.Split(messages[i].Created, " ")
+		date := parts[0]
+		parts = strings.Split(date, "-")
+
+		if len(parts) != 3 {
+			log.Printf("ERREUR : <getmessagelist.go> Erreur dans le format de la date sur le message n°%d. Doit être YYYY-MM-DD, est : %s", messages[i].MessageID, messages[i].Created)
+			return nil
+		}
+		day := parts[2]
+		month := parts[1]
+		year := parts[0]
+
+		messages[i].Created = day + "/" + month + "/" + year
+	}
+
+	return messages
 }
