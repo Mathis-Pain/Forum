@@ -10,11 +10,6 @@ import (
 )
 
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
-
 	// Récupère la session depuis la requête
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
