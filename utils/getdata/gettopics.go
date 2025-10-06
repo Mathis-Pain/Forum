@@ -22,7 +22,7 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 	for rows.Next() {
 		var topic models.Topic
 		if err := rows.Scan(&topic.TopicID, &topic.Name); err != nil {
-			log.Printf("<gettopiclist.go> Error scanning topic row: %v", err)
+			log.Printf("ERREUR : <gettopiclist.go> Erreur dans le parcours de la base de données : %v", err)
 			return nil, err
 		}
 

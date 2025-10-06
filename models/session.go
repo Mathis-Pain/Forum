@@ -9,9 +9,3 @@ type Session struct {
 	ExpiresAt time.Time              `json:"expires_at"`
 	CreatedAt time.Time              `json:"created_at"`
 }
-
-// Informations pour le popup de connexion
-type LoginData struct {
-	Message   string
-	ShowLogin bool
-}

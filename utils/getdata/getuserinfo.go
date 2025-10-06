@@ -41,6 +41,7 @@ func GetUserInfoFromID(db *sql.DB, ID int) (models.User, error) {
 	return user, nil
 }
 
+// Transforme l'ID du role en nom de rôle
 func SetUserStatus(role string) string {
 	switch role {
 	case "1":
@@ -52,12 +53,15 @@ func SetUserStatus(role string) string {
 	case "4":
 		role = "Banni"
 	default:
-		role = "Membre"
+		// Le rôle 5 contient un espace et sert à différencier les membres ayant demandé à rejoindre la modération
+		// des membres qui n'ont pas fait cette demande
+		role = "Membre "
 	}
 
 	return role
 }
 
+// Transforme le nom du statut en chiffre pour le stocker dans la base de données
 func CodeUserStatus(role string) string {
 	switch role {
 	case "Admin":

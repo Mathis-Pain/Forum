@@ -8,38 +8,32 @@ import (
 
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
-var loginHtml = template.Must(template.ParseFiles("templates/login.html"))
+var funcMap = template.FuncMap{
+	"preview": getdata.Preview,
+}
+
+var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles(
+	"templates/home.html", "templates/login.html", "templates/header.html", "templates/initpage.html",
+))
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	parts := strings.Split(r.URL.Path, "/")
-	url := "/" + parts[1]
-
-	if url == "/login" {
-		url = "/"
+	referer := r.Header.Get("Referer")
+	if referer == "" {
+		referer = "/"
 	}
 
 	switch r.Method {
-	// si l'utilisateur demande le formulaire
-	case http.MethodGet:
-		if err := loginHtml.Execute(w, nil); err != nil {
-			utils.InternalServError(w)
-			return
-		}
-		// Si l'utilisateur envoi le formulaire
 	case http.MethodPost:
 		if err := r.ParseForm(); err != nil {
 			utils.InternalServError(w)
 			return
 		}
-		// Verification username et password non nul
+		// Récupération des données
 		username := r.FormValue("username")
 		password := r.FormValue("password")
-		if username == "" || password == "" {
-			http.Error(w, "Tous les champs sont requis", http.StatusBadRequest)
-			return
-		}
 
 		// Vérifie login + mot de passe (utils.Authentification s’occupe de la DB)
 		db, err := sql.Open("sqlite3", "./data/forum.db")
@@ -49,44 +43,63 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 
-		user, err := utils.Authentification(db, username, password)
-		if err != nil {
-			http.Error(w, "Nom d’utilisateur ou mot de passe incorrect", http.StatusUnauthorized)
-			return
+		user, loginErr := utils.Authentification(db, username, password)
+		if loginErr != nil {
+			if strings.Contains(loginErr.Error(), "db") {
+				// En cas d'erreur dans la base de données
+				utils.InternalServError(w)
+			} else {
+				// En cas d'erreur qui ne vient pas de la base de données
+				// Création d'une session temporaire et anonyme
+				err := InitSession(w, 0, "LoginErr", loginErr.Error())
+				if err != nil {
+					utils.InternalServError(w)
+					return
+				}
+
+				// Redirection vers la page d'origine
+				http.Redirect(w, r, referer, http.StatusSeeOther)
+				return
+			}
 		}
+
 		//Invalider toutes les sessions existantes
 		if err := sessions.InvalidateUserSessions(user.ID); err != nil {
 			utils.InternalServError(w)
 			return
 		}
 
-		// Créer une nouvelle session
-		session, err := sessions.CreateSession(user.ID)
+		err = InitSession(w, user.ID, "user", user.Username)
 		if err != nil {
 			utils.InternalServError(w)
 			return
 		}
 
-		// Ajoute des infos dans la session
-		session.Data["user"] = user.Username
-		if err := sessions.SaveSessionToDB(session); err != nil {
-			utils.InternalServError(w)
-			return
-		}
-
-		// Pose le cookie
-		http.SetCookie(w, &http.Cookie{
-			Name:     "session_id",
-			Value:    session.ID,
-			Expires:  session.ExpiresAt,
-			HttpOnly: true,
-			Secure:   false, // false en local, true si HTTPS
-			Path:     "/",
-		})
-
-		http.Redirect(w, r, url, http.StatusSeeOther)
-
+		http.Redirect(w, r, referer, http.StatusSeeOther)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+}
+
+// Crée, sauvegarde une session, permet d'y insérer une donnée et pose le cookie
+func InitSession(w http.ResponseWriter, id int, fieldName string, fieldData any) error {
+	session, err := sessions.CreateSession(id)
+	if err != nil {
+		return err
+	}
+
+	session.Data[fieldName] = fieldData
+	if err := sessions.SaveSessionToDB(session); err != nil {
+		return err
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session_id",
+		Value:    session.ID,
+		Expires:  session.ExpiresAt,
+		HttpOnly: true,
+		Secure:   false, // false en local, true si HTTPS
+		Path:     "/",
+	})
+	return nil
 }

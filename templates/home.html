@@ -21,7 +21,10 @@
           <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <div class="post-title">{{.Author.Username}} a posté dans <a href="topic/{{.TopicID}}">{{.TopicName}}</a></div>
-            <a class="post-text" href="topic/{{.TopicID}}#{{.MessageID}}">{{preview .Content 300}}</a>
+            <a class="post-text" 
+            href="topic/{{.TopicID}}#{{.MessageID}}"
+            > <img class="post-link" src="/static/ouvrirliens.jpeg" alt="Accéder au message" title="Accéder au message"/>{{preview .Content 300}}
+            </a>            
           </div>
         </div>
         {{else}}

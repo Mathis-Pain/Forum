@@ -5,23 +5,123 @@
     <!-- Header -->
     {{template "ForumHeader" .}}
 
+     
     <!-- Main Content -->
     <main class="main-content">
+
       <!-- Sidebar -->
       <aside class="sidebar">
         <h3>Profil</h3>
         <div class="post-avatar" src="{{.User.ProfilPic}}"></div>
         <p>{{.User.Username}}</p>
         <p>{{.User.Email}}</p>
+        <p>{{.User.Status}}
+          {{if eq .User.Status "Membre"}}
+    <form  method="POST" action="/sendrequest">
+      <input type="hidden" name="username" value="{{.User.Username}}">
+      <input type="hidden" name="id" value="{{.User.ID}}">
+      <button type="submit" name ="action" value="requestmod">Demander à rejoindre la modération</button>
+    </form>
+          {{end}}
+
+        </p>
+
+        <div class="profil-nav">
+        <button onclick="ShowLikes()">Messages que j'ai 👍 ou 👎</button>
+        <button onclick="ShowPosts()">💬 Tous mes messages</button>
+        <button onclick="ShowTopics()">🔖 Sujets que j'ai ouverts</button>
+        </div>
+
       </aside>
-      <section class="posts-section">
-        {{range .Posts}}
+
+       
+
+      <section class="posts-section is-hidden" id="see-liked-posts">
+   
+      <div class="dashboard-header">
+  <div class="topic-top"> <h2>Mes 👍</h2>
+    
+    </div></div> <br>
+        {{range .LikedPosts}}
         <div class="post-card">
           <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
-            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">
-              {{.Content}}
+            <br><span>Message de {{.Author.Username}} </span>
+            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
+            </a>
+          </div>
+        </div>
+        {{else}}
+        <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              <center>Il n'y a aucun message à afficher pour l'instant.</center>
+            </div>
+          </div>
+        </div>
+        {{end}}
+        </div></section>
+
+         <section class="posts-section is-hidden" id="see-disliked-posts">
+         <div>
+      <div class="dashboard-header">
+  <div class="topic-top"> <h2>Mes 👎</h2>
+    </div></div> <br>
+        {{range .DislikedPosts}}
+        <div class="post-card">
+          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <div class="post-content">
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
+            <br><span>Message de {{.Author.Username}} </span>
+            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
+            </a>
+          </div>
+        </div>
+        {{else}}
+        <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              <center>Il n'y a aucun message à afficher pour l'instant.</center>
+            </div>
+          </div>
+        </div>
+        {{end}}
+        </div>
+      </section>
+
+      <section class="posts-section is-hidden" id="see-my-posts"><div class="dashboard-header">
+  <div class="topic-top"> <h2>Tous mes messages</h2>
+    </div></div><br>
+        {{range .MyPosts}}
+        <div class="post-card">
+          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <div class="post-content">
+            <a class="post-title" href="/topic/{{.TopicID}}">Sur le sujet : {{.TopicName}}</a>
+            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
+            </a>
+          </div>
+        </div>
+        {{else}}
+        <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              <center>Il n'y a aucun message à afficher pour l'instant.</center>
+            </div>
+          </div>
+        </div>
+        {{end}}
+      </section>
+
+      <section class="posts-section" id="see-my-topics"><div class="dashboard-header">
+  <div class="topic-top"> <h2>Sujets que j'ai ouverts</h2>
+    </div></div><br>
+        {{range .Topics}}
+        <div class="post-card">
+          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <div class="post-content">
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
+            <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
         </div>
@@ -37,5 +137,32 @@
       </section>
       
     </main>
+
+    <script>
+      const LikedPosts = document.getElementById("see-liked-posts")
+      const DislikedPosts = document.getElementById("see-disliked-posts")
+      const MyPosts = document.getElementById("see-my-posts")
+      const MyTopics = document.getElementById("see-my-topics")
+
+      function ShowPosts() {
+        MyPosts.classList.remove("is-hidden");
+        MyTopics.classList.add("is-hidden");
+        LikedPosts.classList.add("is-hidden");
+        DislikedPosts.classList.add("is-hidden");
+      }
+      function ShowLikes() {
+        LikedPosts.classList.remove("is-hidden");
+        DislikedPosts.classList.remove("is-hidden");
+        MyPosts.classList.add("is-hidden");
+        MyTopics.classList.add("is-hidden");
+      }
+
+      function ShowTopics(){
+        LikedPosts.classList.add("is-hidden");
+        DislikedPosts.classList.add("is-hidden");
+        MyPosts.classList.add("is-hidden");
+        MyTopics.classList.remove("is-hidden");
+      }
+    </script>
   </body>
 </html>

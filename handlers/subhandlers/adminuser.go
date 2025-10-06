@@ -16,7 +16,7 @@ func UserEditHandler(r *http.Request, users []models.User) error {
 	stringID := r.FormValue("userID")
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("<adminuser.go> Erreur dans la récupération de l'ID utilisateur : ", err)
+		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'ID utilisateur : ", err)
 		return err
 	}
 
@@ -43,7 +43,7 @@ func UserEditHandler(r *http.Request, users []models.User) error {
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("<adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -70,13 +70,13 @@ func BanUserHandler(stringID string) error {
 	// Récupère l'ID de l'utilisateur à bannir
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("<adminuser.go> Erreur dans la récupération de l'utilisateur à bannir")
+		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à bannir")
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("<adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -103,13 +103,13 @@ func UnbanUserHandler(stringID string) error {
 	// Récupération de l'ID
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("<adminuser.go> Erreur dans la récupération de l'utilisateur à débannir")
+		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à débannir")
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("<adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -135,13 +135,13 @@ func UnbanUserHandler(stringID string) error {
 func DeleteUserHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("<adminuser.go> Erreur dans la récupération de l'utilisateur à supprimer", err)
+		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à supprimer", err)
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("<adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()

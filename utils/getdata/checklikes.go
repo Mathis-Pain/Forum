@@ -94,7 +94,7 @@ func GetMessageLikesAndDislikes(db *sql.DB, postID int) (models.Message, error) 
 	// Parcourt la base de données et récupère les informations pour rajouter tous les messages dans la slice
 	err := row.Scan(&message.Likes, &message.Dislikes, &message.TopicID)
 	if err != nil {
-		log.Print("<getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
+		log.Print("ERREUR : <getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
 		return models.Message{}, err
 	}
 

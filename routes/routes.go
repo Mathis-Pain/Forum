@@ -29,18 +29,27 @@ func InitRoutes() *http.ServeMux {
 		handlers.HomeHandler(w, r)
 	})
 
-	mux.HandleFunc("/registration", authhandlers.SignUpSubmitHandler)
-	mux.Handle("/profil", middleware.AuthMiddleware(http.HandlerFunc(handlers.ProfilHandler)))
-	mux.HandleFunc("/login", authhandlers.LoginHandler)
-	mux.HandleFunc("/categorie/", handlers.CategoriesHandler)
 	mux.HandleFunc("/test", test.TestHandler)
-	mux.HandleFunc("/admin/", handlers.AdminHandler)
-	mux.HandleFunc("/topic/", handlers.TopicHandler)
-	mux.HandleFunc("/new-topic", handlers.CreateTopicHandler)
+
+	//******** Pages secondaires (connexion, likes, actions, etc) avec redirection automatique
+	mux.HandleFunc("/login", authhandlers.LoginHandler)
+	mux.HandleFunc("/logout", authhandlers.LogOutHandler)
 	mux.HandleFunc("/like", subhandlers.LikePostHandler)
 	mux.HandleFunc("/dislike", subhandlers.DislikePostHandler)
 	mux.HandleFunc("/messageactions", subhandlers.MessageActionsHandler)
-	mux.HandleFunc("/logout", authhandlers.LogOutHandler)
+	mux.HandleFunc("/sendrequest", subhandlers.RequestsHandler)
+
+	//******** Pages principales (accessibles)
+	// Pages pour poster des messages
+	mux.HandleFunc("/new-topic", handlers.CreateTopicHandler)
+	mux.HandleFunc("/answermessage", handlers.MessageHandler)
+	mux.HandleFunc("/registration", authhandlers.SignUpSubmitHandler)
+
+	// Pages affichant des informations
+	mux.Handle("/profil", middleware.AuthMiddleware(http.HandlerFunc(handlers.ProfilHandler)))
+	mux.HandleFunc("/categorie/", handlers.CategoriesHandler)
+	mux.HandleFunc("/admin/", handlers.AdminHandler)
+	mux.HandleFunc("/topic/", handlers.TopicHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))

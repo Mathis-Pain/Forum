@@ -57,7 +57,7 @@ func GetCatDetails(db *sql.DB, catID int) (models.Category, error) {
 			sqlUpdate := `DELETE FROM topic WHERE id = ?`
 			stmt, err := db.Prepare(sqlUpdate)
 			if err != nil {
-				log.Print("<admincatsandtopics.go> Erreur dans la suppression du sujet", err)
+				log.Print("ERREUR : <getcategories.go> Erreur dans la suppression du sujet : ", err)
 				return categ, err
 			}
 			defer stmt.Close()

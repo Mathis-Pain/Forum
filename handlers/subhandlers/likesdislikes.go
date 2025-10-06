@@ -48,7 +48,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	cookie, _ := r.Cookie("session_id")
 	session, err := sessions.GetSession(cookie.Value)
 	if err != nil {
-		log.Print("<likesdislikes.go> Erreur dans la récupération de session : ", err)
+		log.Print("ERREUR : <likesdislikes.go> Erreur dans la récupération de session : ", err)
 		return 0, models.Message{}, err
 	}
 	userID := session.UserID
@@ -56,14 +56,14 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	postID, _ := strconv.Atoi(r.FormValue("postID"))
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("<topichandler.go> Could not open database : %v\n", err)
+		log.Printf("ERREUR : <likesdislikes.go> Erreur à l'ouverture de la base de données : %v\n", err)
 		return 0, models.Message{}, err
 	}
 	defer db.Close()
 
 	post, err := getdata.GetMessageLikesAndDislikes(db, postID)
 	if err != nil {
-		log.Print("<likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
+		log.Print("ERREUR : <likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
 		return userID, models.Message{}, err
 	}
 

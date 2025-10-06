@@ -2,73 +2,109 @@
 <html lang="fr">
 {{template "InitPage" .}}
 <body>
-    <!-- Header -->
-   {{template "ForumHeader" .}}
+    {{template "ForumHeader" .}}
 
-<!-- Main Content -->
 <div class="dashboard-header">
   <div class="topic-top">
     <h2>{{.Topic.Name}}</h2>
-     {{if .CurrentUser.LogStatus}}<button class="respond-btn" onclick="showResponseBox(this)">Répondre</button>{{end}}
+     {{if .CurrentUser.LogStatus}}<form action="/answermessage" method="GET">
+          <input type="hidden" name="topic_id" value="{{.Topic.TopicID}}"> 
+          <button type="submit" class="respond-btn">
+           Répondre 
+          </button>
+        </form>{{end}}
   </div>
 </div>
 
 <main class="main-content">
 
-    <!-- Sidebar -->
-      <aside class="sidebar">
+    <aside class="sidebar">
         {{range .Topic.Messages}}
         • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par {{.Author.Username}}
       <br>
       {{end}}
       </aside>
 
-  <!-- Posts Section -->
-   
-        <section class="posts-section">
-            {{range .Topic.Messages}}
+  <section class="posts-section">
+            {{range $index, $message := .Topic.Messages}}
+            <form method="POST" action="/messageactions">
             <div class="post-card 
-            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}} {{if eq .Warning 1}} warning {{end}} {{end}}"
-             id="{{.MessageID}}" >
-                <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
+            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} {{if eq $message.Warning 1}} warning {{end}} {{end}}"
+             id="{{$message.MessageID}}" >
+                <img class="post-avatar" src="{{$message.Author.ProfilPic}}"/>
                 <div class="post-content">
-                    <div class="post-title">{{.Author.Username}}</div>
+                    <div class="post-title">{{$message.Author.Username}}</div>
+                    <textarea name="message-content" class="edit-message is-hidden">{{$message.Content}}</textarea>
                     <pre class="post-text">
-{{.Content}}</pre>
-                <div class="actions-column">
-                            <form method="POST" action="/messageactions">
-                                <input type="hidden" name="postID" value="{{.MessageID}}">
+{{$message.Content}}</pre>
+                <div class="post-actions">
+                            
+                                <input type="hidden" name="modname" value="{{$.CurrentUser.Username}}">
+                                <input type="hidden" name="postID" value="{{$message.MessageID}}">
                                 <input type="hidden" name="topicID" value="{{$.Topic.TopicID}}">
-                               {{if eq $.CurrentUser.UserType 1}} <button name="action" style=" cursor:pointer;" type="submit" value ="delete" title="Supprimer le message">🗑️</button> 
-                               {{if eq .Warning 1}} <button name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
+                               {{if eq $.CurrentUser.UserType 1}}  
+                               {{if eq $message.Warning 1}} <button name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
+                               {{if ne $index 0}}
+                               <button class="cancelmove is-hidden" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
+                               <select name="topicindex" class="topicindex is-hidden" title="Choisissez le sujet où placer le message">
+                                <option value=""></option>
+                                    {{range $.AllTopics}}
+                                    <option value="{{.TopicID}}">{{.Name}}</option>
+                                    {{end}}
+                                </select>
+                                <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
+                                
+                            {{end}}
                                {{end}}
                                
                     {{if eq $.CurrentUser.UserType 2}} 
-                    {{if eq .Warning 0}} <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message">⚠️</button> {{end}} 
+                    {{if eq $message.Warning 0}}
+                    <button class="cancelwarn is-hidden" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
+                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden">
+                    <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton">⚠️</button> {{end}} 
                     {{end}}
                    
-                               {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}} 
-                               <button name="action" style="cursor: pointer;" type="submit" value="edit" title="Modifier le message">📝</button> {{end}}
-                            </form>
-                </div>
-                </div>
+                               {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} 
 
-            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID .Author.ID)}}    
-                {{if eq .Warning 1}} <span style="cursor:default" title="Ce message a été signalé comme potentiellement problématique">‼️</span>  {{end}}
+                                <!-- Modal de confirmation pour la suppression -->
+            <div id="confirmationModal" class="modal is-hidden">
+                <div class="modal-content">
+                    <p>Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.
+                    </p>
+                    <div class="modal-buttons">
+                        <button id="cancelDelete" class="modal-cancel-btn">Annuler</button>
+                        <button id="confirmDelete" name="action" value="delete" type="submit" class="modal-confirm-btn">Confirmer</button>
+                    </div>
+                </div>
+            </div>
+
+                    <button style="cursor:pointer;" class="delete-btn" type="button"  title="Supprimer le message">🗑️</button>
+
+
+                    
+                    <button class="canceledit is-hidden" type="button" style="cursor:pointer;" title="Annuler les modifications" onclick="CancelEdit(this)">✖️</button>
+                    <button class="send-edit is-hidden" style="cursor: pointer;" name="action" type="submit" value="edit" onclick="MessageEdited(this)" title="Valider les modifications">✅</button>
+                    <button name="action" style="cursor: pointer;" type="button" class="editbutton" onclick="EditMessage(this)" title="Modifier le message">📝</button> {{end}}
+                
+            </div>
+            </div></form>
+
+            {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}}    
+                {{if eq $message.Warning 1}} <span style="cursor:default" title="Ce message a été signalé comme potentiellement problématique">‼️</span>  {{end}}
             {{end}}
-                {{if $.CurrentUser.LogStatus}}<div class="post-actions">
+                {{if $.CurrentUser.LogStatus}}<div class="action-column">
                    <form method="POST" action="/like" class="like-form">
-            <input type="hidden" name="postID" value="{{.MessageID}}">
+            <input type="hidden" name="postID" value="{{$message.MessageID}}">
             <button type="submit" class="action-btn">
                 <span>👍</span>
-                <span>{{.Likes}}</span>
+                <span>{{$message.Likes}}</span>
             </button>
                     </form>
                     <form method="POST" action="/dislike" class="like-form">
-            <input type="hidden" name="postID" value="{{.MessageID}}">
+            <input type="hidden" name="postID" value="{{$message.MessageID}}">
             <button type="submit" class="action-btn">
                 <span>👎</span>
-                <span>{{.Dislikes}}</span>
+                <span>{{$message.Dislikes}}</span>
             </button>
                     </form>
                     
@@ -76,10 +112,10 @@
                 {{else }}
                 <div>
                   <span>👍</span>
-                <span>{{.Likes}}</span>
+                <span>{{$message.Likes}}</span>
                 </div>
                 <div> <span>👎</span>
-                <span>{{.Dislikes}}</span></div>
+                <span>{{$message.Dislikes}}</span></div>
                 {{end}}
             </div>
             {{end}}
@@ -88,18 +124,130 @@
         </main>
     </div>
 
-    <!-- Modal de réponse -->
-   {{template "ReponseBox"}}
+    {{template "ReponseBox"}}
 
 
-   <style>.posts-section .post-card:first-child {
+   <style>.posts-section form:first-child .post-card {
   /* border-bottom:10px solid var(--color-highlight); */
   border-left:7px solid var(--color-highlight);
   margin-bottom: 25px;
 }</style>
      
 
-    <script>       
+    <script>   
+    // --- Local Modal Display/Hide Logic ---
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        // Prevent the default action (which is none, since type="button")
+        event.preventDefault(); 
+        
+        // Find the modal that is a direct sibling/child of the form's content
+        const form = event.target.closest('form');
+        const modal = form.querySelector('.modal'); // Use class selector since ID is duplicated
+        
+        if (modal) {
+            modal.classList.remove('is-hidden');
+            modal.style.display = 'flex';
+        }
+    });
+});
+
+document.querySelectorAll('.modal-cancel-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault(); // Stop form submission if this button was type="submit" (it's not)
+        
+        // Find the closest modal element
+        const modal = event.target.closest('.modal');
+        
+        if (modal) {
+            modal.classList.add('is-hidden');
+            modal.style.display = 'none';
+        }
+    });
+});
+     
+    
+    function EditMessage(editbutton) {
+        const form = editbutton.closest('form');
+        const editfield = form.querySelector('.edit-message');
+        const canceledit = form.querySelector('.canceledit');
+        const confirmedit = form.querySelector('.send-edit');
+        const textmessage = form.querySelector('.post-text');
+
+        if (editfield.classList.contains("is-hidden")) {
+            editfield.classList.remove("is-hidden");
+            canceledit.classList.remove("is-hidden");
+            confirmedit.classList.remove("is-hidden");
+            textmessage.classList.add("is-hidden");
+            editbutton.classList.add("is-hidden");
+        }
+    }
+
+    function CancelEdit(canceledit) {
+        const form = canceledit.closest('form');
+        const editfield = form.querySelector('.edit-message');
+        const editbutton = form.querySelector('.editbutton');
+        const confirmedit = form.querySelector('.send-edit');
+        const textmessage = form.querySelector('.post-text');
+
+
+        editfield.classList.add("is-hidden");
+        canceledit.classList.add("is-hidden");
+        confirmedit.classList.add("is-hidden");
+        textmessage.classList.remove("is-hidden")
+        editbutton.classList.remove("is-hidden");
+    }
+
+    function Signal(warnbutton) {
+        const form = warnbutton.closest('form');
+        const warninginput = form.querySelector('.warning-input');
+        const cancelwarn = form.querySelector('.cancelwarn');
+
+        if (warninginput.classList.contains("is-hidden")) {
+            warninginput.classList.remove("is-hidden");
+            cancelwarn.classList.remove("is-hidden");
+            warninginput.required = true;
+            warnbutton.innerHTML = "✅";
+        }
+    }
+
+    function CancelSignal(cancelwarn) {
+        const form = cancelwarn.closest('form');
+        const warninginput = form.querySelector('.warning-input');
+        const warnbutton = form.querySelector('.warnbutton');
+
+        warninginput.classList.add("is-hidden");
+        cancelwarn.classList.add("is-hidden");
+        warninginput.required = false;
+        warninginput.value = ""
+        warnbutton.innerHTML = "⚠️";
+    }
+
+    function MoveMessage(movebutton) {
+        const form = movebutton.closest('form');
+        const topicindex = form.querySelector('.topicindex');
+        const cancelmove = form.querySelector('.cancelmove');
+
+        if (topicindex.classList.contains("is-hidden")) {
+            topicindex.classList.remove("is-hidden");
+            cancelmove.classList.remove("is-hidden");
+            topicindex.required = true;
+            movebutton.innerHTML = "✅";
+        }
+    }
+
+    function CancelMove(cancelmove) {
+        const form = cancelmove.closest('form');
+        const topicindex = form.querySelector('.topicindex');
+        const movebutton = form.querySelector('.movebutton');
+
+        topicindex.classList.add("is-hidden");
+        cancelmove.classList.add("is-hidden");
+        topicindex.value = ""
+        topicindex.required = false;
+        movebutton.innerHTML = "↩️";
+    }
+
         // Animation au scroll
         window.addEventListener('scroll', () => {
             const posts = document.querySelectorAll('.post');

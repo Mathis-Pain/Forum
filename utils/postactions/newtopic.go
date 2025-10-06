@@ -31,14 +31,14 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	}
 
 	// Récupère l'ID du topic pour pouvoir ajouter le premier message dans la BDD des messages
-	newtopic.TopicID, err = getTopicID(db, newtopic.Name)
+	newtopic.TopicID, err = getTopicID(db, newtopic.Name, catID)
 	if err != nil {
 		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message(recuperation de l'id):", err)
 		return err
 	}
 
 	// Ajout du premier message du sujet dans la BDD
-	err = NewPost(userID, newtopic.TopicID, message)
+	err = NewPost(userID, newtopic.TopicID, message, "newtopic")
 	if err != nil {
 		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message :", err)
 		return err
@@ -55,23 +55,24 @@ func addTopicToDatabase(db *sql.DB, newtopic models.Topic, userID int) error {
 		return err
 	}
 
-	result, err := stmt.Exec(newtopic.CatID, newtopic.Name, userID)
+	_, err = stmt.Exec(newtopic.CatID, newtopic.Name, userID)
 	if err != nil {
 		return err
 	}
-	n, _ := result.RowsAffected()
-	log.Printf("<newtopic.go> %d nouveau sujet : %s. Ajouté à la catégorie %d par l'utilisateur n°%d)", n, newtopic.Name, newtopic.CatID, userID)
 
 	return nil
 }
 
 // Fonction pour récupérer l'ID du sujet que l'on vient d'ouvrir
-func getTopicID(db *sql.DB, name string) (int, error) {
+func getTopicID(db *sql.DB, name string, catID int) (int, error) {
 	var topicID int
-	sqlQuery := "SELECT id FROM topic WHERE name = ?"
-	row := db.QueryRow(sqlQuery, name)
-
+	// Au cas où plusieurs sujets auraient le même titre, récupère le sujet :
+	// Dans la bonne catégorie, et le plus récent sujet posté avec ce titre
+	sqlQuery := `SELECT id FROM topic WHERE name = ? AND category_id = ? 
+	ORDER BY created_at DESC LIMIT 1`
+	row := db.QueryRow(sqlQuery, name, catID)
 	err := row.Scan(&topicID)
+
 	if err != nil {
 		return 0, err
 	}

@@ -1,3 +1,4 @@
+/********* Initialisation des variables *********/
 :root {
   /* Couleurs de fond */
   --color-pageback: #2c2c2c;
@@ -53,6 +54,8 @@ body {
   color: var(--color-pageback);
 }
 
+
+
 /**** Header ****/
 .header {
   background-color: var(--color-headerback);
@@ -63,6 +66,7 @@ body {
   border-bottom: 3px solid var(--color-highlight);
   position: sticky;
   top: 0;
+  z-index: 8;
 }
 
 /* Lien du retour à l'accueil (logo + titre) */
@@ -105,6 +109,7 @@ body {
   color: var(--color-highlight);
 }
 
+/* Menu déroulant (catégories et options utilisateur) */
 .dropdown {
   list-style: none;
   margin: 0;
@@ -139,6 +144,7 @@ body {
   min-width: 130px;
   max-height: 60vh;
   overflow-y: auto;
+  z-index:8;
 }
 
 .dropdown-menu li button {
@@ -166,7 +172,6 @@ body {
 
 .dropdown:hover > .dropdown-menu,
 .dropdown:focus-within > .dropdown-menu {
-  /* focus-within = meilleur accès clavier */
   display: block;
 }
 
@@ -179,7 +184,7 @@ body {
   outline: none;
 }
 
-/* Bouton de connextion / Inscription */
+/* Bouton de connexion / Inscription */
 .login-btn {
   background-color: var(--color-logoback);
   border: none;
@@ -193,6 +198,7 @@ body {
   background-color: var(--color-logohover);
 }
 
+
 /********* Bloc général de la page *********/
 .main-content {
   display: flex;
@@ -204,12 +210,16 @@ body {
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: white;
-  border-radius: 15px;
+  background-color: var(--color-boxback);
+  border-radius: 10px;
   padding: 20px;
+  width: 300px;
+  min-height: 120px;
   height: fit-content;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 15%;
+  max-height: 75vh;
+  overflow: auto;
 }
 
 .sidebar > p {
@@ -218,6 +228,26 @@ body {
   margin-top: 15px;
   margin-bottom: 15px;
   font-size: 16px;
+}
+
+/* Titre de la barre latérale */
+.sidebar h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: var(--color-write);
+}
+
+/* Contenu de la barre latérale */
+.sidebar-item {
+  display: block;
+  color: var(--color-sidebar);
+  text-decoration: none;
+  padding: 5px 0;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  color: var(--color-highlight);
 }
 
 details {
@@ -332,40 +362,6 @@ td {
   float: right;
 }
 
-/********* Barre latérale *********/
-.sidebar {
-  background-color: var(--color-boxback);
-  border-radius: 10px;
-  padding: 20px;
-  width: 300px;
-  min-height: 120px;
-  height: fit-content;
-  position: sticky;
-  top: 15%;
-  max-height: 75vh;
-  overflow: auto;
-}
-
-/* Titre de la barre latérale */
-.sidebar h3 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: var(--color-write);
-}
-
-/* Contenu de la barre latérale */
-.sidebar-item {
-  display: block;
-  color: var(--color-sidebar);
-  text-decoration: none;
-  padding: 5px 0;
-  cursor: pointer;
-}
-
-.sidebar-item:hover {
-  color: var(--color-highlight);
-}
-
 /********* Affichage d'un sujet *********/
 .posts-section {
   flex: 1;
@@ -383,6 +379,7 @@ td {
   min-height: 120px;
   scroll-margin-top: 100px;
   position: relative;
+  z-index:5;
 }
 .create-topic-form {
   width: 100%;
@@ -477,6 +474,13 @@ td {
 a.post-text {
   display: block;
   text-decoration: none;
+}
+
+.post-link {
+  height:15px;
+  float:right;
+  position: relative;
+  top:-40px;
 }
 
 /* Boutons like/dislike */
@@ -812,7 +816,7 @@ a.post-text {
   border-left: 7px solid rgb(212, 99, 79) !important;
 }
 
-.actions-column {
+.post-actions {
   display: flex;
   position: absolute;
   right: 10px;

@@ -8,6 +8,7 @@ import (
 
 	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
@@ -28,57 +29,65 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("<cathandler.go> Could not open database : %v\n", err)
+		log.Printf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
 		return
 	}
 	defer db.Close()
+
+	// --- Récupération des catégories ---
 
 	category, err := getdata.GetCatDetails(db, ID)
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)
 		return
 	} else if err != nil {
-		log.Printf("<cathandler.go> Erreur dans la récupération de la catégorie : %v\n", err)
+		log.Printf("ERREUR : <cathandler.go> Erreur dans la récupération de la catégorie : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
 
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("<cathandler.go> Erreur dans la construction du header : %v\n", err)
+		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
+
+	// --- Gestion des erreurs de login ---
+
+	session, err := sessions.GetSessionFromRequest(r)
+	if err != nil {
+		log.Printf("ERREUR : <cathandler.go> Could not execute GetSessionFromRequest: %v\n", err)
+		utils.InternalServError(w)
+		return
+	}
+	var loginErr string
+	if session.ID != "" {
+		loginErr, err = getdata.GetLoginErr(session)
+		if err != nil {
+			log.Printf("ERREUR : <cathandler.go> Could not execute GetLoginErr: %v\n", err)
+		}
+	}
+
+	// --- Renvoi des données ---
 
 	data := struct {
 		PageName    string
 		Category    models.Category
 		Categories  []models.Category
-		LoginData   models.LoginData
+		LoginErr    string
 		CurrentUser models.UserLoggedIn
 	}{
 		PageName:    category.Name,
 		Category:    category,
 		Categories:  categories,
-		LoginData:   models.LoginData{},
+		LoginErr:    loginErr,
 		CurrentUser: currentUser,
-	}
-
-	// --- Si POST, on remplit LoginData ---
-
-	if r.Method == "POST" {
-		loginData, err := utils.LoginPopUp(r, w)
-		if err == nil {
-			data.LoginData = loginData
-		}
-
-		// Connexion réussie (ouverture de session, accès aux boutons, etc, à ajouter ici)
-
 	}
 
 	err = CatHtml.Execute(w, data)
 	if err != nil {
-		log.Printf("<cathandler.go> Could not execute template <categorie.html> : %v\n", err)
+		log.Printf("ERREUR : <cathandler.go> Could not execute template <categorie.html> : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}

@@ -12,7 +12,7 @@ import (
 func ChangeLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("<topichandler.go> Could not open database : %v\n", err)
+		log.Printf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
 		return err
 	}
 	defer db.Close()
@@ -20,7 +20,6 @@ func ChangeLikes(userID int, post models.Message) error {
 	// Vérifie si le post a déjà été liké par l'utilisateur connecté
 	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -28,7 +27,6 @@ func ChangeLikes(userID int, post models.Message) error {
 	// Vérifie ensuite si le post a déjà été disliké par l'utilisateur
 	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -82,21 +80,19 @@ func ChangeLikes(userID int, post models.Message) error {
 func ChangeDisLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("<topichandler.go> Could not open database : %v\n", err)
+		log.Printf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
 		return err
 	}
 	defer db.Close()
 
 	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
 	var disliked bool
 	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 

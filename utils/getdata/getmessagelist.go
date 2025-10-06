@@ -23,7 +23,7 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 		var message models.Message
 		user_id := 0
 		if err := rows.Scan(&message.Created, &user_id, &message.Content, &message.Likes, &message.Dislikes, &message.MessageID, &message.Warning); err != nil {
-			log.Printf("<getmessagelist.go> Error scanning message row: %v", err)
+			log.Printf("ERREUR : <getmessagelist.go> Erreur dans le parcours de la base de données : %v", err)
 			return nil, err
 		}
 
@@ -34,7 +34,6 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 		}
 
 		messages = append(messages, message)
-
 	}
 
 	return messages, nil

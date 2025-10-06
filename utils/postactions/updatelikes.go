@@ -3,6 +3,8 @@ package postactions
 import (
 	"database/sql"
 	"log"
+
+	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 // Fonction pour ajouter les posts dans les table likes et dislikes de la base de données
@@ -16,9 +18,12 @@ func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	}
 	_, err := db.Exec(sqlUpdate, userID, postID)
 	if err != nil {
-		log.Printf("<updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v\n", postID, err)
+		log.Printf("ERREUR : <updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v\n", postID, err)
 		return err
 	}
+
+	user, _ := getdata.GetUserInfoFromID(db, userID)
+	log.Printf("USER : L'utilisateur %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
 
 	return nil
 }
@@ -32,10 +37,17 @@ func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error 
 	case "dislike":
 		sqlUpdate = `DELETE FROM dislike WHERE user_id = ? AND message_id = ?`
 	}
-	_, err := db.Exec(sqlUpdate, userID, postID)
+	result, err := db.Exec(sqlUpdate, userID, postID)
 	if err != nil {
-		log.Printf("<updatelikes.go> Erreur dans la suppression du like/dislike sur le post %d : %v", postID, err)
+		log.Printf("ERREUR : <updatelikes.go> Erreur dans la suppression du like/dislike sur le post %d : %v", postID, err)
 		return err
+	}
+
+	n, _ := result.RowsAffected()
+
+	if n != 0 {
+		user, _ := getdata.GetUserInfoFromID(db, userID)
+		log.Printf("USER : L'utilisateur %s a supprimé un %s sur le post n°%d", user.Username, table, postID)
 	}
 
 	return nil
@@ -46,13 +58,11 @@ func UpdateLikesAndDislikes(db *sql.DB, postID, userID, likes, dislikes int, tab
 	sqlUpdate := `UPDATE message SET dislikes = ?, likes = ? WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(dislikes, likes, postID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+  {{template "InitPage" .}}
+  
+    <!-- Header -->
+    {{template "ForumHeader" .}}
+
+    <!-- Main Content -->
+    <div class="dashboard-header">
+      <div class="topic-top">
+        <h2>{{.Topic.Name}}</h2>
+      </div>
+    </div>
+
+    <main class="main-content">
+      <aside class="sidebar">
+        <div id="{{.LastMessage.MessageID}}">
+          <strong>Message du {{.LastMessage.Created}}</strong><br />
+          par {{.LastMessage.Author.Username}}<br />
+        </div>
+      </aside>
+</main><br>
+      <div class="input-name-topic"><p>{{.LastMessage.Content}}</p></div>
+      <form class="create-topic-form" method="POST">
+        <textarea
+          class="input-name-topic"
+          name="new-message"
+          placeholder="Entrer votre message"
+          required
+        ></textarea>
+        <div class="create-topic-form-button">
+          <button type="submit">Envoyer</button>
+        </div>
+      </form>
+    </main>
+  </body>
+</html>

@@ -19,7 +19,7 @@
         {{if .CurrentUser.LogStatus}} 
         <li class="dropdown">
         <button class="login-btn user-actions">
-          Connecté en tant que {{.CurrentUser.Username}}
+          Connecté en tant que {{.CurrentUser.Username}} 🠯
         </button>
           <ul class="dropdown-menu">
             <li><form action="/logout" method="POST">
@@ -39,10 +39,10 @@
 
      <!-- Modal de connexion -->
     <div id="loginModal" class="modal">
-      {{template "loginModal" .LoginData.Message}}
+      {{template "loginModal" .LoginErr}}
     </div>
 
-      {{if .LoginData.ShowLogin}}
+      {{if  .LoginErr}}
     <script>
        document.getElementById("loginModal").style.display = "block";
     </script>

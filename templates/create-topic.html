@@ -17,7 +17,7 @@
 <form class="create-topic-form" method="POST">
   <input type="hidden" name="Category_id" value="{{.Category.ID}}"/>
   <input type="text" class="input-name-topic" name="title" placeholder="Entrer le nom du topic" required/>
- <input type="text" class="input-description-topic" name="message" placeholder="Entrer votre message" required/>
+ <textarea class="input-description-topic" name="message" placeholder="Entrer votre message" required></textarea>
   <div class="create-topic-form-button"><button type="submit"> Envoyer</button></div>
 </form>
    

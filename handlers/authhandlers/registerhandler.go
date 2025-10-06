@@ -3,6 +3,7 @@ package authhandlers
 import (
 	"database/sql"
 	"html/template"
+	"log"
 	"net/http"
 	"strings"
 
@@ -13,12 +14,12 @@ import (
 )
 
 // Si funcMap non declaré avant Funcs(funcMap) est not found
-var funcMap = template.FuncMap{
+var funcMap2 = template.FuncMap{
 	"toUpper": func(s string) string {
 		return strings.ToUpper(s)
 	},
 }
-var registrationHtml = template.Must(template.New("registration.html").Funcs(funcMap).ParseFiles("templates/registration.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
+var registrationHtml = template.Must(template.New("registration.html").Funcs(funcMap2).ParseFiles("templates/registration.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
 
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -88,5 +89,6 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Succès : redirection vers la page d'accueil ---
+	log.Println("USER : Un nouvel utilisateur s'est inscrit : ", username)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

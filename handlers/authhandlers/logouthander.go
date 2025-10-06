@@ -18,7 +18,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// Récupère la session depuis la requête
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
-		log.Println("Erreur lors de la récupération de la session :", err)
+		log.Println("ERREUR : <logouthandler.go> Erreur lors de la récupération de la session :", err)
 		utils.InternalServError(w)
 		return
 	}
@@ -26,7 +26,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// Ouvre la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("Erreur à l'ouverture de la base de données :", err)
+		log.Println("ERREUR : <logouthandler.go> Erreur à l'ouverture de la base de données :", err)
 		utils.InternalServError(w)
 		return
 	}
