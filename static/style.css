@@ -859,5 +859,10 @@ a.post-text:hover{
 
 .modal-buttons{
   display: flex;
-  
+  justify-content: center;
+}
+
+.modal-cancel-btn, .modal-confirm-btn {
+  margin-left:initial;
+  margin:20px 10% 5px 10%;
 }
