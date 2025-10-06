@@ -73,7 +73,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		Categories  []models.Category
 		CurrentUser models.UserLoggedIn
 	}{
-		PageName:    "Forum",
+		PageName:    "Petites victoires",
 		LoginErr:    loginErr,
 		Posts:       lastPosts,
 		Categories:  categories,

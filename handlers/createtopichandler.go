@@ -89,6 +89,8 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	pagename := "Ouvrir un nouveau sujet - " + currentCategory.Name
+
 	data := struct {
 		PageName    string
 		Category    models.Category
@@ -96,7 +98,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		Categories  []models.Category
 		LoginErr    string
 	}{
-		PageName:    "Forum",
+		PageName:    pagename,
 		Category:    currentCategory,
 		CurrentUser: currentUser,
 		Categories:  categories,

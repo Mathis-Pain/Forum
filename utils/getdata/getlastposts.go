@@ -85,6 +85,7 @@ func GetLastPosts() ([]models.LastPost, error) {
 }
 
 func LastMonthPost() ([]models.LastPost, int, error) {
+
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		log.Printf("ERREUR : <getlastposts.go> Erreur à l'ouverture de la base de données : %v\n", err)

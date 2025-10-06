@@ -1,4 +1,5 @@
-/********* Initialisation des variables *********/
+/* #region **** Initialisation des variables */
+
 :root {
   /* Couleurs de fond */
   --color-pageback: #835f3e;
@@ -6,6 +7,7 @@
   --color-dropdown: #bb9b76;
   --color-logohover: #b6a287;
   --color-dashboard : #8d6947; 
+  --color-subtitle:#3A2516;
  
   /* Bordures et éléments en évidence */
   --color-highlight: #cba830;
@@ -19,24 +21,20 @@
   /* Polices d'écriture */
   --font-main: Arial, sans-serif;
 }
+/* #endregion */
 
-/********* Bases de toutes les pages *********/
+/* #region **** Généralités de page */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-a{
-  color: var(--color-highlight);
-}
-a:hover{
-color: var(--color-btnhover);
 }
 
 body {
   font-family: var(--font-main);
   background-color: var(--color-pageback);
   background-image: url('/static/pageback.jpg');
+  background-size:cover cover;
   color: var(--color-write);
 }
 
@@ -57,9 +55,19 @@ body {
   color: var(--color-pageback);
 }
 
+/* Couleur des liens */
 
+a {
+  color: var(--color-highlight);
+}
 
-/**** Header ****/
+a:hover {
+  color: var(--color-btnhover);
+}
+
+/* #endregion */
+
+/* #region **** Header */
 .header {
   background-color: var(--color-headerback);
   padding: 15px 20px;
@@ -110,6 +118,12 @@ body {
 
 .nav-link:hover {
   color: var(--color-highlight);
+}
+
+.nav-cat {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: context-menu;
 }
 
 /* Menu déroulant (catégories et options utilisateur) */
@@ -199,8 +213,9 @@ body {
   background-color: var(--color-logohover);
 }
 
+/* #endregion */
 
-/********* Bloc général de la page *********/
+/* #region **** Bloc général de la page */
 .main-content {
   display: flex;
   max-width: 1200px;
@@ -209,11 +224,25 @@ body {
   padding: 0 20px;
 }
 
-/* Sidebar */
+/* Sous-titre de la page */
+.dashboard-header {
+  background-color: var(--color-dashboard);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  color: var(--color-modalwrite);
+  font-weight: normal;
+}
+
+/* Barre latérale */
 .sidebar {
   background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
+  min-width: 150px;
   width: 300px;
   min-height: 120px;
   height: fit-content;
@@ -251,11 +280,34 @@ body {
   color: var(--color-highlight);
 }
 
+/*  #endregion */
+
+/* #region **** Panneau d'administration */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Blocs de la barre latérale */
 details {
   margin: 10px 0;
   border-bottom: 1px solid lightgray;
 }
 
+/* Quand la section est active */
+.userlist span,
+.catlist span,
+.topiclist span {
+  color: var(--color-highlight);
+  margin: 10px 0px 10px 25px;
+  padding-left: 15px;
+  border-left: 5px solid var(--color-highlight);
+  border-radius: 5px;
+}
+
+/* Titres de la barre latérale */
 summary {
   font-weight: bold;
   cursor: pointer;
@@ -276,6 +328,7 @@ details[open] summary:before {
   transform: rotate(90deg);
 }
 
+/* Informations et liens dans la barre latérale  */
 .menu-item {
   display: block;
   color: var(--color-write);
@@ -297,27 +350,7 @@ details[open] summary:before {
   font-size: 14px;
 }
 
-/* Content area */
-.content-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.dashboard-header {
-  background-color: var(--color-dashboard);
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.dashboard-header h1 {
-  font-size: 28px;
-  color: var(--color-modalwrite);
-  font-weight: normal;
-}
-
-/* Tables */
+/* Tableaux */
 .table-container {
   background-color: var(--color-headerback);
   border-radius: 15px;
@@ -325,11 +358,58 @@ details[open] summary:before {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.admin-list {
+  display: block;
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.admin-list thead {
+  position: sticky;
+  top: 0px;
+}
+
+/* Liens dans les tableaux */
+.admin-list .admin-topic {
+  max-height:200px;
+  overflow: auto;
+  color:var(--color-subtitle);
+  font-size:0.8em;
+}
+
+.admin-list a {
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.admin-list a::first-letter {
+  font-weight: bold;
+}
+
+/* Affichage des statistiques */
+.admin-stats {
+  display:flex;
+  justify-content: space-between;
+}
+
+.admin-stats div {
+  margin-right: 50px;
+  text-align: center;
+}
+
+.admin-stats div b {
+  display: block;
+}
+
+/* Titre du tableau */
 .table-title {
   font-size: 18px;
+  font-weight: bold;
   color: var(--color-write);
   margin-bottom: 15px;
-  font-weight: normal;
+  color:var(--color-subtitle)
 }
 
 table {
@@ -337,6 +417,7 @@ table {
   border-collapse: collapse;
 }
 
+/* Titres des colonnes */
 th {
   background-color:var(--color-logohover);
   color: var(--color-write);
@@ -346,12 +427,23 @@ th {
   border-bottom: 1px solid lightgray;
 }
 
+/* Cellules du tableau */
 td {
   padding: 12px;
   border-bottom: 1px solid lightgrey;
   color: var(--color-write);
+  vertical-align: top;
 }
 
+.three-col td {
+  width:33%;
+}
+
+.four-col td {
+  width:25%;
+}
+
+/* Bouton "Ajouter une catégorie */
 .add-btn {
   background-color: var(--color-logohover);
   border: none;
@@ -362,13 +454,37 @@ td {
   margin-top: 15px;
   float: right;
 }
+/* #endregion */
 
-/********* Affichage d'un sujet *********/
+/* #region **** Afficher les sujets */
 .posts-section {
   flex: 1;
 }
 
+/* Titre du sujet */
+.topic-top {
+  margin: auto;
+  margin-top: 10px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.topic-top h2 {
+  color: var(--color-headerback);
+}
+
+/* Bouton répondre ou ouvrir un sujet */
+.respond-btn {
+  background-color: var(--color-highlight);
+  border-radius: 5px;
+  margin-left: 100px;
+  padding: 10px;
+  border: 2px solid var(--color-pageback); 
+}
+
 /**** Affichage d'un message ****/
+/* Zone générale du message */
 .post-card {
   background-color: var(--color-headerback);
   border-radius: 10px;
@@ -382,54 +498,8 @@ td {
   position: relative;
   z-index:5;
 }
-.create-topic-form {
-  width: 100%;
-  margin-top: 50px;
-}
-.input-name-topic {
-  background-color: var(--color-headerback);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px auto 15px auto;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  min-height: 120px;
-  scroll-margin-top: 100px;
-  width: 70%;
-}
-.input-description-topic {
-  background-color: var(--color-headerback);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px auto 15px auto;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  min-height: 120px;
-  scroll-margin-top: 100px;
-  width: 70%;
-}
-.create-topic-form-button {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 15px;
-}
 
-.create-topic-form-button button {
-  width: 40%;
-  background-color: var(--color-headerback);
-  color: var(--color-write);
-  border: 1px solid light-grey;
-  padding: 12px;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-/* dropdown du posteur */
+/* Avatar du posteur */
 .post-avatar {
   width: 50px;
   height: 50px;
@@ -462,6 +532,11 @@ td {
   font-weight: bold;
   text-decoration: none;
   font-style: initial;
+}
+
+/* Bordure rouge si le message a été signalé */
+.warning {
+  border-left: 7px solid var(--color-error)!important;
 }
 
 /* Contenu du message */
@@ -502,11 +577,68 @@ a.post-text:hover{
   background-color: var(--color-logohover);
 }
 
-/********* Pop-up de connexion / réponse / etc *********/
+/* #endregion */
+
+/* #region **** Créer un sujet ou un message */
+.create-topic-form {
+  width: 100%;
+  margin-top: 50px;
+}
+
+.input-name-topic {
+  background-color: var(--color-headerback);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto 15px auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 120px;
+  scroll-margin-top: 100px;
+  width: 70%;
+}
+
+.input-description-topic {
+  background-color: var(--color-headerback);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto 15px auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 120px;
+  scroll-margin-top: 100px;
+  width: 70%;
+}
+
+.create-topic-form-button {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.create-topic-form-button button {
+  width: 40%;
+  background-color: var(--color-headerback);
+  color: var(--color-write);
+  border: 1px solid light-grey;
+  padding: 12px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* #endregion */
+
+/* #region **** Généralités des pop-ups */
 #loginModal {
   display: none;
 }
 
+/* Format du modal */
 .modal {
   position: fixed;
   z-index: 1000;
@@ -569,51 +701,18 @@ a.post-text:hover{
   margin-bottom: 5px;
 }
 
-.modal-title-2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--color-modalwrite);
-  margin-bottom: 5px;
-}
-
 .modal-subtitle {
   color: var(--color-write);
   font-size: 14px;
 }
 
-.modal-subtitle-2 {
-  color: var(--color-headerback);
-  font-size: 14px;
+/* Message d'erreur  */
+.error-message, .incorrect {
+  color: var(--color-error) !important;
 }
+/* #endregion */
 
-/* Titre des champs */
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: var(--color-write);
-}
-
-.form-label-2 {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: var(--color-modalwrite);
-}
-
-/* Affichage des mots de passe dans la connexion */
-.show-password-text {
-  color: var(--color-modalwrite);
-}
-
-.show-password-text-2 {
-  color: var(--color-write);
-}
-
+/* #region **** Modal de connexion */
 /* Champs de connexion */
 .form-input {
   width: 100%;
@@ -629,7 +728,28 @@ a.post-text:hover{
   border-color: var(--color-highlight);
 }
 
-/* Bouton de connexion */
+/* Titres des champs */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--color-write);
+}
+
+/* Afficher le mot de passe */
+.show-password-text {
+  color: var(--color-modalwrite);
+}
+
+.show-password-text-2 {
+  color: var(--color-write);
+}
+
+/* Bouton connexion */
 .form-button {
   width: 100%;
   background-color: var(--color-highlight);
@@ -671,49 +791,26 @@ a.post-text:hover{
   background-color: var(--color-dashboard);
 }
 
-.big {
-  font-size: 80px;
-  color: var(--color-highlight);
-  margin: 0;
+/* #endregion */
+
+/* #region **** Modal de confirmation */
+.modal-confirm .modal-content {
+ margin : auto; 
 }
 
-.box {
-  background: var(--color-headerback);
-  padding: 30px;
-  border-radius: 10px;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.btn {
-  color: var(--color-highlight);
-  text-decoration: none;
-  padding: 5px 10px;
-}
-
-/*********** Affichage d'un sujet ***********/
-
-.topic-top {
-  margin: auto;
-  margin-top: 10px;
-  width: 90%;
+.modal-buttons{
   display: flex;
   justify-content: center;
 }
 
-.topic-top h2 {
-  color: var(--color-headerback);
+.modal-cancel-btn, .modal-confirm-btn {
+  margin-left:initial;
+  margin:20px 10% 5px 10%;
 }
 
-.respond-btn {
-  background-color: var(--color-highlight);
-  border-radius: 5px;
-  margin-left: 100px;
-  padding: 10px;
-  border: 2px solid var(--color-pageback); 
-}
+/* #endregion */
 
-/********* Reponsive *********/
+/* #region **** Responsive */
 @media (max-width: 768px) {
   .container {
     width: 95%;
@@ -786,41 +883,9 @@ a.post-text:hover{
   }
 }
 
-/* Messages d'erreur */
-.error-message {
-  color: var(--color-error) !important;
-}
+/* #endregion */
 
-.admin-list {
-  display: block;
-  width: 100%;
-  max-height: 300px;
-  overflow: auto;
-}
-
-.admin-list thead {
-  position: sticky;
-  top: 0px;
-}
-
-.is-hidden {
-  display: none;
-}
-
-.userlist span,
-.catlist span,
-.topiclist span {
-  color: var(--color-highlight);
-  margin: 10px 0px 10px 25px;
-  padding-left: 15px;
-  border-left: 5px solid var(--color-highlight);
-  border-radius: 5px;
-}
-
-.warning {
-  border-left: 7px solid rgb(212, 99, 79) !important;
-}
-
+/* #region **** Actions sur les messages  */
 .post-actions {
   display: flex;
   position: absolute;
@@ -828,7 +893,7 @@ a.post-text:hover{
   bottom: 5px;
 }
 
-
+/* Code général des boutons */
 .action-btn {
   padding: 3px;
   border: none;
@@ -838,10 +903,10 @@ a.post-text:hover{
   background-color: var(--color-logohover);
   margin: 5px;
   margin-top: 0px;
-  border-radius: 10%;
-  
+  border-radius: 10px;
 }
 
+/* Bouton modifier un message */
 .edit-message {
   width: 96%;
   min-width: 96%;
@@ -849,24 +914,47 @@ a.post-text:hover{
   margin-bottom: 15px;
   border-radius: 10px;
   padding: 2%;
+  height:fit-content;
+  min-height: 150px;
 }
 
-.modal-confirm .modal-content {
- margin : auto; 
+/* Bouton avertissement */
+.warning-input {
+  cursor: text;
 }
 
-.modal-buttons{
-  display: flex;
-  justify-content: center;
+/* #endregion */
+
+/* Sections à masquer */
+.is-hidden {
+  display: none;
 }
 
-.modal-cancel-btn, .modal-confirm-btn {
-  margin-left:initial;
-  margin:20px 10% 5px 10%;
+
+
+
+
+
+
+
+
+/********* Parties du css que je ne sais pas où ranger  *********/
+/* .big {
+  font-size: 80px;
+  color: var(--color-highlight);
+  margin: 0;
+} */
+
+/* .box {
+  background: var(--color-headerback);
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.nav-cat{
-  padding-top: 10px;
-  padding-bottom: 10px;
-  cursor: context-menu;
-}
+.btn {
+  color: var(--color-highlight);
+  text-decoration: none;
+  padding: 5px 10px;
+} */

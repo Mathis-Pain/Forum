@@ -35,8 +35,7 @@
                 <div class="post-content">
                     <div class="post-title">{{$message.Author.Username}}</div>
                     <textarea name="message-content" class="edit-message is-hidden">{{$message.Content}}</textarea>
-                    <pre class="post-text">
-{{$message.Content}}</pre>
+                    <div class="post-text">{{$message.Content}}</div>
                 <div class="post-actions">
                             
                                 <input type="hidden" name="modname" value="{{$.CurrentUser.Username}}">
@@ -49,7 +48,7 @@
                                <select name="topicindex" class="topicindex is-hidden" title="Choisissez le sujet où placer le message">
                                 <option value=""></option>
                                     {{range $.AllTopics}}
-                                    <option value="{{.TopicID}}">{{.Name}}</option>
+                                    <option value="{{.TopicID}}">{{.Name}} (ID : {{.TopicID}})</option>
                                     {{end}}
                                 </select>
                                 <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton action-btn" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
@@ -67,13 +66,13 @@
                                {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} 
 
                                 <!-- Modal de confirmation pour la suppression -->
-            <div id="confirmationModal" class="modal modal-confirm is-hidden">
+            <div class="modal modal-confirm is-hidden">
                 <div class="modal-content">
                     <p>Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.
                     </p>
                     <div class="modal-buttons">
-                        <button id="cancelDelete" class="modal-cancel-btn respond-btn">Annuler</button>
-                        <button id="confirmDelete" name="action" value="delete" type="submit" class="modal-confirm-btn respond-btn">Confirmer</button>
+                        <button class="modal-cancel-btn respond-btn">Annuler</button>
+                        <button name="action" value="delete" type="submit" class="modal-confirm-btn respond-btn">Confirmer</button>
                     </div>
                 </div>
             </div>
@@ -127,20 +126,21 @@
     {{template "ReponseBox"}}
 
 
-   <style>.posts-section form:first-child .post-card {
-  /* border-bottom:10px solid var(--color-highlight); */
-  border-left:7px solid var(--color-highlight);
-  margin-bottom: 25px;
-}</style>
+   <style>
+   .posts-section form:first-child .post-card {
+    border-left:7px solid var(--color-highlight);
+    margin-bottom: 25px;
+    }
+    .post-text {
+    margin-bottom: 15px;
+    }
+    </style>
      
 
     <script>   
     // --- Local Modal Display/Hide Logic ---
 document.querySelectorAll('.delete-btn').forEach(button => {
     button.addEventListener('click', (event) => {
-        // Prevent the default action (which is none, since type="button")
-        event.preventDefault(); 
-        
         // Find the modal that is a direct sibling/child of the form's content
         const form = event.target.closest('form');
         const modal = form.querySelector('.modal'); // Use class selector since ID is duplicated

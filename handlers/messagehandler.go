@@ -86,7 +86,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		LastMessage models.Message
 	}{
 		Topic:       topic,
-		PageName:    "Forum",
+		PageName:    "Poster un message",
 		LoginErr:    "",
 		CurrentUser: currentUser,
 		Categories:  categories,
