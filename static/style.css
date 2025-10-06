@@ -712,7 +712,7 @@ a.post-text:hover{
   border-radius: 5px;
   margin-left: 100px;
   padding: 10px;
-  border: 2px solid lightgray; 
+  border: 2px solid var(--color-pageback); 
 }
 
 /********* Reponsive *********/
