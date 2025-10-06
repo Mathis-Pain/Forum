@@ -95,14 +95,14 @@
                 {{if $.CurrentUser.LogStatus}}<div class="action-column">
                    <form method="POST" action="/like" class="like-form">
             <input type="hidden" name="postID" value="{{$message.MessageID}}">
-            <button type="submit" class="action-btn">
+            <button type="submit" class="action-btn" title="Ajouter un like">
                 <span>👍</span>
                 <span>{{$message.Likes}}</span>
             </button>
                     </form>
                     <form method="POST" action="/dislike" class="like-form">
             <input type="hidden" name="postID" value="{{$message.MessageID}}">
-            <button type="submit" class="action-btn">
+            <button type="submit" class="action-btn" title="Ajouter un dislike">
                 <span>👎</span>
                 <span>{{$message.Dislikes}}</span>
             </button>
