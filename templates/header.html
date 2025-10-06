@@ -8,7 +8,7 @@
       <nav class="nav-section">
        {{if .CurrentUser.LogStatus}} <a href="/profil" class="nav-link">Profil</a>{{end}}
         <li class="dropdown">
-          <a href="#">Catégories</a>
+          <div class="nav-link nav-cat">Catégories</div>
           <ul class="dropdown-menu">
            {{ range .Categories }}
             <li><a href="/categorie/{{.ID}}">{{.Name}}</a></li>
