@@ -866,3 +866,7 @@ a.post-text:hover{
   margin-left:initial;
   margin:20px 10% 5px 10%;
 }
+
+.logout-btn {
+  width: 100%;
+}
