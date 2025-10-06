@@ -668,7 +668,7 @@ a.post-text:hover{
 }
 
 .secondary-button:hover {
-  background-color: var(--color-logohover);
+  background-color: var(--color-dashboard);
 }
 
 .big {
