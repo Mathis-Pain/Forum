@@ -67,13 +67,13 @@
                                {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} 
 
                                 <!-- Modal de confirmation pour la suppression -->
-            <div id="confirmationModal" class="modal is-hidden">
+            <div id="confirmationModal" class="modal modal-confirm is-hidden">
                 <div class="modal-content">
                     <p>Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.
                     </p>
                     <div class="modal-buttons">
-                        <button id="cancelDelete" class="modal-cancel-btn">Annuler</button>
-                        <button id="confirmDelete" name="action" value="delete" type="submit" class="modal-confirm-btn">Confirmer</button>
+                        <button id="cancelDelete" class="modal-cancel-btn respond-btn">Annuler</button>
+                        <button id="confirmDelete" name="action" value="delete" type="submit" class="modal-confirm-btn respond-btn">Confirmer</button>
                     </div>
                 </div>
             </div>
