@@ -842,3 +842,12 @@ a.post-text:hover{
   border-radius: 10%;
   
 }
+
+edit-message {
+  width: 98%;
+  min-width: 98%;
+  max-width: 98%;
+  margin-bottom: 10px;
+  border-radius: 10%;
+  padding: 1%;
+}
