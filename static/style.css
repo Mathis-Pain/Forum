@@ -5,7 +5,7 @@
   --color-headerback: #ebe3d0;
   --color-dropdown: #bb9b76;
   --color-logohover: #b6a287;
-  --color-dasboard : #8d6947; 
+  --color-dashboard : #8d6947; 
  
   /* Bordures et éléments en évidence */
   --color-highlight: #cba830;
@@ -315,7 +315,7 @@ details[open] summary:before {
 
 .dashboard-header h1 {
   font-size: 28px;
-  color: var(--color-write);
+  color: var(--color-modalwrite);
   font-weight: normal;
 }
 
@@ -477,6 +477,9 @@ td {
 a.post-text {
   display: block;
   text-decoration: none;
+}
+a.post-text:hover{
+  color: var(--color-write);
 }
 
 .post-link {
@@ -824,4 +827,14 @@ a.post-text {
   position: absolute;
   right: 10px;
   bottom: 5px;
+}
+
+
+.action-button {
+  padding: 10px 20px;
+  order: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
 }
