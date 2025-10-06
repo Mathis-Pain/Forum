@@ -5,6 +5,7 @@
   --color-headerback: #ebe3d0;
   --color-dropdown: #bb9b76;
   --color-logohover: #b6a287;
+  --color-dasboard : #8d6947; 
  
   /* Bordures et éléments en évidence */
   --color-highlight: #cba830;
@@ -24,6 +25,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+a{
+  color: var(--color-highlight);
+}
+a:hover{
+color: var(--color-btnhover);
 }
 
 body {
@@ -301,7 +308,7 @@ details[open] summary:before {
 }
 
 .dashboard-header {
-  background-color: var(--color-logohover);
+  background-color: var(--color-dashboard);
   padding: 20px;
   border-radius: 10px;
 }
