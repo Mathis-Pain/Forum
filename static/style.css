@@ -123,8 +123,6 @@ body {
 
 .dropdown a {
   display: block;
-  padding: 10px 20px;
-  color: var(--color-write);
   text-decoration: none;
 }
 
@@ -659,7 +657,7 @@ a.post-text:hover{
 /* Bouton inscrpiton */
 .secondary-button {
   width: 100%;
-  background-color: var(--color-headerback);
+  background-color: var(--color-logohover);
   color: var(--color-write);
   border: 1px solid lightgrey;
   padding: 12px;
@@ -867,6 +865,3 @@ a.post-text:hover{
   margin:20px 10% 5px 10%;
 }
 
-.logout-btn {
-  width: 100%;
-}
