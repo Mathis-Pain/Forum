@@ -57,6 +57,13 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		utils.InternalServError(w)
 		return
 	}
+
+	// Empêche les utilisateurs bannis ou non enrigistrés d'accéder à la page
+	if currentUser.UserType == 4 || currentUser.UserType == 0 {
+		utils.ForbiddenError(w)
+		return
+	}
+
 	// Récupère les informations du premier et du dernier message du topic pour afficher
 	// les références
 	topic.Messages = getdata.FormatDate(topic.Messages)

@@ -7,7 +7,7 @@
 <div class="dashboard-header">
   <div class="topic-top">
     <h2>{{.Topic.Name}}</h2>
-     {{if .CurrentUser.LogStatus}}<form action="/answermessage" method="GET">
+    {{if and .CurrentUser.LogStatus (ne .CurrentUser.UserType 4)}} <form action="/answermessage" method="GET">
           <input type="hidden" name="topic_id" value="{{.Topic.TopicID}}"> 
           <button type="submit" class="respond-btn">
            Répondre 

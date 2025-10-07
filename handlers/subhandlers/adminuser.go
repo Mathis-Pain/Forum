@@ -2,21 +2,21 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
 // Fonction pour modifier un utilisateur (nom et statut)
-func UserEditHandler(r *http.Request, users []models.User) error {
+func UserEditHandler(r *http.Request, users []models.User, currentUser models.UserLoggedIn) error {
 	// Récupère l'ID de l'utilisateur dans le formulaire
 	stringID := r.FormValue("userID")
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'ID utilisateur : ", err)
 		return err
 	}
 
@@ -33,17 +33,27 @@ func UserEditHandler(r *http.Request, users []models.User) error {
 	username := r.FormValue("username")
 	status := r.FormValue("status")
 
+	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
+
 	if username != "" {
 		user.Username = username
+		notifMsg += fmt.Sprintf(" Votre nom d'utilisateur a été changé en %s.", username)
 	}
 	if status != "" {
 		user.Status = status
+		if status == "Membre " {
+			status = "Membre"
+		}
+		notifMsg += fmt.Sprintf(" Vous avez changé de statut et êtes maintenant %s.", status)
 	}
+
+	utils.AddNotificationToDatabase("ADMIN", ID, notifMsg)
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		logMsg := fmt.Sprint("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
@@ -52,13 +62,11 @@ func UserEditHandler(r *http.Request, users []models.User) error {
 	sqlUpdate := `UPDATE user SET username = ?, role_id = ? WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(user.Username, getdata.CodeUserStatus(user.Status), user.ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -70,28 +78,29 @@ func BanUserHandler(stringID string) error {
 	// Récupère l'ID de l'utilisateur à bannir
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à bannir")
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		logMsg := fmt.Sprint("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
+
+	notificationMessage := "Votre compte a été banni par un administrateur. Vous ne pouvez plus poster ni répondre à des messages."
+	utils.AddNotificationToDatabase("ADMIN", ID, notificationMessage)
 
 	// Met à jour l'utilisateur avec le statut BANNI (4)
 	sqlUpdate := `UPDATE user SET role_id = 4 WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -103,28 +112,29 @@ func UnbanUserHandler(stringID string) error {
 	// Récupération de l'ID
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à débannir")
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		logMsg := fmt.Sprint("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
+
+	notificationMessage := "Votre compte a été débanni par un administrateur. Vous pouvez à nouveau poster ou répondre à des messages."
+	utils.AddNotificationToDatabase("ADMIN", ID, notificationMessage)
 
 	// Met à jour l'utilisateur avec le statut MEMBRE (3)
 	sqlUpdate := `UPDATE user SET role_id = 3 WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -135,13 +145,13 @@ func UnbanUserHandler(stringID string) error {
 func DeleteUserHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur dans la récupération de l'utilisateur à supprimer", err)
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		logMsg := fmt.Sprint("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
@@ -150,13 +160,11 @@ func DeleteUserHandler(stringID string) error {
 	sqlUpdate := `DELETE FROM user WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 

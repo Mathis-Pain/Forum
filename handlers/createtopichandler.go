@@ -40,13 +40,20 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		utils.StatusBadRequest(w)
 		return
 	}
-	// on charge es categories et l'utilisateur pour construire le header
+	// on charge les categories et l'utilisateur pour construire le header
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
 		utils.InternalServError(w)
 		return
 	}
+
+	// Empêche les utilisateurs bannis ou non enrigistrés d'accéder à la page
+	if currentUser.UserType == 4 || currentUser.UserType == 0 {
+		utils.ForbiddenError(w)
+		return
+	}
+
 	// on prend getcatID pour chercher la categories qui correspond dans la bdd et la donner au template
 	var currentCategory models.Category
 	for _, cat := range categories {

@@ -9,7 +9,7 @@
     <div class="dashboard-header">
       <div class="topic-top">
         <h2>{{ .Category.Name }}</h2>
-        {{if .CurrentUser.LogStatus}}
+        {{if and .CurrentUser.LogStatus (ne .CurrentUser.UserType 4)}}
         <form action="/new-topic" method="GET">
           <input type="hidden" name="category_id" value="{{.Category.ID}}" />
           <button type="submit" class="respond-btn">
