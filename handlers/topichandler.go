@@ -20,7 +20,6 @@ var TopicHtml = template.Must(template.New("topic.html").ParseFiles(
 	"templates/header.html",
 	"templates/topic.html",
 	"templates/initpage.html",
-	"templates/reponsebox.html",
 ))
 
 func TopicHandler(w http.ResponseWriter, r *http.Request) {

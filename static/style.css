@@ -218,7 +218,7 @@ a:hover {
 /* #region **** Bloc général de la page */
 .main-content {
   display: flex;
-  max-width: 1200px;
+  max-width: 80%;
   margin: 20px auto;
   gap: 20px;
   padding: 0 20px;
@@ -244,6 +244,7 @@ a:hover {
   padding: 20px;
   min-width: 150px;
   width: 300px;
+  flex-shrink: 0;
   min-height: 120px;
   height: fit-content;
   position: sticky;
@@ -580,20 +581,14 @@ a.post-text:hover{
 /* #endregion */
 
 /* #region **** Créer un sujet ou un message */
-.create-topic-form {
-  width: 100%;
-  margin-top: 50px;
-}
-
 .input-name-topic {
   background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
-  margin: 20px auto 15px auto;
+  margin:  auto;
   display: flex;
   align-items: center;
   gap: 15px;
-  min-height: 120px;
   scroll-margin-top: 100px;
   width: 70%;
 }
@@ -620,11 +615,8 @@ a.post-text:hover{
 
 .create-topic-form-button button {
   width: 40%;
-  background-color: var(--color-headerback);
   color: var(--color-write);
-  border: 1px solid light-grey;
   padding: 12px;
-  border-radius: 5px;
   font-size: 16px;
   margin-top: 20px;
   cursor: pointer;
@@ -931,21 +923,15 @@ a.post-text:hover{
 }
 
 
+/* #region **** Messages d'erreur */
 
-
-
-
-
-
-
-/********* Parties du css que je ne sais pas où ranger  *********/
-/* .big {
+.big {
   font-size: 80px;
   color: var(--color-highlight);
   margin: 0;
-} */
+} 
 
-/* .box {
+.errorbox {
   background: var(--color-headerback);
   padding: 30px;
   border-radius: 10px;
@@ -957,4 +943,6 @@ a.post-text:hover{
   color: var(--color-highlight);
   text-decoration: none;
   padding: 5px 10px;
-} */
+} 
+
+/* #endregion */

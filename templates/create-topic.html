@@ -6,20 +6,45 @@
     <!-- Header -->
    {{template "ForumHeader" .}}
 
+  <!-- Main Content -->
+   <div class="dashboard-header">
+      <div class="topic-top">
+        <h2>Ouvrir un nouveau sujet</h2>
+      </div>
+    </div>
+
 
     <main class="main-content">
      <!-- Sidebar -->
-      <aside class="sidebar">  
-        <h3>{{.Category.Name }}</h3>
-        <div>{{.Category.Description }}</div>
+       <aside class="sidebar">
+        <div>
+          Ouvrir un sujet dans :  <strong>{{.Category.Name}}</strong><br /><br />
+          {{.Category.Description}}<br />
+          <a href="/categorie/{{.Category.ID}}" target="blank">➤ Voir la catégorie
+          </a>
+        </div>
       </aside>
-   
-<form class="create-topic-form" method="POST">
+   <section class="posts-section"><form class="create-topic-form" method="POST">
   <input type="hidden" name="Category_id" value="{{.Category.ID}}"/>
-  <input type="text" class="input-name-topic" name="title" placeholder="Entrer le nom du topic" required/>
- <textarea class="input-description-topic" name="message" placeholder="Entrer votre message" required></textarea>
-  <div class="create-topic-form-button"><button type="submit"> Envoyer</button></div>
+  <input 
+  maxlength="100" 
+  type="text" 
+  class="input-name-topic" 
+  name="title" 
+  placeholder="Titre du sujet" 
+  required/>
+
+ <textarea 
+ maxlength="6000" 
+ class="input-description-topic" 
+ name="message" 
+ placeholder="Entrer votre message" 
+ required></textarea>
+ 
+  <div class="create-topic-form-button">
+    <button type="submit" class="respond-btn" style="margin-left: initial;"> Envoyer</button></div>
 </form>
+</section>
    
     </main>
   </body>

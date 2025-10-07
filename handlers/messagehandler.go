@@ -40,6 +40,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	topic, err := getdata.GetTopicInfo(db, intID)
+	topic.TopicID = intID
 	// verifie si on trouve le topic concerné dans la base de donnée
 	if err == sql.ErrNoRows {
 		utils.NotFoundHandler(w)
@@ -56,8 +57,11 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		utils.InternalServError(w)
 		return
 	}
-	// je recupere le dernier message du topic pour l'affciher sur la page de reponse
+	// Récupère les informations du premier et du dernier message du topic pour afficher
+	// les références
+	topic.Messages = getdata.FormatDate(topic.Messages)
 	lastMessage := topic.Messages[len(topic.Messages)-1]
+	firstMessage := topic.Messages[0]
 
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
@@ -78,19 +82,21 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Topic       models.Topic
-		PageName    string
-		LoginErr    string
-		CurrentUser models.UserLoggedIn
-		Categories  []models.Category
-		LastMessage models.Message
+		Topic        models.Topic
+		PageName     string
+		LoginErr     string
+		CurrentUser  models.UserLoggedIn
+		Categories   []models.Category
+		FirstMessage models.Message
+		LastMessage  models.Message
 	}{
-		Topic:       topic,
-		PageName:    "Poster un message",
-		LoginErr:    "",
-		CurrentUser: currentUser,
-		Categories:  categories,
-		LastMessage: lastMessage,
+		Topic:        topic,
+		PageName:     "Poster un message",
+		LoginErr:     "",
+		CurrentUser:  currentUser,
+		Categories:   categories,
+		FirstMessage: firstMessage,
+		LastMessage:  lastMessage,
 	}
 
 	err = AnswerMessage.Execute(w, data)
