@@ -2,7 +2,9 @@ package utils
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 )
 
 func AddLogsToDatabase(message string) error {
@@ -13,12 +15,29 @@ func AddLogsToDatabase(message string) error {
 	}
 	defer db.Close()
 
-	sqlUpdate := `INSERT INTO logs (message) VALUES (?)`
-	_, err = db.Exec(sqlUpdate, message)
+	logType := retrieveLogType(message)
+	cutLogMessage(&message, logType)
+
+	sqlUpdate := `INSERT INTO logs (message, type) VALUES (?, ?)`
+	_, err = db.Exec(sqlUpdate, message, logType)
 	if err != nil {
 		log.Printf("ERREUR : <notifications.go> Erreur dans l'ajout de la notification \"%s\" : %v\n", message, err)
 		return err
 	}
 
 	return nil
+}
+
+func retrieveLogType(message string) string {
+	parts := strings.Split(message, " ")
+	return parts[0]
+}
+
+func cutLogMessage(message *string, logType string) {
+	prefix := logType + " : "
+
+	fmt.Println(prefix)
+	if strings.HasPrefix(*message, prefix) {
+		*message, _ = strings.CutPrefix(*message, prefix)
+	}
 }

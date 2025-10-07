@@ -6,7 +6,14 @@ CREATE TABLE role (
 
 -- Table des contenus de notifications
 CREATE TABLE `notifications` (
-    `receiver_id` INTEGER PRIMARY KEY, 
+    `id` INTEGER PRIMARY KEY, 
+    `receiver_id` INTEGER NOT NULL, 
     `type` INTEGER REFERENCES `type`(`ID`), 
+    `message` TEXT
+);
+
+-- Table des logs
+CREATE TABLE `logs` (
+    `id` INTEGER PRIMARY KEY, 
     `message` TEXT
 );
