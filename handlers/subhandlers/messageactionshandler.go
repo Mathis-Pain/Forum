@@ -103,7 +103,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		topic, _ := getdata.GetTopicInfo(db, newtopicID)
-		log.Printf("ADMIN : Message n°%d déplacé dans le sujet n°%d (%s)\n", postID, newtopicID, topic.Name)
+		log.Printf("ADMIN : Message n°%d déplacé par %s dans le sujet n°%d (%s)\n", postID, username, newtopicID, topic.Name)
 		url := fmt.Sprintf("/topic/%d#%d", newtopicID, postID)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return

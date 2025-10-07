@@ -36,10 +36,11 @@
             src="{{(index .Messages 0).Author.ProfilPic}}"
           />
           <div class="post-content">
-            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a> <span class="topic-postnumber">({{(len .Messages)}} messages)</span>
             <div class="post-author">
               Dernier message par {{(index .Messages
-              .LastPost).Author.Username}}
+              .LastPost).Author.Username}} le {{(index .Messages
+              .LastPost).Created}}
             </div>
             <a
               class="post-text"

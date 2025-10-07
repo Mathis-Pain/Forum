@@ -53,6 +53,10 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	for i := 0; i < len(category.Topics); i++ {
+		category.Topics[i].Messages = getdata.FormatDate(category.Topics[i].Messages)
+	}
+
 	// --- Gestion des erreurs de login ---
 
 	session, err := sessions.GetSessionFromRequest(r)

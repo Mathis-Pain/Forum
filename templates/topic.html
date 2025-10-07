@@ -18,10 +18,10 @@
 
 <main class="main-content">
 
-    <aside class="sidebar">
+    <aside class="sidebar"><h3>Naviguer sur le sujet</h3>
         {{range .Topic.Messages}}
-        • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par {{.Author.Username}}
-      <br>
+     <div class="topic-index">   • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par {{.Author.Username}}
+      </div>
       {{end}}
       </aside>
 

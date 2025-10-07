@@ -23,7 +23,7 @@
 }
 /* #endregion */
 
-/* #region **** Généralités de page */
+/* #region **** Généralités de page u site */
 * {
   margin: 0;
   padding: 0;
@@ -35,6 +35,7 @@ body {
   background-color: var(--color-pageback);
   background-image: url('/static/pageback.jpg');
   background-size:cover cover;
+  background-attachment: fixed;
   color: var(--color-write);
 }
 
@@ -55,8 +56,22 @@ body {
   color: var(--color-pageback);
 }
 
-/* Couleur des liens */
+/* Barres de défilement */
+::-webkit-scrollbar {
+  height: 12px;
+  width: 7px;
+  background: var(--color-headerback);
+  margin-right: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-dashboard);
+  height: 30px;
+}
+::-webkit-scrollbar-corner {
+  background: none;
+}
 
+/* Couleur des liens */
 a {
   color: var(--color-highlight);
 }
@@ -444,7 +459,39 @@ td {
   width:25%;
 }
 
+/* Boutons d'administration */
+.admin-btn {
+  color: var(--color-highlight);
+  border:none;
+  background:none;
+  font-family: var(--font-main);
+  font-size: 1em;
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.admin-btn:hover {
+  color:var(--color-btnhover);
+}
+
+.admin-input {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding:10px;
+  width:100%;
+}
+
+
 /* Bouton "Ajouter une catégorie */
+.admin-add-cat {
+  margin-top: 30px;
+  cursor: pointer;
+  text-align: center;
+  color:var(--color-headerback)
+}
+
 .add-btn {
   background-color: var(--color-logohover);
   border: none;
@@ -475,6 +522,14 @@ td {
   color: var(--color-headerback);
 }
 
+.topic-postnumber {
+  display: inline-block;
+  position: relative;
+  top:-2px;
+  font-size: 0.65em;
+  color:var(--color-subtitle);
+}
+
 /* Bouton répondre ou ouvrir un sujet */
 .respond-btn {
   background-color: var(--color-highlight);
@@ -482,6 +537,12 @@ td {
   margin-left: 100px;
   padding: 10px;
   border: 2px solid var(--color-pageback); 
+}
+
+/* Sommaire / index */
+.topic-index {
+  margin-bottom: 8px;
+  font-size: 0.8em;
 }
 
 /**** Affichage d'un message ****/
@@ -590,7 +651,7 @@ a.post-text:hover{
   align-items: center;
   gap: 15px;
   scroll-margin-top: 100px;
-  width: 70%;
+  width: 100%;
 }
 
 .input-description-topic {
