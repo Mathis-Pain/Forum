@@ -16,7 +16,7 @@ func NewPost(userID, topicID int, message string, mode string) error {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("ERREUR : <newpost.go> Erreur à l'ouvert de la base de données : ", err)
+		log.Println("ERREUR : <newpost.go> Erreur à l'ouverture de la base de données : ", err)
 		return err
 	}
 	defer db.Close()
@@ -53,7 +53,7 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 
 	topic, _ := getdata.GetTopicInfo(db, newpost.TopicID)
 	if mode != "newtopic" {
-		log.Printf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (%d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
+		log.Printf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (ID : %d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
 	}
 
 	return nil

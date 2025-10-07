@@ -84,7 +84,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 		topic, _ := getdata.GetTopicInfo(db, topicID)
-		log.Printf("USER : %s a modifié le contenu du message n°%d (sur %s)", username, postID, topic.Name)
+		log.Printf("USER : %s a modifié le contenu du message n°%d (sur \"%s\")", username, postID, topic.Name)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
 	case "move":

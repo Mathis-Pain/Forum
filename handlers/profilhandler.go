@@ -44,6 +44,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Récupère la liste complète des messages postés par l'utilisateur
 	userPosts, err := utils.GetUserPosts(user.ID)
 	if err != nil {
 		log.Printf("ERREUR : <profilhandler.go> Erreur dans l'exécution de GetUserPosts: %v\n", err)
@@ -51,6 +52,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Récupère la liste des sujets likés et dislikés par l'utilisateur
 	likedPosts, err := utils.GetUserLikes(user.ID)
 	if err != nil {
 		log.Printf("ERREUR : <profilhandler.go> Erreur dans l'exécution de GetUserLikes : %v\n", err)
@@ -65,11 +67,21 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Affiche la liste des sujets ouvert par l'utilisateur
 	myTopics, err := utils.GetUserTopics(user.ID)
 	if err != nil {
 		log.Printf("ERREUR : <profilhandler.go> Erreur dans l'exécution de GetUserTopics : %v\n", err)
 		utils.InternalServError(w)
 		return
+	}
+
+	// Formatage de la date
+	var currentTopic []models.Message
+	for i := 0; i < len(myTopics); i++ {
+		currentTopic = append(currentTopic, models.Message{})
+		currentTopic[i].Created = myTopics[i].Created
+		currentTopic = getdata.FormatDate(currentTopic)
+		myTopics[i].Created = currentTopic[i].Created
 	}
 
 	// ** Renvoi des données dans le template **

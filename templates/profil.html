@@ -44,7 +44,7 @@
     </div></div> <br>
         {{range .LikedPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
             <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
@@ -70,7 +70,7 @@
     </div></div> <br>
         {{range .DislikedPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
             <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
@@ -94,7 +94,7 @@
     </div></div><br>
         {{range .MyPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">Sur le sujet : {{.TopicName}}</a>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
@@ -117,9 +117,9 @@
     </div></div><br>
         {{range .Topics}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
-            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a> <span class="topic-postnumber">- le {{.Created}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>

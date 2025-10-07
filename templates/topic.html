@@ -48,7 +48,7 @@
                                <select name="topicindex" class="topicindex is-hidden post-input" title="Choisissez le sujet où placer le message">
                                 <option value=""></option>
                                     {{range $.AllTopics}}
-                                    <option value="{{.TopicID}}">{{.Name}} (ID : {{.TopicID}})</option>
+                                    {{if ne .TopicID $.Topic.TopicID}} <option value="{{.TopicID}}">{{.Name}} (ID : {{.TopicID}})</option> {{end}}
                                     {{end}}
                                 </select>
                                 <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton action-btn" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>

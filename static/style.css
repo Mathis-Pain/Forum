@@ -993,6 +993,7 @@ a.post-text:hover{
   background-color: whitesmoke;
   border-radius: 5px;
   padding:2px;
+  min-width:100px;
   width:100%;
   margin-top: -2px;
 }
