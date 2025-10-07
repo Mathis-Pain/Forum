@@ -296,6 +296,11 @@ a:hover {
   color: var(--color-highlight);
 }
 
+.cat-desc {
+  text-align: justify;
+   white-space: pre-wrap; 
+}
+
 /*  #endregion */
 
 /* #region **** Panneau d'administration */
@@ -481,6 +486,19 @@ td {
   border-radius: 10px;
   padding:10px;
   width:100%;
+}
+
+textarea.admin-input {
+  min-height:80px;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.userfield {
+  display: block;
+  max-height:80px;
+  overflow: auto;
+  white-space: pre-wrap;
 }
 
 /* Bouton "Ajouter une catégorie */
@@ -1004,14 +1022,15 @@ a.post-text:hover{
 }
 
 
-/* #region **** Messages d'erreur */
-
+/* #region **** Messages d'erreur et page d'inscription*/
+/* Titre des messages d'erreur */
 .big {
   font-size: 80px;
   color: var(--color-highlight);
   margin: 0;
 } 
 
+/* Boîte principale */
 .errorbox, .registerbox {
   background: var(--color-headerback);
   padding: 30px;
@@ -1027,10 +1046,22 @@ a.post-text:hover{
   max-width: 500px;
 }
 
+/* Bouton de validation */
 .btn {
   color: var(--color-highlight);
   text-decoration: none;
   padding: 5px 10px;
 } 
+
+/* Titre de la page d'inscription */
+.registerbox .modal-title {
+  text-align: center;
+  color:var(--color-dashboard);
+  font-size: 1.5em;
+}
+
+.registerbox .modal-subtitle {
+  text-align: center;
+}
 
 /* #endregion */

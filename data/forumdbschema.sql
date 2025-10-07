@@ -11,7 +11,7 @@ CREATE TABLE user (
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     profilpic TEXT DEFAULT '/static/noprofilpic.png',
-    role_id INTEGER NOT NULL DEFAULT 1,
+    role_id INTEGER NOT NULL DEFAULT 3,
     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
 );
 

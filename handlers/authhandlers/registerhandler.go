@@ -116,8 +116,23 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		utils.InternalServError(w)
 		return
 	}
+	// ---- Vérifie si c'est le premier utilisateur ---
+	var count int
+	role := 3
+	err = db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
+
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("ERREUR : Impossible de compter les utilisateurs existants : %v", err)
+		utils.InternalServError(w)
+		return
+	}
+
+	if count == 0 {
+		role = 1
+	}
+
 	// --- Insertion dans la DB ---
-	_, err = db.Exec("INSERT INTO user(username, email, password) VALUES(?, ?, ?)", username, email, hashedPassword)
+	_, err = db.Exec("INSERT INTO user(username, email, password, role_id) VALUES(?, ?, ?, ?)", username, email, hashedPassword, role)
 	if err != nil {
 		// Vérification UNIQUE (nom ou email déjà utilisé)
 		if err.Error() == "UNIQUE constraint failed: user.username" {

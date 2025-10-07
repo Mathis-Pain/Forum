@@ -110,6 +110,9 @@ func GetAllUsers() ([]models.User, int, error) {
 
 	for i := 1; i <= totalUsers; i++ {
 		user, err := getdata.GetUserInfoFromID(db, i)
+		if err == sql.ErrNoRows {
+			continue
+		}
 		if err != nil {
 			log.Print("ERREUR : <displaydashboard.go, GetAllUsers> Erreur dans la récupération des données utilisateurs : ", err)
 			return nil, 0, err
