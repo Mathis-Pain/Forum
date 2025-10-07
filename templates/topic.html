@@ -45,7 +45,7 @@
                                {{if eq $message.Warning 1}} <button class="action-btn" name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
                                {{if ne $index 0}}
                                <button class="cancelmove is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
-                               <select name="topicindex" class="topicindex is-hidden" title="Choisissez le sujet où placer le message">
+                               <select name="topicindex" class="topicindex is-hidden post-input" title="Choisissez le sujet où placer le message">
                                 <option value=""></option>
                                     {{range $.AllTopics}}
                                     <option value="{{.TopicID}}">{{.Name}} (ID : {{.TopicID}})</option>
@@ -59,7 +59,7 @@
                     {{if eq $.CurrentUser.UserType 2}} 
                     {{if eq $message.Warning 0}}
                     <button class="cancelwarn is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
-                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden action-btn">
+                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden post-input">
                     <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton action-btn">⚠️</button> {{end}} 
                     {{end}}
                    

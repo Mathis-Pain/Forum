@@ -483,7 +483,6 @@ td {
   width:100%;
 }
 
-
 /* Bouton "Ajouter une catégorie */
 .admin-add-cat {
   margin-top: 30px;
@@ -956,7 +955,19 @@ a.post-text:hover{
   background-color: var(--color-logohover);
   margin: 5px;
   margin-top: 0px;
-  border-radius: 10px;
+  border-radius: 7px;
+}
+
+.action-btn:hover {
+  background-color: var(--color-btnhover);
+}
+
+.post-input {
+  background-color: whitesmoke;
+  border-radius: 5px;
+  padding:2px;
+  width:100%;
+  margin-top: -2px;
 }
 
 /* Bouton modifier un message */
