@@ -12,7 +12,7 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <h3>Profil</h3>
-        <div class="post-avatar" src="{{.User.ProfilPic}}"></div>
+        <img class="post-avatar" src="{{.User.ProfilPic}}"/>
         <p>{{.User.Username}}</p>
         <p>{{.User.Email}}</p>
         <p>{{.User.Status}}
@@ -27,9 +27,9 @@
         </p>
 
         <div class="profil-nav">
-        <button onclick="ShowLikes()">Messages que j'ai 👍 ou 👎</button>
-        <button onclick="ShowPosts()">💬 Tous mes messages</button>
-        <button onclick="ShowTopics()">🔖 Sujets que j'ai ouverts</button>
+        <button onclick="ShowLikes()" class="profil-btn">Messages que j'ai 👍 ou 👎</button>
+        <button onclick="ShowPosts()" class="profil-btn">💬 Tous mes messages</button>
+        <button onclick="ShowTopics()" class="profil-btn">🔖 Sujets que j'ai ouverts</button>
         </div>
 
       </aside>
@@ -47,7 +47,7 @@
           <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
-            <br><span>Message de {{.Author.Username}} </span>
+            <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
@@ -64,7 +64,7 @@
         </div></section>
 
          <section class="posts-section is-hidden" id="see-disliked-posts">
-         <div>
+         
       <div class="dashboard-header">
   <div class="topic-top"> <h2>Mes 👎</h2>
     </div></div> <br>
@@ -73,7 +73,7 @@
           <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
-            <br><span>Message de {{.Author.Username}} </span>
+            <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
@@ -87,7 +87,6 @@
           </div>
         </div>
         {{end}}
-        </div>
       </section>
 
       <section class="posts-section is-hidden" id="see-my-posts"><div class="dashboard-header">

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,9 +23,39 @@ var funcMap2 = template.FuncMap{
 var registrationHtml = template.Must(template.New("registration.html").Funcs(funcMap2).ParseFiles("templates/registration.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
 
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		log.Printf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		return
+	}
+	defer db.Close()
+
+	categories, _, err := subhandlers.BuildHeader(r, w, db)
+	if err != nil {
+		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
+		utils.InternalServError(w)
+		return
+	}
+
 	if r.Method != http.MethodPost {
+		data := struct {
+			PageName     string
+			Categories   []models.Category
+			LoginErr     string
+			CurrentUser  models.UserLoggedIn
+			RegisterData models.RegisterDataError
+			UserInfo     models.User
+		}{
+			PageName:     "Inscription",
+			Categories:   categories,
+			LoginErr:     "",
+			CurrentUser:  models.UserLoggedIn{},
+			RegisterData: models.RegisterDataError{},
+			UserInfo:     models.User{},
+		}
 		// GET : afficher le formulaire vide
-		if err := registrationHtml.Execute(w, nil); err != nil {
+		if err := registrationHtml.Execute(w, data); err != nil {
+			log.Print("Erreur dans l'affichage de la page d'inscription :", err)
 			utils.InternalServError(w)
 		}
 		return
@@ -42,26 +73,43 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Struct pour stocker les erreurs ---
+
 	formData := models.RegisterDataError{
 		NameError:  utils.ValidName(username),
 		EmailError: utils.ValidEmail(email),
 		PassError:  utils.ValidPasswd(password, passwordConfirm),
 	}
 
+	userInfo := models.User{
+		Username:  username,
+		Email:     email,
+		ProfilPic: profilPic,
+	}
+
+	data := struct {
+		PageName     string
+		Categories   []models.Category
+		LoginErr     string
+		CurrentUser  models.UserLoggedIn
+		RegisterData models.RegisterDataError
+		UserInfo     models.User
+	}{
+		PageName:     "Inscription",
+		Categories:   categories,
+		LoginErr:     "",
+		CurrentUser:  models.UserLoggedIn{},
+		RegisterData: formData,
+		UserInfo:     userInfo,
+	}
+
 	// Si une erreur existe, renvoyer le formulaire avec messages
 	if formData.NameError != "" || formData.EmailError != "" || formData.PassError != "" {
 		w.WriteHeader(http.StatusBadRequest)
-		registrationHtml.Execute(w, formData)
+		registrationHtml.Execute(w, data)
 		return
 	}
 
 	// --- Ouverture de la DB ---
-	db, err := sql.Open("sqlite3", "./data/forum.db")
-	if err != nil {
-		utils.InternalServError(w)
-		return
-	}
-	defer db.Close()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -73,14 +121,14 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		// Vérification UNIQUE (nom ou email déjà utilisé)
 		if err.Error() == "UNIQUE constraint failed: user.username" {
-			formData.NameError = "Nom d'utilisateur déjà utilisé"
+			formData.NameError = "Ce nom d'utilisateur est déjà pris"
 			w.WriteHeader(http.StatusBadRequest)
-			registrationHtml.Execute(w, formData)
+			registrationHtml.Execute(w, data)
 			return
 		} else if err.Error() == "UNIQUE constraint failed: user.email" {
-			formData.EmailError = "email déjà utilisé"
+			formData.EmailError = "Cette adresse email est déjà utilisée"
 			w.WriteHeader(http.StatusBadRequest)
-			registrationHtml.Execute(w, formData)
+			registrationHtml.Execute(w, data)
 			return
 		}
 		// Toute autre erreur

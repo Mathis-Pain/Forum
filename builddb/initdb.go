@@ -63,6 +63,7 @@ func InitDB() (*sql.DB, error) {
 		}
 
 		fmt.Println("Base créée avec succès")
+		DefaultDatabase(db)
 		return db, nil
 	}
 

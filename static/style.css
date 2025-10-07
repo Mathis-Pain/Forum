@@ -760,7 +760,9 @@ a.post-text:hover{
 
 /* Message d'erreur  */
 .error-message, .incorrect {
+  font-size:0.9em;
   color: var(--color-error) !important;
+  text-align: center;
 }
 /* #endregion */
 
@@ -794,7 +796,8 @@ a.post-text:hover{
 
 /* Afficher le mot de passe */
 .show-password-text {
-  color: var(--color-modalwrite);
+  color: var(--color-highlight);
+  font-size: 0.8em;
 }
 
 .show-password-text-2 {
@@ -946,7 +949,7 @@ a.post-text:hover{
 }
 
 /* Code général des boutons */
-.action-btn {
+.action-btn, .profil-btn {
   padding: 3px;
   border: none;
   cursor: pointer;
@@ -958,8 +961,14 @@ a.post-text:hover{
   border-radius: 7px;
 }
 
-.action-btn:hover {
+.action-btn:hover, .profil-btn:hover {
   background-color: var(--color-btnhover);
+}
+
+.profil-btn {
+  padding:10px;
+  width:100%;
+  margin-bottom: 10px;
 }
 
 .post-input {
@@ -1003,12 +1012,19 @@ a.post-text:hover{
   margin: 0;
 } 
 
-.errorbox {
+.errorbox, .registerbox {
   background: var(--color-headerback);
   padding: 30px;
   border-radius: 10px;
-  max-width: 500px;
   margin: 0 auto;
+}
+
+.registerbox {
+  max-width: 80%;
+}
+
+.errorbox  {
+  max-width: 500px;
 }
 
 .btn {

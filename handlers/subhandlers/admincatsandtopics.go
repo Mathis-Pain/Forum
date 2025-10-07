@@ -20,9 +20,7 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 	if name != "" {
 		categ.Name = name
 	}
-	if description != "" {
-		categ.Description = description
-	}
+	categ.Description = description
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
