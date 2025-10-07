@@ -100,8 +100,8 @@ func LastMonthPost() ([]models.LastPost, int, error) {
             m.content,
             m.created_at,
             m.user_id,
-			m.likes,
-			m.dislikes,
+			IFNULL(m.likes, 0),
+			IFNULL(m.dislikes, 0),
 			u.username,
             t.name
         FROM message m
