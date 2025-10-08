@@ -31,18 +31,25 @@
                     <tbody>
                         {{range .Users}}
                         <tr>
-                            <form method="POST" id="edituser{{.ID}}">
+                            <form method="POST">
                                 <input type="hidden" name="userID" value="{{.ID}}">
+                                <input type="hidden" name="previous" value="{{.Username}}">
                             <td><span class="userfield"> {{.Username}} </span><input type="text" name="username" value="{{.Username}}" class="is-hidden user-edit admin-input"></td>
                             <td> 
                                <span class="userfield">{{.Status}} </span>
+                               
                                <select name="status" class="is-hidden user-edit admin-input">
-                                    <option value="Membre {{if (eq .Status "Membre")}} selected{{end}}">Membre</option>
+                                {{if (ne .Status "Banni")}}
+                                    <option value="Membre" {{if (eq .Status "Membre")}} selected{{end}}>Membre</option>
                                     <option value="Modérateur" {{if (eq .Status "Modérateur")}} selected{{end}}>Modérateur</option>
                                     <option value="Admin" {{if (eq .Status "Admin")}} selected{{end}}>Admin</option>
+                                    {{else}}
+                                    <option value="Banni">Banni</option>
+                                    {{end}}
                                 </select>
+                               
                                 <center>
-                        <button type="submit" title="Valider les modifications" class="validate-btn is-hidden admin-btn">✅ Valider</button>
+                        <button type="submit" name="action" value="edit" title="Valider les modifications" class="validate-btn is-hidden admin-btn">✅ Valider</button>
                         <button type="button" title="Annuler les modifications" class="cancel-btn is-hidden admin-btn">✖️ Annuler</button>
                     </center></td>
                             </form>
@@ -50,21 +57,15 @@
                         {{if not (eq $.CurrentUser.ID .ID)}}<div class="menu">
                             <div class="menu-options">
                                 <a title="Modifier l'utilisateur" class="modifier-btn admin-btn">🔧 Modifier</a>
-                                 {{if (eq .Status "Banni")}} <form method="POST">
-                                <input type="hidden" name="userToFree" value="{{.ID}}">
-                                <button title="Débannir l'utilisateur" class="admin-btn" type="submit">⚖️ Débannir</button>
-                                    </form>
-                                 {{else}}
-                                 <form method="POST">
-                                <input type="hidden" name="userToBan" value="{{.ID}}">
-                                <button title="Bannir l'utilisateur" class="admin-btn" type="submit">⚖️ Bannir</button>
-                                    </form>
-                                    {{end}}
-                                    <!-- This is the form with the confirmation modal logic -->
-                                    <form method="POST" class="delete-form">
-                                        <input type="hidden" name="userToDelete" value="{{.ID}}">
-                                        <button title="Supprimer l'utilisateur" type="button" class="delete-btn admin-btn">🚫 Supprimer</button>
-                                    </form>
+                            <form method="POST">
+                                <input type="hidden" name="userID" value="{{.ID}}">
+                                {{if (eq .Status "Banni")}}
+                                <button title="Débannir l'utilisateur" class="admin-btn" type="submit" name="action" value="unban">⚖️ Débannir</button>
+                                {{else}}
+                                <button title="Bannir l'utilisateur" class="admin-btn" type="submit" name="action" value="ban">⚖️ Bannir</button>
+                                {{end}}
+                                <button title="Supprimer l'utilisateur" type="button" class="delete-btn admin-btn" name="action" value="delete">🚫 Supprimer</button>
+                            </form>
                 
                             </div>
                         </div>

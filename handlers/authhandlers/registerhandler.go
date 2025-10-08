@@ -2,8 +2,8 @@ package authhandlers
 
 import (
 	"database/sql"
+	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strings"
 
@@ -25,14 +25,16 @@ var registrationHtml = template.Must(template.New("registration.html").Funcs(fun
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		utils.AddLogsToDatabase(logMsg)
 		return
 	}
 	defer db.Close()
 
 	categories, _, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
+		utils.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -55,7 +57,8 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		// GET : afficher le formulaire vide
 		if err := registrationHtml.Execute(w, data); err != nil {
-			log.Print("Erreur dans l'affichage de la page d'inscription :", err)
+			logMsg := fmt.Sprint("Erreur dans l'affichage de la page d'inscription :", err)
+			utils.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 		}
 		return
@@ -122,7 +125,8 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	err = db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
 
 	if err != nil && err != sql.ErrNoRows {
-		log.Printf("ERREUR : Impossible de compter les utilisateurs existants : %v", err)
+		logMsg := fmt.Sprintf("ERREUR : Impossible de compter les utilisateurs existants : %v", err)
+		utils.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -152,6 +156,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Succès : redirection vers la page d'accueil ---
-	log.Println("USER : Un nouvel utilisateur s'est inscrit : ", username)
+	logMsg := fmt.Sprintln("USER : Un nouvel utilisateur s'est inscrit : ", username)
+	utils.AddLogsToDatabase(logMsg)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

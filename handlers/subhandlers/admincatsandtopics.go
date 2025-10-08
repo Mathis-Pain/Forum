@@ -2,11 +2,12 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
@@ -25,7 +26,6 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -34,14 +34,12 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 	sqlUpdate := `UPDATE category SET name = ?, description = ? WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(categ.Name, categ.Description, categ.ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -53,13 +51,13 @@ func DeleteCatHandler(stringID string) error {
 	// Récupère l'ID (sous forme de string) et le convertit en int pour les comparaisons
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Println("ERREUR : <admincatsandtopics.go> Erreur dans la récupération de la catégorie à supprimer")
+		logMsg := fmt.Sprintln("ERREUR : <admincatsandtopics.go> Erreur dans la récupération de la catégorie à supprimer")
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("ERREUR : <admincatsandtopics.go> Erreur à l'ouverture de la base de données :")
 		return err
 	}
 	defer db.Close()
@@ -86,7 +84,8 @@ func DeleteCatHandler(stringID string) error {
 	for i := 0; i < len(topicList); i++ {
 		err := AdminDeleteMessages(db, topicList[i].TopicID)
 		if err != nil {
-			log.Println("ERREUR : <admincatsandtopics.go> Erreur dans la suppression des messages")
+			logMsg := fmt.Sprintln("ERREUR : <admincatsandtopics.go> Erreur dans la suppression des messages")
+			utils.AddLogsToDatabase(logMsg)
 			return err
 		}
 	}
@@ -95,18 +94,16 @@ func DeleteCatHandler(stringID string) error {
 	sqlUpdate = `DELETE FROM topic WHERE category_id = ?`
 	stmt, err = db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
 	// Confirme la suppression de la catégorie et de tout ce qu'elle contenait
-	// log.Print("ADMIN : Catégorie et sujets liés supprimés avec succès.")
+	// logMsg := fmt.Sprint("ADMIN : Catégorie et sujets liés supprimés avec succès.")
 
 	return nil
 }
@@ -143,12 +140,12 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 	// Convertit les deux ID au format int pour les comparaisons
 	ID, err := strconv.Atoi(topicID)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	catID, err := strconv.Atoi(stringID)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	// Repère le sujet à modifier à partir de son ID
@@ -167,7 +164,6 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -192,13 +188,13 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 func DeleteTopicHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur dans la récupération du sujet à supprimer", err)
+		logMsg := fmt.Sprint("ERREUR : <admincatsandtopics.go> Erreur dans la récupération du sujet à supprimer", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur à l'ouverture de la base de données :", err)
 		return err
 	}
 	defer db.Close()
@@ -207,7 +203,6 @@ func DeleteTopicHandler(stringID string) error {
 	sqlUpdate := `DELETE FROM topic WHERE id = ?`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur dans la suppression du sujet", err)
 		return err
 	}
 	defer stmt.Close()
@@ -219,12 +214,8 @@ func DeleteTopicHandler(stringID string) error {
 	// Supprime tous les messages du sujet de la BDD
 	err = AdminDeleteMessages(db, ID)
 	if err != nil {
-		log.Print("ERREUR : <admincatsandtopics.go> Erreur dans la suppression des messages", err)
 		return err
 	}
-
-	// Confirmation des modifications
-	// log.Print("Sujets et messages supprimés avec succès.")
 
 	return nil
 }

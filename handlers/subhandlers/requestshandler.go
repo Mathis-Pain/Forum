@@ -2,7 +2,7 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,10 +16,11 @@ func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 
 		switch action {
 		case "requestmod":
-
 			db, err := sql.Open("sqlite3", "./data/forum.db")
 			if err != nil {
-				log.Printf("<messageactionshandler> Could not open database : %v\n", err)
+				logMsg := fmt.Sprintf("ERREUR : <requesthandler.go> Could not open database : %v\n", err)
+				utils.AddLogsToDatabase(logMsg)
+				utils.InternalServError(w)
 				return
 			}
 			defer db.Close()
@@ -31,12 +32,14 @@ func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 			err = AskedToBeMod(db, userID)
 
 			if err != nil {
-				log.Print("Erreur dans l'envoi de la requête à l'administrateur, ", err)
+				logMsg := fmt.Sprint("ERREUR : <requesthandler.go> Erreur dans l'envoi de la requête à l'administrateur, ", err)
+				utils.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
 
-			log.Printf("REQUEST : L'utilisateur %s (n°%d) a demandé à rejoindre la modération.", username, userID)
+			logMsg := fmt.Sprintf("REQUEST : L'utilisateur %s (n°%d) a demandé à rejoindre la modération.", username, userID)
+			utils.AddLogsToDatabase(logMsg)
 
 			http.Redirect(w, r, url, http.StatusSeeOther)
 		}

@@ -18,10 +18,13 @@
      <!-- Sidebar -->
        <aside class="sidebar">
         <div>
-          Ouvrir un sujet dans :  <strong>{{.Category.Name}}</strong><br /><br />
-          {{.Category.Description}}<br />
+          Ouvrir un sujet dans :  <strong>{{.Category.Name}}</strong><br>
           <a href="/categorie/{{.Category.ID}}" target="blank">➤ Voir la catégorie
           </a>
+          <br /><br />
+          
+          {{.Category.Description}}<br />
+          
         </div>
       </aside>
    <section class="posts-section"><form class="create-topic-form" method="POST">

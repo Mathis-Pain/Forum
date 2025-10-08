@@ -12,7 +12,7 @@ import (
 )
 
 // Fonction pour modifier un utilisateur (nom et statut)
-func UserEditHandler(r *http.Request, users []models.User, currentUser models.UserLoggedIn) error {
+func UserEditHandler(r *http.Request, users []models.User, currentUser models.UserLoggedIn, previous string) error {
 	// Récupère l'ID de l'utilisateur dans le formulaire
 	stringID := r.FormValue("userID")
 	ID, err := strconv.Atoi(stringID)
@@ -35,7 +35,7 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 
 	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
 
-	if username != "" {
+	if username != previous {
 		user.Username = username
 		notifMsg += fmt.Sprintf(" Votre nom d'utilisateur a été changé en %s.", username)
 	}

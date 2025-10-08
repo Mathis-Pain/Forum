@@ -104,6 +104,9 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 		case "topiclist":
 			// Affiche la liste des sujets
 			adminTopics(topics, categories, r, w, currentUser, stats)
+		default:
+			utils.NotFoundHandler(w)
+			return
 		}
 	}
 }
@@ -277,18 +280,26 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 
 	// Si un formulaire (modifier, bannir, supprimer) a été envoyé
 	if r.Method == "POST" {
-		// Si un compte utilisateur est modifié
-		if username := r.FormValue("username"); username != "" {
-			err := subhandlers.UserEditHandler(r, users, currentUser)
+
+		stringID := r.FormValue("userID")
+		switch r.FormValue("action") {
+		case "edit":
+			// Si un compte utilisateur est modifié
+			username := r.FormValue("username")
+			previous := r.FormValue("previous")
+			err := subhandlers.UserEditHandler(r, users, currentUser, previous)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminUsers> Erreur dans la modification de l'utilisateur : ", err)
 				utils.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
+			if username != previous {
+				username += " (anciennement " + previous + " )"
+			}
 			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s", username, currentUser.Username)
 			utils.AddLogsToDatabase(logMsg)
-		} else if stringID := r.FormValue("userToBan"); stringID != "" {
+		case "ban":
 			// Si on clique pour bannir un utilisateur
 			err := subhandlers.BanUserHandler(stringID)
 			if err != nil {
@@ -303,9 +314,9 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				utils.InternalServError(w)
 				return
 			}
-			logMsg := fmt.Sprintf("ADMIN : L'utilisateur n°%s (%s) a été banni par %s", stringID, username, currentUser.Username)
+			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été banni par %s", username, stringID, currentUser.Username)
 			utils.AddLogsToDatabase(logMsg)
-		} else if stringID := r.FormValue("userToFree"); stringID != "" {
+		case "unban":
 			// Si on clique pour débannir un utilisateur
 			err := subhandlers.UnbanUserHandler(stringID)
 			if err != nil {
@@ -320,9 +331,9 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				utils.InternalServError(w)
 				return
 			}
-			logMsg := fmt.Sprintf("ADMIN : L'utilisateur n°%s (%s) a été débanni par %s", stringID, username, currentUser.Username)
+			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été débanni par %s", username, stringID, currentUser.Username)
 			utils.AddLogsToDatabase(logMsg)
-		} else if stringID := r.FormValue("userToDelete"); stringID != "" {
+		case "delete":
 			// Si on supprime un utilisateur
 			err := subhandlers.DeleteUserHandler(stringID)
 			if err != nil {
@@ -337,7 +348,7 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				utils.InternalServError(w)
 				return
 			}
-			logMsg := fmt.Sprintf("ADMIN : L'utilisateur n°%s (%s) a été supprimé par %s", stringID, username, currentUser.Username)
+			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été supprimé par %s", username, stringID, currentUser.Username)
 			utils.AddLogsToDatabase(logMsg)
 		}
 
@@ -407,16 +418,12 @@ func convertIDtoUsername(stringID string) (string, error) {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur à l'ouverture de la base de données :", err)
-		utils.AddLogsToDatabase(logMsg)
 		return "", err
 	}
 	defer db.Close()
 
 	user, err := getdata.GetUserInfoFromID(db, ID)
 	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la récupération du nom d'utilisateur :", err)
-		utils.AddLogsToDatabase(logMsg)
 		return "", err
 	}
 

@@ -20,8 +20,6 @@ func AdminIsCatModified(r *http.Request, categories []models.Category) (models.C
 	// Convertit l'ID récupéré de la catégorie en int pour les comparaisons
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <adminback.go> Erreur dans la récupération de l'ID de catégorie : ", err)
-		utils.AddLogsToDatabase(logMsg)
 		return models.Category{}, false, err
 	}
 
@@ -50,7 +48,7 @@ func AdminDeleteMessages(db *sql.DB, ID int) error {
 
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <adminback.go> Erreur dans la suppression du message : ", err)
+		logMsg := fmt.Sprintf("ERREUR : <adminback.go> Erreur dans la suppression du message n°%d : %v", ID, err)
 		utils.AddLogsToDatabase(logMsg)
 		return err
 	}

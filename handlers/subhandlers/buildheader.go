@@ -2,7 +2,7 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/models"
@@ -15,8 +15,8 @@ import (
 func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.Category, models.UserLoggedIn, error) {
 	categories, err := CategoriesDropDownMenu()
 	if err != nil && err != sql.ErrNoRows {
-		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
-		utils.InternalServError(w)
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
+		utils.AddLogsToDatabase(logMsg)
 		return nil, models.UserLoggedIn{}, err
 	}
 
@@ -29,14 +29,14 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.C
 		// Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
 		currentUser.Username, currentUser.ID, err = utils.GetUserNameAndIDByCookie(r, db)
 		if err != nil {
-			log.Print("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.InternalServError(w)
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			utils.AddLogsToDatabase(logMsg)
 			return categories, currentUser, err
 		}
 		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
 		if err != nil {
-			log.Print("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.InternalServError(w)
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			utils.AddLogsToDatabase(logMsg)
 			return categories, currentUser, err
 		}
 		return categories, currentUser, nil
@@ -51,14 +51,14 @@ func CheckLogStatus(r *http.Request) bool {
 	userLoggedIn := false
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
-		log.Printf("ERREUR : <buildheader.go> Could not execute GetSessionFromRequest: %v", err)
+		logMsg := fmt.Sprintf("ERREUR : <buildheader.go> Erreur dans l'exécution de GetSessionFromRequest: %v", err)
+		utils.AddLogsToDatabase(logMsg)
 		return false
 	}
 	if session.UserID != 0 {
 		userLoggedIn = true
 	}
 	return userLoggedIn
-
 }
 
 // // Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
@@ -66,12 +66,12 @@ func CheckLogStatus(r *http.Request) bool {
 // 	// Récupère l'ID de l'utilisateur via sa session
 // 	cookie, err := r.Cookie("session_id")
 // 	if err != nil {
-// 		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
+// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
 // 		return "", 0, err
 // 	}
 // 	session, err := sessions.GetSession(cookie.Value)
 // 	if err != nil && err != sql.ErrNoRows {
-// 		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
+// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
 // 		return "", 0, err
 // 	}
 

@@ -9,18 +9,19 @@ import (
 func AddLogsToDatabase(message string) error {
 	db, err := sql.Open("sqlite3", "./data/notifications/notifications.db")
 	if err != nil {
-		log.Printf("ERREUR : <getuserprofil.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		log.Printf("ERREUR : <logs.go> Erreur à l'ouverture de la base de données : %v\n", err)
 		return err
 	}
 	defer db.Close()
 
+	log.Println(message)
 	logType := retrieveLogType(message)
 	cutLogMessage(&message, logType)
 
 	sqlUpdate := `INSERT INTO logs (message, type) VALUES (?, ?)`
 	_, err = db.Exec(sqlUpdate, message, logType)
 	if err != nil {
-		log.Printf("ERREUR : <notifications.go> Erreur dans l'ajout de la notification \"%s\" : %v\n", message, err)
+		log.Printf("ERREUR : <logs.go> Erreur dans l'ajout du log \"%s\" : %v\n", message, err)
 		return err
 	}
 

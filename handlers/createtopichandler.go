@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -27,7 +26,9 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Could not open database : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Could not open database : %v", err)
+		utils.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
 		return
 	}
 	defer db.Close()
@@ -36,14 +37,14 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	getcatID, err := strconv.Atoi(getcategoryID)
 	if err != nil {
-		// gérer l'erreur si category_id n'est pas un nombre
 		utils.StatusBadRequest(w)
 		return
 	}
 	// on charge les categories et l'utilisateur pour construire le header
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
+		utils.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -74,7 +75,8 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		stringcatID := r.FormValue("category_id")
 		catID, err := strconv.Atoi(stringcatID)
 		if err != nil {
-			fmt.Println("ERREUR : <createtopichandler.go> L'ID de la catégorie n'est pas valide :", err)
+			logMsg := fmt.Sprint("ERREUR : <createtopichandler.go> L'ID de la catégorie n'est pas valide :", err)
+			utils.AddLogsToDatabase(logMsg)
 			utils.StatusBadRequest(w)
 			return
 		}
@@ -89,7 +91,8 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 		categ, _ := getdata.GetCatDetails(db, catID)
 
-		log.Printf("USER : Nouveau sujet ouvert dans la catégorie \"%s\" par %s : \"%s\"", categ.Name, username, topicName)
+		logMsg := fmt.Sprintf("USER : Nouveau sujet ouvert dans la catégorie \"%s\" par %s : \"%s\"", categ.Name, username, topicName)
+		utils.AddLogsToDatabase(logMsg)
 
 		// Redirection vers la page de la catégorie
 		http.Redirect(w, r, fmt.Sprintf("/categorie/%d", catID), http.StatusSeeOther)
@@ -114,7 +117,8 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = CreatTopicHtml.Execute(w, data)
 	if err != nil {
-		log.Printf("ERREUR : <create-topic-handler.go> Could not execute template <create-topic.html>: %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <create-topic-handler.go> Erreur à l'exécution du template <create-topic.html>: %v", err)
+		utils.AddLogsToDatabase(logMsg)
 		utils.NotFoundHandler(w)
 
 	}
