@@ -2,7 +2,6 @@ package utils
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"strings"
 )
@@ -36,7 +35,6 @@ func retrieveLogType(message string) string {
 func cutLogMessage(message *string, logType string) {
 	prefix := logType + " : "
 
-	fmt.Println(prefix)
 	if strings.HasPrefix(*message, prefix) {
 		*message, _ = strings.CutPrefix(*message, prefix)
 	}

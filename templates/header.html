@@ -16,10 +16,10 @@
           {{ end }}
           </ul>
         </li>
-        <input type="text" class="search-box" placeholder="search" />
+
         {{if .CurrentUser.LogStatus}} 
         <li class="dropdown">
-        <button class="login-btn user-actions">
+        <button class="login-btn user-actions" style="cursor: context-menu;">
           Connecté en tant que {{.CurrentUser.Username}} 🠯
         </button>
           <ul class="dropdown-menu">

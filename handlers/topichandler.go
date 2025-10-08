@@ -51,6 +51,8 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	topic.Messages = getdata.FormatDate(topic.Messages)
 
+	categ, _ := getdata.GetCatDetails(db, topic.CatID)
+
 	// Supprime le sujet et redirige vers la page d'accueil s'il ne contient aucun message (sécurité anti bug de la BDD)
 	if len(topic.Messages) == 0 {
 		ID := strconv.Itoa(topic.TopicID)
@@ -93,6 +95,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		PageName    string
 		AllTopics   []models.Topic
 		Topic       models.Topic
+		CatName     string
 		Categories  []models.Category
 		LoginErr    string
 		CurrentUser models.UserLoggedIn
@@ -100,6 +103,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		PageName:    topic.Name,
 		AllTopics:   allTopics,
 		Topic:       topic,
+		CatName:     categ.Name,
 		Categories:  categories,
 		LoginErr:    loginErr,
 		CurrentUser: currentUser,

@@ -62,5 +62,6 @@ func DefaultDatabase(db *sql.DB) {
 	'Communiquer n''est pas un don inné. 
 	Tout le monde peut avoir besoin de conseil pour gérer une situation, se sentir mieux dans ses rapports avec son entourage ou simplement s''adapter à de nouvelles personnes.')`)
 	execAndLog(`INSERT INTO category (name, description) VALUES ('Voyage, découverte et aventure', 
-	'Vous avez des projets ou des souvenirs de voyage ? Des envie d''aventure ? Partagez-les avec nous !')`)
+	'Vous avez des projets ou des souvenirs de voyage ? Des envie d''aventure ? Partagez-les avec nous !
+	Laissez-vous inspirer par les expériences des autres et planifiez votre prochaine évasion.')`)
 }

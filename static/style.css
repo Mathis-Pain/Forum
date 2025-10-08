@@ -95,6 +95,17 @@ a:hover {
   z-index: 8;
 }
 
+/* Description du forum */
+.forum-desc {
+  background-color: var(--color-headerback);
+  color:var(--color-dashboard);
+  padding:0px 50px 15px 50px;
+  text-align: center;
+  position: relative;
+  font-size: 0.8em;
+  border-bottom: 3px solid var(--color-highlight);
+}
+
 /* Lien du retour à l'accueil (logo + titre) */
 .logo-section {
   display: flex;
@@ -174,7 +185,7 @@ a:hover {
   min-width: 130px;
   max-height: 60vh;
   overflow-y: auto;
-  z-index:8;
+  z-index:800;
 }
 
 .dropdown-menu li button {
@@ -715,7 +726,7 @@ a.post-text:hover{
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -1020,6 +1031,11 @@ a.post-text:hover{
 /* Sections à masquer */
 .is-hidden {
   display: none;
+}
+
+.overall {
+  position: relative;
+  z-index: 10;
 }
 
 
