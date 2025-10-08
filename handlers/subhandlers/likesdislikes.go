@@ -9,7 +9,6 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
-	"github.com/Mathis-Pain/Forum/utils/getdata"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -62,7 +61,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	}
 	defer db.Close()
 
-	post, err := getdata.GetMessageLikesAndDislikes(db, postID)
+	post, err := postactions.GetMessageLikesAndDislikes(db, postID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
 		utils.AddLogsToDatabase(logMsg)

@@ -2,8 +2,9 @@ package postactions
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
+	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
@@ -18,12 +19,14 @@ func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	}
 	_, err := db.Exec(sqlUpdate, userID, postID)
 	if err != nil {
-		log.Printf("ERREUR : <updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v\n", postID, err)
+		logMsg := fmt.Sprintf("ERREUR : <updatelikes.go> Erreur dans l'ajout du like/dislike sur le post %d : %v\n", postID, err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 
 	user, _ := getdata.GetUserInfoFromID(db, userID)
-	log.Printf("USER : L'utilisateur %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
+	logMsg := fmt.Sprintf("USER : L'utilisateur %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
+	utils.AddLogsToDatabase(logMsg)
 
 	return nil
 }
@@ -39,7 +42,8 @@ func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error 
 	}
 	result, err := db.Exec(sqlUpdate, userID, postID)
 	if err != nil {
-		log.Printf("ERREUR : <updatelikes.go> Erreur dans la suppression du like/dislike sur le post %d : %v", postID, err)
+		logMsg := fmt.Sprintf("ERREUR : <updatelikes.go> Erreur dans la suppression du like/dislike sur le post %d : %v", postID, err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -47,7 +51,8 @@ func RemoveLikesAndDislikes(db *sql.DB, postID, userID int, table string) error 
 
 	if n != 0 {
 		user, _ := getdata.GetUserInfoFromID(db, userID)
-		log.Printf("USER : L'utilisateur %s a supprimé un %s sur le post n°%d", user.Username, table, postID)
+		logMsg := fmt.Sprintf("USER : L'utilisateur %s a supprimé un %s sur le post n°%d", user.Username, table, postID)
+		utils.AddLogsToDatabase(logMsg)
 	}
 
 	return nil

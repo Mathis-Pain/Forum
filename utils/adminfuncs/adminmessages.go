@@ -3,8 +3,8 @@ package admin
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
+	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -13,7 +13,8 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	sqlUpdate := `DELETE FROM message WHERE id = ?`
 	_, err := db.Exec(sqlUpdate, postID)
 	if err != nil {
-		log.Printf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+		logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -22,7 +23,8 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	// Supprime tous les likes et dislikes liés à ce message de la base de données
 	_, totalUsers, err := GetAllUsers()
 	if err != nil {
-		log.Print("ERREUR : <adminmessage.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		logMsg := fmt.Sprint("ERREUR : <adminmessage.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		utils.AddLogsToDatabase(logMsg)
 		return err
 	}
 	for i := 1; i <= totalUsers; i++ {
@@ -41,7 +43,8 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 			sqlUpdate := `DELETE FROM topic WHERE id = ?`
 			_, err := db.Exec(sqlUpdate, topicID)
 			if err != nil {
-				log.Printf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+				logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+				utils.AddLogsToDatabase(logMsg)
 				return err
 			}
 			logMsg += fmt.Sprintf(" Le sujet %d ne contient plus aucun message et a été supprimé.", topicID)
@@ -50,7 +53,7 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 		}
 	}
 
-	log.Print(logMsg)
+	utils.AddLogsToDatabase(logMsg)
 
 	return nil
 }

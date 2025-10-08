@@ -2,9 +2,10 @@ package admin
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
 )
 
@@ -23,13 +24,15 @@ func GetAllTopics(categories []models.Category, db *sql.DB) ([]models.Category, 
 	for i := 0; i < len(categories); i++ {
 		topicList, err := getdata.GetTopicList(db, categories[i].ID)
 		if err != nil {
-			log.Print("ERREUR : <displaydashboard.go> Erreur dans la récupération des sujets :", err)
+			logMsg := fmt.Sprint("ERREUR : <displaydashboard.go> Erreur dans la récupération des sujets :", err)
+			utils.AddLogsToDatabase(logMsg)
 			return categories, nil, err
 		}
 
 		topicList, err = GetCatName(categories[i], db, topicList)
 		if err != nil {
-			log.Print("ERREUR : <displaydashboard.go> Erreur dans la récupération des noms de catégorie :", err)
+			logMsg := fmt.Sprint("ERREUR : <displaydashboard.go> Erreur dans la récupération des noms de catégorie :", err)
+			utils.AddLogsToDatabase(logMsg)
 			return categories, nil, err
 		}
 
@@ -67,7 +70,8 @@ func GetStats(topics []models.Topic) ([]models.LastPost, models.Stats, []models.
 
 	users, stats.TotalUsers, err = GetAllUsers()
 	if err != nil {
-		log.Print("ERREUR : <displaydashboard.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		logMsg := fmt.Sprint("ERREUR : <displaydashboard.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		utils.AddLogsToDatabase(logMsg)
 		return nil, models.Stats{}, nil, err
 	}
 
@@ -93,7 +97,8 @@ func GetStats(topics []models.Topic) ([]models.LastPost, models.Stats, []models.
 func GetAllUsers() ([]models.User, int, error) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Print("ERREUR : <displaydashboard.go, GetAllUsers> Erreur à l'ouverture de la base de données : ", err)
+		logMsg := fmt.Sprint("ERREUR : <displaydashboard.go, GetAllUsers> Erreur à l'ouverture de la base de données : ", err)
+		utils.AddLogsToDatabase(logMsg)
 		return nil, 0, err
 	}
 	defer db.Close()
@@ -104,7 +109,8 @@ func GetAllUsers() ([]models.User, int, error) {
 	sqlQuery := `SELECT MAX(id) FROM user`
 	err = db.QueryRow(sqlQuery).Scan(&totalUsers)
 	if err != nil && err != sql.ErrNoRows {
-		log.Print("ERREUR : <displaydashboard.go, GetAllUsers> Erreur dans la récupération du dernier ID utilisateur : ", err)
+		logMsg := fmt.Sprint("ERREUR : <displaydashboard.go, GetAllUsers> Erreur dans la récupération du dernier ID utilisateur : ", err)
+		utils.AddLogsToDatabase(logMsg)
 		return nil, 0, err
 	}
 
@@ -114,7 +120,8 @@ func GetAllUsers() ([]models.User, int, error) {
 			continue
 		}
 		if err != nil {
-			log.Print("ERREUR : <displaydashboard.go, GetAllUsers> Erreur dans la récupération des données utilisateurs : ", err)
+			logMsg := fmt.Sprint("ERREUR : <displaydashboard.go, GetAllUsers> Erreur dans la récupération des données utilisateurs : ", err)
+			utils.AddLogsToDatabase(logMsg)
 			return nil, 0, err
 		}
 		users = append(users, user)

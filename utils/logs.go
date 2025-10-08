@@ -35,8 +35,13 @@ func retrieveLogType(message string) string {
 
 func cutLogMessage(message *string, logType string) {
 	prefix := logType + " : "
+	suffix := "\n"
 
 	if strings.HasPrefix(*message, prefix) {
 		*message, _ = strings.CutPrefix(*message, prefix)
+	}
+
+	if strings.HasSuffix(*message, suffix) {
+		*message, _ = strings.CutSuffix(*message, suffix)
 	}
 }
