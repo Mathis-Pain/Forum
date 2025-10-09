@@ -32,7 +32,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	categories, _, err := subhandlers.BuildHeader(r, w, db)
+	_, categories, _, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
 		logs.AddLogsToDatabase(logMsg)

@@ -52,7 +52,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	topic.TopicID = ID
 
-	topic.Messages = getdata.FormatDate(topic.Messages)
+	topic.Messages = getdata.FormatDateAllMessages(topic.Messages)
 
 	categ, _ := getdata.GetCatDetails(db, topic.CatID)
 
@@ -64,7 +64,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -99,21 +99,23 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		PageName    string
-		AllTopics   []models.Topic
-		Topic       models.Topic
-		CatName     string
-		Categories  []models.Category
-		LoginErr    string
-		CurrentUser models.UserLoggedIn
+		PageName      string
+		AllTopics     []models.Topic
+		Topic         models.Topic
+		CatName       string
+		Categories    []models.Category
+		LoginErr      string
+		CurrentUser   models.UserLoggedIn
+		Notifications models.Notifications
 	}{
-		PageName:    topic.Name,
-		AllTopics:   allTopics,
-		Topic:       topic,
-		CatName:     categ.Name,
-		Categories:  categories,
-		LoginErr:    loginErr,
-		CurrentUser: currentUser,
+		PageName:      topic.Name,
+		AllTopics:     allTopics,
+		Topic:         topic,
+		CatName:       categ.Name,
+		Categories:    categories,
+		LoginErr:      loginErr,
+		CurrentUser:   currentUser,
+		Notifications: notifications,
 	}
 
 	err = TopicHtml.Execute(w, data)

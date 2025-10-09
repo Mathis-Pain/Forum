@@ -1,7 +1,7 @@
 -- Table des types
-CREATE TABLE role (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT NOT NULL UNIQUE
+CREATE TABLE type (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `type` TEXT NOT NULL UNIQUE
 );
 
 -- Table des contenus de notifications
@@ -15,5 +15,7 @@ CREATE TABLE `notifications` (
 -- Table des logs
 CREATE TABLE `logs` (
     `id` INTEGER PRIMARY KEY, 
-    `message` TEXT
+    `message` TEXT,
+    `type` TEXT, 
+    `date` TEXT DEFAULT (CURRENT_TIMESTAMP)
 );

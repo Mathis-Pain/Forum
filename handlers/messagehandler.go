@@ -56,7 +56,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// On charge les categories pour le header
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -72,7 +72,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Récupère les informations du premier et du dernier message du topic pour afficher
 	// les références
-	topic.Messages = getdata.FormatDate(topic.Messages)
+	topic.Messages = getdata.FormatDateAllMessages(topic.Messages)
 	lastMessage := topic.Messages[len(topic.Messages)-1]
 	firstMessage := topic.Messages[0]
 
@@ -94,21 +94,23 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := struct {
-		Topic        models.Topic
-		PageName     string
-		LoginErr     string
-		CurrentUser  models.UserLoggedIn
-		Categories   []models.Category
-		FirstMessage models.Message
-		LastMessage  models.Message
+		Topic         models.Topic
+		PageName      string
+		LoginErr      string
+		CurrentUser   models.UserLoggedIn
+		Categories    []models.Category
+		FirstMessage  models.Message
+		LastMessage   models.Message
+		Notifications models.Notifications
 	}{
-		Topic:        topic,
-		PageName:     "Poster un message",
-		LoginErr:     "",
-		CurrentUser:  currentUser,
-		Categories:   categories,
-		FirstMessage: firstMessage,
-		LastMessage:  lastMessage,
+		Topic:         topic,
+		PageName:      "Poster un message",
+		LoginErr:      "",
+		CurrentUser:   currentUser,
+		Categories:    categories,
+		FirstMessage:  firstMessage,
+		LastMessage:   lastMessage,
+		Notifications: notifications,
 	}
 
 	err = AnswerMessage.Execute(w, data)

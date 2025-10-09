@@ -33,7 +33,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	// Récupère la liste des catégories et l'utilisateur connecté
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	_, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf(" ERREUR : <adminhandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -74,10 +74,18 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 		return topics[i].TopicID > topics[j].TopicID
 	})
 
+	logList, err := logs.DisplayLogs()
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la récupération des logs : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
+		return
+	}
+
 	// Récupère les statistiques  du forum
 	lastmonthpost, stats, users, err := admin.GetStats(topics)
 	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <adminghandler.go> Erreur dans la récupération des statistiques : ", err)
+		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la récupération des statistiques : ", err)
 		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
@@ -93,18 +101,21 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	// Analyse l'url pour choisir quelle page afficher
 	if len(parts) == 3 && parts[2] == "" {
 		// S'il n'y a aucune page spécifique demandée, affiche l'accueil du panneau d'aministration
-		adminHome(categories, topics, stats, users, w, currentUser, lastmonthpost)
+		adminHome(categories, topics, stats, users, w, currentUser, lastmonthpost, logList)
 	} else {
 		switch parts[2] {
 		case "userlist":
 			// Affiche la liste des utilisateurs
-			adminUsers(users, r, w, currentUser, stats)
+			adminUsers(users, r, w, currentUser, stats, logList)
 		case "catlist":
 			// Affiche la liste des catégories
-			adminCategories(categories, r, w, currentUser, stats)
+			adminCategories(categories, r, w, currentUser, stats, logList)
 		case "topiclist":
 			// Affiche la liste des sujets
-			adminTopics(topics, categories, r, w, currentUser, stats)
+			adminTopics(topics, categories, r, w, currentUser, stats, logList)
+		case "logs":
+			// Affiche la liste des logs
+			adminLogs(r, w, currentUser, stats, logList)
 		default:
 			utils.NotFoundHandler(w)
 			return
@@ -112,8 +123,8 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Page admin de la liste des sujets.
-func adminTopics(topics []models.Topic, categories []models.Category, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats) {
+// Page Liste des sujets du panneau d'administration
+func adminTopics(topics []models.Topic, categories []models.Category, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats, logList []models.Log) {
 	// Données à renvoyer à la page
 	data := struct {
 		PageName    string
@@ -121,12 +132,14 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 		Categories  []models.Category
 		CurrentUser models.UserLoggedIn
 		Stats       models.Stats
+		LogList     []models.Log
 	}{
 		PageName:    "Administration des sujets",
 		Topics:      topics,
 		Categories:  categories,
 		CurrentUser: currentUser,
 		Stats:       stats,
+		LogList:     logList,
 	}
 
 	// Si un formulaire (modification ou suppression de post) a été utilisé
@@ -177,18 +190,20 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 	}
 }
 
-// Page admin de la liste des catégories
-func adminCategories(categories []models.Category, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats) {
+// Page la liste des catégories du panneau d'administration
+func adminCategories(categories []models.Category, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats, logList []models.Log) {
 	data := struct {
 		PageName    string
 		Categories  []models.Category
 		CurrentUser models.UserLoggedIn
 		Stats       models.Stats
+		LogList     []models.Log
 	}{
 		PageName:    "Administration des catégories",
 		Categories:  categories,
 		CurrentUser: currentUser,
 		Stats:       stats,
+		LogList:     logList,
 	}
 
 	// Si un formulaire (créer, modifier ou supprimer) a été utilisé
@@ -265,18 +280,20 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 	}
 }
 
-// Page admin de la liste des utilisateurs
-func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats) {
+// Page la liste des utilisateurs du panneau d'administration
+func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats, logList []models.Log) {
 	data := struct {
 		PageName    string
 		Users       []models.User
 		CurrentUser models.UserLoggedIn
 		Stats       models.Stats
+		LogList     []models.Log
 	}{
 		PageName:    "Administrer les utilisateurs",
 		Users:       users,
 		CurrentUser: currentUser,
 		Stats:       stats,
+		LogList:     logList,
 	}
 
 	// Si un formulaire (modifier, bannir, supprimer) a été envoyé
@@ -375,7 +392,8 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 	}
 }
 
-func adminHome(categories []models.Category, topics []models.Topic, stats models.Stats, users []models.User, w http.ResponseWriter, currentUser models.UserLoggedIn, postList []models.LastPost) {
+// Page principale du panneau d'administration
+func adminHome(categories []models.Category, topics []models.Topic, stats models.Stats, users []models.User, w http.ResponseWriter, currentUser models.UserLoggedIn, postList []models.LastPost, logList []models.Log) {
 	data := struct {
 		PageName    string
 		Categories  []models.Category
@@ -384,6 +402,7 @@ func adminHome(categories []models.Category, topics []models.Topic, stats models
 		Stats       models.Stats
 		PostList    []models.LastPost
 		CurrentUser models.UserLoggedIn
+		LogList     []models.Log
 	}{
 		PageName:    "Panneau d'administration",
 		Categories:  categories,
@@ -392,6 +411,7 @@ func adminHome(categories []models.Category, topics []models.Topic, stats models
 		Stats:       stats,
 		PostList:    postList,
 		CurrentUser: currentUser,
+		LogList:     logList,
 	}
 
 	pageToLoad := template.Must(template.New("admin.html").Funcs(funcShort).ParseFiles("templates/admin/admin.html",
@@ -408,6 +428,81 @@ func adminHome(categories []models.Category, topics []models.Topic, stats models
 	}
 }
 
+// Page logs du panneau d'administration
+func adminLogs(r *http.Request, w http.ResponseWriter, currentUser models.UserLoggedIn, stats models.Stats, logList []models.Log) {
+	data := struct {
+		PageName    string
+		Stats       models.Stats
+		CurrentUser models.UserLoggedIn
+		LogList     []models.Log
+	}{
+		PageName:    "Panneau d'administration",
+		Stats:       stats,
+		CurrentUser: currentUser,
+		LogList:     logList,
+	}
+
+	if r.Method == "POST" {
+
+		switch r.FormValue("action") {
+		case "delete":
+			stringID := r.FormValue("logID")
+			logID, err := strconv.Atoi(stringID)
+			if err != nil {
+				utils.InternalServError(w)
+				return
+			}
+			logs.DeleteLog(logID)
+		case "answer":
+			// Récupération des données du formulaire
+			answer := r.FormValue("answer")
+			message := r.FormValue("logmessage")
+			receiver := r.FormValue("receiver")
+			receiverID, _ := strconv.Atoi(receiver)
+			date := getdata.FormatDate(r.FormValue("date"))
+
+			// Préparation de la notification
+			notif := fmt.Sprintf("Vous avez reçu une réponse à votre signalement du %s : %s.", date, answer)
+			logs.AddNotificationToDatabase("ANSWER", receiverID, notif)
+			logMsg := fmt.Sprintf("ADMIN : Réponse envoyé au signalement du %s  par %s : %s", date, currentUser.Username, answer)
+			logs.AddLogsToDatabase(logMsg)
+
+			err := logs.MarkAsHandled(message, receiverID)
+			if err != nil {
+				utils.InternalServError(w)
+				return
+			}
+		}
+
+		// Redirection avec les données mises à jour
+		http.Redirect(w, r, "/admin/logs", http.StatusSeeOther)
+	}
+
+	pageToLoad, err := template.ParseFiles(
+		"templates/admin/logs.html",
+		"templates/admin/adminheader.html",
+		"templates/admin/adminsidebar.html",
+		"templates/initpage.html")
+
+	if err != nil {
+		logMsg := fmt.Sprintf("ERREUR : <adminhandler.go> Erreur dans la génération du template adminLogs : %v", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
+		return
+	}
+
+	// Lancement de la page
+	err = pageToLoad.Execute(w, data)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la lecture du template adminLogs : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
+		return
+	}
+
+}
+
+// Fonction pour récupérer le pseudo à partir de l'ID
 func convertIDtoUsername(stringID string) (string, error) {
 	ID, err := strconv.Atoi(stringID)
 

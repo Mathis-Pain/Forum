@@ -50,7 +50,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -59,7 +59,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for i := 0; i < len(category.Topics); i++ {
-		category.Topics[i].Messages = getdata.FormatDate(category.Topics[i].Messages)
+		category.Topics[i].Messages = getdata.FormatDateAllMessages(category.Topics[i].Messages)
 	}
 
 	// --- Gestion des erreurs de login ---
@@ -85,17 +85,19 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	// --- Renvoi des données ---
 
 	data := struct {
-		PageName    string
-		Category    models.Category
-		Categories  []models.Category
-		LoginErr    string
-		CurrentUser models.UserLoggedIn
+		PageName      string
+		Category      models.Category
+		Categories    []models.Category
+		LoginErr      string
+		CurrentUser   models.UserLoggedIn
+		Notifications models.Notifications
 	}{
-		PageName:    category.Name,
-		Category:    category,
-		Categories:  categories,
-		LoginErr:    loginErr,
-		CurrentUser: currentUser,
+		PageName:      category.Name,
+		Category:      category,
+		Categories:    categories,
+		LoginErr:      loginErr,
+		CurrentUser:   currentUser,
+		Notifications: notifications,
 	}
 
 	err = CatHtml.Execute(w, data)

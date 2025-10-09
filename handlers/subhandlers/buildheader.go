@@ -13,12 +13,12 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
-func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.Category, models.UserLoggedIn, error) {
+func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Notifications, []models.Category, models.UserLoggedIn, error) {
 	categories, err := CategoriesDropDownMenu()
 	if err != nil && err != sql.ErrNoRows {
 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
 		logs.AddLogsToDatabase(logMsg)
-		return nil, models.UserLoggedIn{}, err
+		return models.Notifications{}, nil, models.UserLoggedIn{}, err
 	}
 
 	var currentUser models.UserLoggedIn
@@ -32,18 +32,24 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.C
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
 			logs.AddLogsToDatabase(logMsg)
-			return categories, currentUser, err
+			return models.Notifications{}, categories, currentUser, err
 		}
 		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
 			logs.AddLogsToDatabase(logMsg)
-			return categories, currentUser, err
+			return models.Notifications{}, categories, currentUser, err
 		}
-		return categories, currentUser, nil
 	}
 
-	return categories, currentUser, nil
+	notifications, err := logs.DisplayNotifications(currentUser.ID)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des notifications :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return models.Notifications{}, categories, currentUser, err
+	}
+
+	return notifications, categories, currentUser, nil
 
 }
 

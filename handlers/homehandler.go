@@ -45,7 +45,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -76,17 +76,19 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	// --- Structure de données ---
 
 	data := struct {
-		PageName    string
-		LoginErr    string
-		Posts       []models.LastPost
-		Categories  []models.Category
-		CurrentUser models.UserLoggedIn
+		PageName      string
+		LoginErr      string
+		Posts         []models.LastPost
+		Categories    []models.Category
+		CurrentUser   models.UserLoggedIn
+		Notifications models.Notifications
 	}{
-		PageName:    "Petites victoires",
-		LoginErr:    loginErr,
-		Posts:       lastPosts,
-		Categories:  categories,
-		CurrentUser: currentUser,
+		PageName:      "Petites victoires",
+		LoginErr:      loginErr,
+		Posts:         lastPosts,
+		Categories:    categories,
+		CurrentUser:   currentUser,
+		Notifications: notifications,
 	}
 
 	// --- Sinon : Renvoi des données de base au template ---

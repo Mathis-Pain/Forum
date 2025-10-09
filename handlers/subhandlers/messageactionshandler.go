@@ -65,8 +65,10 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 			utils.InternalServError(w)
 			return
 		}
-		logMsg := fmt.Sprintf("REQUEST : Le message n°%d a été signalé par %s pour la raison suivante : %s\n", postID, username, warnReason)
+		logMsg := fmt.Sprintf("WARN : Le message n°%d a été signalé par %s pour la raison suivante : %s\n", postID, username, warnReason)
 		logs.AddLogsToDatabase(logMsg)
+		AddSenderID(logMsg, username)
+
 		url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
@@ -127,4 +129,30 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		utils.StatusBadRequest(w)
 		return
 	}
+}
+
+func AddSenderID(logMessage, username string) error {
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		logMsg := fmt.Sprintf("ERREUR : <messageactionshandler> Erreur à l'ouverture de la base de données : %v\n", err)
+		logs.AddLogsToDatabase(logMsg)
+		return err
+	}
+	defer db.Close()
+
+	user, err := getdata.GetUserInfoFromLogin(db, username)
+	if err != nil {
+		return err
+	}
+
+	sqlUpdate := `UPDATE logs SET sender = ? WHERE message = ?`
+
+	_, err = db.Exec(sqlUpdate, user.ID, logMessage)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <logs.go> Erreur dans l'ajout de l'ID du modérateur :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return err
+	}
+
+	return nil
 }

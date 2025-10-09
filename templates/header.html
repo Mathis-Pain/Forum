@@ -17,6 +17,31 @@
           </ul>
         </li>
 
+        <!-- Notifications -->
+         <div class="notif">{{if .Notifications}} 
+          <div id="triangle" class="is-hidden"></div>
+          <span title="Vous avez {{.Notifications.NotRead}} notifications non lues" style="cursor: pointer;"  onclick="DisplayNotif()">📬</span>
+          <div class="notif-block is-hidden" id="see-notifications">{{range .Notifications.Notifs}}
+            <span  class="notif-element {{if .Read}}notif-read{{end}}">{{.NotifMessage}} 
+              
+            <form method="POST">
+                <input type="hidden" name="notifID" value="{{.ID}}">
+              {{if not .Read}} 
+              <button type="submit" action="markread" title="Marquer comme lu">👀</button> 
+            {{end}} 
+              <button type="submit" action="delete" title="Supprimer">🚫</button>
+              </form>
+              
+          </span>
+
+            {{end}}
+          </div>
+          {{else}}
+          <span title="Vous n'avez aucune notification">📭</span>
+          
+        {{end}}
+        </div>
+
         {{if .CurrentUser.LogStatus}} 
         <li class="dropdown">
         <button class="login-btn user-actions" style="cursor: context-menu;">
@@ -34,6 +59,21 @@
         </button>
         {{end}}
       </nav>
+
+      <script>function DisplayNotif() {
+        const notifList = document.getElementById("see-notifications")
+        const triangle = document.getElementById("triangle")
+
+        if (notifList.classList.contains("is-hidden")) {
+          notifList.classList.remove("is-hidden")
+          triangle.classList.remove("is-hidden")
+        } else {
+          notifList.classList.add("is-hidden")
+          triangle.classList.add("is-hidden")
+        }
+
+       }
+</script>
     </header>
 
      <!-- Modal de connexion -->
@@ -42,7 +82,7 @@
     </div>
 
       {{if  .LoginErr}}
-    <script>
+    <script>       
        document.getElementById("loginModal").style.display = "block";
     </script>
        {{end}}

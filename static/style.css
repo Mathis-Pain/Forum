@@ -23,7 +23,7 @@
 }
 /* #endregion */
 
-/* #region **** Généralités de page u site */
+/* #region **** Généralités de page du site */
 * {
   margin: 0;
   padding: 0;
@@ -331,7 +331,8 @@ details {
 /* Quand la section est active */
 .userlist span,
 .catlist span,
-.topiclist span {
+.topiclist span, 
+.loglist span {
   color: var(--color-highlight);
   margin: 10px 0px 10px 25px;
   padding-left: 15px;
@@ -350,9 +351,10 @@ summary {
 }
 
 summary:before {
-  content: ">";
+  content: "➤ ";
   position: absolute;
-  left: -15px;
+  left: -17px;
+  top:7px;
   transition: transform 0.3s ease;
 }
 
@@ -467,11 +469,11 @@ td {
   vertical-align: top;
 }
 
-.three-col td {
+.three-col th {
   width:33%;
 }
 
-.four-col td {
+.four-col th {
   width:25%;
 }
 
@@ -510,6 +512,13 @@ textarea.admin-input {
   max-height:80px;
   overflow: auto;
   white-space: pre-wrap;
+}
+
+.admin-link {
+  font-size: 0.8em;
+  display: block!important;
+  margin: 5px 15px 0px 0px;
+  text-align: right;
 }
 
 /* Bouton "Ajouter une catégorie */
@@ -1038,6 +1047,68 @@ a.post-text:hover{
   z-index: 10;
 }
 
+/* #region **** Notifications */
+.notif {
+  position: relative;
+}
+
+.notif #triangle {
+   width: 0px;
+   height: 0px;
+   border-style: solid;
+   border-width: 0 19.5px 12px 19.5px;
+   border-color: transparent transparent var(--color-dropdown) transparent;
+   transform: rotate(0deg);
+   position: absolute;
+   top: 40px;
+  left:50%;
+  transform: translateX(-50%);
+}
+
+.notif-block {
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  top:50px;
+  width:30vw;
+  min-width: 250px;
+  max-width:400px;
+  max-height:50vh;
+  overflow: auto;
+  border-radius: 5px;
+  z-index: 900;
+}
+
+.notif-element {
+  display: flex;
+  background: var(--color-highlight);
+  color:var(--color-headerback);
+  text-align: center;
+  padding:5px 10px;
+  min-height:60px;
+  height:fit-content
+}
+
+.notif-read {
+  background: var(--color-dropdown);
+  color:var(--color-subtitle)
+}
+
+.notif-block form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.notif-block form button {
+  border: none;
+  background-color: var(--color-headerback);
+  padding: 3px;
+  border-radius: 3px;
+  margin:2px;
+}
+
+/* #endregion */
 
 /* #region **** Messages d'erreur et page d'inscription*/
 /* Titre des messages d'erreur */

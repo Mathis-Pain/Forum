@@ -1,39 +1,49 @@
 {{define "AdminSidebar"}}
  <!-- Sidebar -->
         <div class="sidebar" style="flex-wrap: 0;">
-            <a href="/admin" class="simple-link">Gérer le forum</a>
+            <a href="/admin" class="simple-link">Panneau d'administration</a>
             
             <!-- Menu déroulant Gestion des posts -->
             <details class="topiclist">
-                <summary>Gestion des sujets</summary>
+                <summary> Gestion des sujets</summary>
                 <div class="admin-list menu-item"> Nombre total de sujets : {{.Stats.TotalTopics}}</div>
                 <div class="admin-list menu-item"> Dernier sujet ouvert : {{.Stats.LastTopic}}</div>
-                <a href="topiclist" class="menu-item topiclist">Gérer les sujets</a>
-                <span class="menu-item is-hidden" title="Page actuelle"> Gérer les sujets</span>
+                <a href="topiclist" class="menu-item topiclist">➤ Gérer les sujets</a>
+                <span class="menu-item is-hidden" title="Page actuelle">Gérer les sujets</span>
             </details>
             
             <!-- Menu déroulant Gestion des catégories -->
             <details class="catlist">
-                <summary>Gestion des categories</summary>
+                <summary> Gestion des categories</summary>
 
                 <div class="admin-list menu-item"> Nombre total de catégories : {{.Stats.TotalCats}}</div>
                     <div class="admin-list menu-item"> Dernière catégorie créée : {{.Stats.LastCat}}
                     </div>
-                <a href="catlist" class="menu-item admin-cat">> Gérer les catégorie</a>
+                <a href="catlist" class="menu-item admin-cat">➤ Gérer les catégories</a>
 
                 <span class="menu-item is-hidden" title="Page actuelle">Gérer les catégories</span>
             </details>
             
             <!-- Menu déroulant Gestion des users -->
             <details class="userlist">
-                <summary>Gestion des utilisateurs</summary>
+                <summary> Gestion des utilisateurs</summary>
                 <div class="admin-list menu-item">Nombre total d'utilisateurs : {{.Stats.TotalUsers}}</div>
                       <div class="admin-list menu-item">Dernier utilisateur enregistré : {{.Stats.LastUser}}
                     </div>
-                <a href="userlist" class="menu-item">> Gérer les utilisateurs</a>
+                <a href="userlist" class="menu-item">➤ Gérer les utilisateurs</a>
                  <span class="menu-item is-hidden" title="Page actuelle">Gérer les utilisateurs</span>
                 
             </details>
+
+             <!-- Menu déroulant Gestion du forum -->
+            <details class="loglist">
+                <summary> Gestion du forum</summary>
+                <div class="admin-list menu-item">Logs enregistrés :  {{len .LogList}} </div>
+                <a href="logs" class="menu-item">➤ Voir les logs du forum</a>
+                 <span class="menu-item is-hidden" title="Page actuelle">Voir les logs du forum</span>
+                
+            </details>
+
             
         </div>
 

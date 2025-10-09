@@ -42,7 +42,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// on charge les categories et l'utilisateur pour construire le header
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -103,17 +103,19 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 	pagename := "Ouvrir un nouveau sujet - " + currentCategory.Name
 
 	data := struct {
-		PageName    string
-		Category    models.Category
-		CurrentUser models.UserLoggedIn
-		Categories  []models.Category
-		LoginErr    string
+		PageName      string
+		Category      models.Category
+		CurrentUser   models.UserLoggedIn
+		Categories    []models.Category
+		LoginErr      string
+		Notifications models.Notifications
 	}{
-		PageName:    pagename,
-		Category:    currentCategory,
-		CurrentUser: currentUser,
-		Categories:  categories,
-		LoginErr:    "",
+		PageName:      pagename,
+		Category:      currentCategory,
+		CurrentUser:   currentUser,
+		Categories:    categories,
+		LoginErr:      "",
+		Notifications: notifications,
 	}
 
 	err = CreatTopicHtml.Execute(w, data)

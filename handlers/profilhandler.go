@@ -30,7 +30,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	// Création du header
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur dans la construction du header : %v", err)
 		logs.AddLogsToDatabase(logMsg)
@@ -87,7 +87,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(myTopics); i++ {
 		currentTopic = append(currentTopic, models.Message{})
 		currentTopic[i].Created = myTopics[i].Created
-		currentTopic = getdata.FormatDate(currentTopic)
+		currentTopic = getdata.FormatDateAllMessages(currentTopic)
 		myTopics[i].Created = currentTopic[i].Created
 	}
 
@@ -104,6 +104,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		LoginErr      string
 		Categories    []models.Category
 		CurrentUser   models.UserLoggedIn
+		Notifications models.Notifications
 	}{
 		PageName:      pageName,
 		User:          user,
@@ -114,6 +115,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 		LoginErr:      "",
 		Categories:    categories,
 		CurrentUser:   currentUser,
+		Notifications: notifications,
 	}
 
 	err = ProfilHtml.Execute(w, data)
