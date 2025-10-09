@@ -10,6 +10,7 @@ import (
 	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -26,7 +27,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return
 	}
 	defer db.Close()
@@ -34,7 +35,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	categories, _, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -58,7 +59,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		// GET : afficher le formulaire vide
 		if err := registrationHtml.Execute(w, data); err != nil {
 			logMsg := fmt.Sprint("Erreur dans l'affichage de la page d'inscription :", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 		}
 		return
@@ -126,7 +127,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil && err != sql.ErrNoRows {
 		logMsg := fmt.Sprintf("ERREUR : Impossible de compter les utilisateurs existants : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -157,6 +158,6 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	// --- Succès : redirection vers la page d'accueil ---
 	logMsg := fmt.Sprintln("USER : Un nouvel utilisateur s'est inscrit : ", username)
-	utils.AddLogsToDatabase(logMsg)
+	logs.AddLogsToDatabase(logMsg)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

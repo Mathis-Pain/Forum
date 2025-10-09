@@ -7,6 +7,7 @@ import (
 
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +15,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <logouthandler.go> Erreur lors de la récupération de la session :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -23,7 +24,7 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <logouthandler.go> Erreur à l'ouverture de la base de données :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

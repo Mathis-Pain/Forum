@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -29,7 +30,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur à l'exécution de GetLastPosts: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -38,7 +39,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur à l'ouverture de la base de données : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -47,7 +48,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -57,7 +58,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur à l'exécution de GetSessionFromRequest: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -66,7 +67,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		loginErr, err = getdata.GetLoginErr(session)
 		if err != nil {
 			logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur à l'exécution de GetLoginErr: %v", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
@@ -92,7 +93,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	err = HomeHtml.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <homehandler.go> Erreur à l'exécution de template <home.html>: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.NotFoundHandler(w)
 		return
 	}

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour créer un nouveau sujet dans une catégoire
@@ -27,7 +27,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	err = addTopicToDatabase(db, newtopic, userID)
 	if err != nil {
 		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -35,7 +35,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	newtopic.TopicID, err = getTopicID(db, newtopic.Name, catID)
 	if err != nil {
 		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans récupération de l'ID du sujet pour créer le premier message :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -43,7 +43,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	err = NewPost(userID, newtopic.TopicID, message, "newtopic")
 	if err != nil {
 		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans l'ajout du message :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func RequestsHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +20,7 @@ func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 			db, err := sql.Open("sqlite3", "./data/forum.db")
 			if err != nil {
 				logMsg := fmt.Sprintf("ERREUR : <requesthandler.go> Could not open database : %v\n", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -33,13 +34,13 @@ func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <requesthandler.go> Erreur dans l'envoi de la requête à l'administrateur, ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
 
 			logMsg := fmt.Sprintf("REQUEST : L'utilisateur %s (n°%d) a demandé à rejoindre la modération.", username, userID)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 
 			http.Redirect(w, r, url, http.StatusSeeOther)
 		}

@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 var CatHtml = template.Must(template.New("categorie.html").Funcs(funcMap).ParseFiles(
@@ -30,7 +31,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -44,7 +45,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la récupération de la catégorie : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -52,7 +53,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -66,7 +67,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'exécution de GetSessionFromRequest: %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -75,7 +76,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		loginErr, err = getdata.GetLoginErr(session)
 		if err != nil {
 			logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'exécution de GetLoginErr: %v\n", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
@@ -100,7 +101,7 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	err = CatHtml.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur à l'exécution du template <categorie.html> : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

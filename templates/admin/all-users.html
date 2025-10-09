@@ -34,6 +34,7 @@
                             <form method="POST">
                                 <input type="hidden" name="userID" value="{{.ID}}">
                                 <input type="hidden" name="previous" value="{{.Username}}">
+                                <input type="hidden" name="current" value="{{.Status}}">
                             <td><span class="userfield"> {{.Username}} </span><input type="text" name="username" value="{{.Username}}" class="is-hidden user-edit admin-input"></td>
                             <td> 
                                <span class="userfield">{{.Status}} </span>
@@ -44,7 +45,7 @@
                                     <option value="Modérateur" {{if (eq .Status "Modérateur")}} selected{{end}}>Modérateur</option>
                                     <option value="Admin" {{if (eq .Status "Admin")}} selected{{end}}>Admin</option>
                                     {{else}}
-                                    <option value="Banni">Banni</option>
+                                    <option value="Banni" {{if (eq .Status "Banni")}} selected{{end}}>Banni</option>
                                     {{end}}
                                 </select>
                                

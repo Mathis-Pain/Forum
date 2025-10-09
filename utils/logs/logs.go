@@ -1,4 +1,4 @@
-package utils
+package logs
 
 import (
 	"database/sql"

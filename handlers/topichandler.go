@@ -13,6 +13,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 	admin "github.com/Mathis-Pain/Forum/utils/adminfuncs"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 var TopicHtml = template.Must(template.New("topic.html").ParseFiles(
@@ -32,7 +33,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return
 	}
 	defer db.Close()
@@ -44,7 +45,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'exécution de GetTopicInfo: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -66,7 +67,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -74,7 +75,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'exécution de GetSessionFromRequest: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -83,7 +84,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 		loginErr, err = getdata.GetLoginErr(session)
 		if err != nil {
 			logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'exécution de GetLoginErr: %v", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
@@ -92,7 +93,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	_, allTopics, err := admin.GetAllTopics(categories, db)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <topichandler.go> Erreur dans la récupération de la liste des sujets : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -118,7 +119,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	err = TopicHtml.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'exécution de template <topic.html> : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

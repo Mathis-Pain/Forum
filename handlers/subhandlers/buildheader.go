@@ -10,13 +10,14 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 	admin "github.com/Mathis-Pain/Forum/utils/adminfuncs"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.Category, models.UserLoggedIn, error) {
 	categories, err := CategoriesDropDownMenu()
 	if err != nil && err != sql.ErrNoRows {
 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return nil, models.UserLoggedIn{}, err
 	}
 
@@ -30,13 +31,13 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.C
 		currentUser.Username, currentUser.ID, err = utils.GetUserNameAndIDByCookie(r, db)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			return categories, currentUser, err
 		}
 		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			return categories, currentUser, err
 		}
 		return categories, currentUser, nil
@@ -52,7 +53,7 @@ func CheckLogStatus(r *http.Request) bool {
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <buildheader.go> Erreur dans l'exécution de GetSessionFromRequest: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return false
 	}
 	if session.UserID != 0 {

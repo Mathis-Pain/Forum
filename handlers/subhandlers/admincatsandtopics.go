@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour modifier une catégorie
@@ -52,7 +52,7 @@ func DeleteCatHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <admincatsandtopics.go> Erreur dans la récupération de la catégorie à supprimer")
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -85,7 +85,7 @@ func DeleteCatHandler(stringID string) error {
 		err := AdminDeleteMessages(db, topicList[i].TopicID)
 		if err != nil {
 			logMsg := fmt.Sprintln("ERREUR : <admincatsandtopics.go> Erreur dans la suppression des messages")
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			return err
 		}
 	}
@@ -189,7 +189,7 @@ func DeleteTopicHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <admincatsandtopics.go> Erreur dans la récupération du sujet à supprimer", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 	admin "github.com/Mathis-Pain/Forum/utils/adminfuncs"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 var funcShort = template.FuncMap{
@@ -25,7 +26,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur à l'ouverture de la base de données : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -35,7 +36,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf(" ERREUR : <adminhandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -52,7 +53,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la vérification des accréditations :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -64,7 +65,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	categories, topics, err := admin.GetAllTopics(categories, db)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la récupération des sujets : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -77,7 +78,7 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 	lastmonthpost, stats, users, err := admin.GetStats(topics)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminghandler.go> Erreur dans la récupération des statistiques : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -135,7 +136,7 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 			err := subhandlers.EditTopicHandler(r, topics)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminTopics> Erreur dans la modification du sujet : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -145,7 +146,7 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 			err := subhandlers.DeleteTopicHandler(stringID)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminTopics> Erreur dans la suppression du sujet : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -161,7 +162,7 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 		"templates/initpage.html")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <adminhandler.go> Erreur dans la génération du template adminTopics : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -170,7 +171,7 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 	err = pageToLoad.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur à l'ouverture de la page adminTopic :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -197,29 +198,29 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 			err := subhandlers.DeleteCatHandler(stringID)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminCategories> Erreur dans la suppression de la catégorie : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
 			logMsg := fmt.Sprintf("ADMIN : La catégorie %s a été supprimée par %s", stringID, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		} else if newcat := r.FormValue("newcatname"); newcat != "" {
 			// Si on crée une nouvelle catégorie
 			err := subhandlers.AddCatHandler(r)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminCategories> Erreur dans la création de la catégorie : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
 			logMsg := fmt.Sprintf("ADMIN : %s a créé une nouvelle catégorie : %s", currentUser.Username, newcat)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		} else {
 			// Verifie si un formulaire de modification de catégorie a été envoyé
 			categ, isModified, err := subhandlers.AdminIsCatModified(r, categories)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminCategories> Erreur dans la vérification des modifications de la catégorie : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -229,13 +230,13 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 				err := subhandlers.EditCatHandler(r, categ)
 				if err != nil {
 					logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminCategories> Erreur dans la modification de la catégorie : ", err)
-					utils.AddLogsToDatabase(logMsg)
+					logs.AddLogsToDatabase(logMsg)
 					utils.InternalServError(w)
 					return
 				}
 			}
 			logMsg := fmt.Sprintf("ADMIN : La catégorie %s a été modifiée par %s", categ.Name, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		}
 
 		// Renvoie la page avec les modifications
@@ -249,7 +250,7 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 		"templates/initpage.html")
 	if err != nil {
 		logMsg := fmt.Sprintf(" ERREUR : <adminhandler.go> Erreur dans la génération du template adminCategories : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -258,7 +259,7 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 	err = pageToLoad.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf(" ERREUR : <adminhandler.go> Erreur dans le chargement du template adminCategories : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -285,26 +286,20 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 		switch r.FormValue("action") {
 		case "edit":
 			// Si un compte utilisateur est modifié
-			username := r.FormValue("username")
-			previous := r.FormValue("previous")
-			err := subhandlers.UserEditHandler(r, users, currentUser, previous)
+			err := subhandlers.UserEditHandler(r, users, currentUser)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminUsers> Erreur dans la modification de l'utilisateur : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
-			if username != previous {
-				username += " (anciennement " + previous + " )"
-			}
-			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s", username, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+
 		case "ban":
 			// Si on clique pour bannir un utilisateur
 			err := subhandlers.BanUserHandler(stringID)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminUsers> Erreur dans le bannissement de l'utilisateur : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -315,13 +310,13 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				return
 			}
 			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été banni par %s", username, stringID, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		case "unban":
 			// Si on clique pour débannir un utilisateur
 			err := subhandlers.UnbanUserHandler(stringID)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminUsers> Erreur dans le débannissement de l'utilisateur : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -332,13 +327,13 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				return
 			}
 			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été débanni par %s", username, stringID, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		case "delete":
 			// Si on supprime un utilisateur
 			err := subhandlers.DeleteUserHandler(stringID)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminUsers> Erreur dans la suppression de l'utilisateur : ", err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				utils.InternalServError(w)
 				return
 			}
@@ -349,7 +344,7 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 				return
 			}
 			logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s (ID : %s) a été supprimé par %s", username, stringID, currentUser.Username)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 		}
 
 		// Redirection avec les données mises à jour
@@ -365,7 +360,7 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <adminhandler.go> Erreur dans la génération du template adminUsers : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -374,7 +369,7 @@ func adminUsers(users []models.User, r *http.Request, w http.ResponseWriter, cur
 	err = pageToLoad.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la lecture du template adminUsers : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -407,7 +402,7 @@ func adminHome(categories []models.Category, topics []models.Topic, stats models
 	err := pageToLoad.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans la lecture du template adminHome : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

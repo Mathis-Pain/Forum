@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -14,7 +14,7 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	_, err := db.Exec(sqlUpdate, postID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -24,7 +24,7 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	_, totalUsers, err := GetAllUsers()
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <adminmessage.go, GetStats> Erreur dans la récupération des utilisateurs", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	for i := 1; i <= totalUsers; i++ {
@@ -44,7 +44,7 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 			_, err := db.Exec(sqlUpdate, topicID)
 			if err != nil {
 				logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
-				utils.AddLogsToDatabase(logMsg)
+				logs.AddLogsToDatabase(logMsg)
 				return err
 			}
 			logMsg += fmt.Sprintf(" Le sujet %d ne contient plus aucun message et a été supprimé.", topicID)
@@ -53,7 +53,7 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 		}
 	}
 
-	utils.AddLogsToDatabase(logMsg)
+	logs.AddLogsToDatabase(logMsg)
 
 	return nil
 }

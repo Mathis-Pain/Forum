@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour mettre à jour le nombre de likes
@@ -13,7 +13,7 @@ func ChangeLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
@@ -82,7 +82,7 @@ func ChangeDisLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()

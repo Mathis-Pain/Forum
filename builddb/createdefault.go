@@ -8,31 +8,26 @@ import (
 )
 
 func DefaultDatabase(db *sql.DB) {
-	// Check if the passed-in connection is valid
 	if db == nil {
 		log.Print("<createdefault.go> Database connection is nil.")
 		return
 	}
 
-	// This helper function centralizes the logic for executing a query and handling errors.
-	// It's a much cleaner way to avoid repeating the same logic for every query.
 	execAndLog := func(query string) {
 		_, err := db.Exec(query)
 
-		// Check the error immediately and handle it before trying to use `result`.
 		if err != nil {
 			if strings.Contains(err.Error(), "UNIQUE constraint failed") {
 				fmt.Printf("ERREUR : <createdefault.go> Etape d'insertion ignorée : le rôle ou la catégorie existe déjà.")
 			} else {
 				log.Printf("<createdefault.go> Fatal error during insertion: %v\n", err)
-				panic(err) // Panic on a fatal error so you can see the full stack trace.
+				panic(err)
 			}
-			return // Don't proceed if there was an error
+			return
 		}
 
 	}
 
-	// Inserts
 	log.Println("INIT : Création de la base de données initiale : Création des rôles")
 	execAndLog(`INSERT INTO role (name) VALUES ('ADMIN')`)
 	execAndLog(`INSERT INTO role (name) VALUES ('MODO')`)

@@ -9,6 +9,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -47,7 +48,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	session, err := sessions.GetSession(cookie.Value)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <likesdislikes.go> Erreur dans la récupération de session : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return 0, models.Message{}, err
 	}
 	userID := session.UserID
@@ -56,7 +57,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <likesdislikes.go> Erreur à l'ouverture de la base de données : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return 0, models.Message{}, err
 	}
 	defer db.Close()
@@ -64,7 +65,7 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	post, err := postactions.GetMessageLikesAndDislikes(db, postID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return userID, models.Message{}, err
 	}
 

@@ -9,6 +9,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils"
 	admin "github.com/Mathis-Pain/Forum/utils/adminfuncs"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -17,7 +18,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 	topicID, err := strconv.Atoi(stringID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la récupération de l'ID du sujet : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -27,7 +28,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 	postID, err := strconv.Atoi(stringID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la récupération de l'ID du message : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -35,7 +36,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messageactionshandler> Erreur à l'ouverture de la base de données : %v\n", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return
 	}
 	defer db.Close()
@@ -47,12 +48,12 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		err := admin.AdminDeleteMessage(topicID, postID, db)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la suppression du message : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
 		logMsg := fmt.Sprintf("ADMIN : Le message %d a été supprimé par %s.", postID, username)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	case "warn":
@@ -60,12 +61,12 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		err := admin.ModSignalMessage(postID, db)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans le signalement du message : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
 		logMsg := fmt.Sprintf("REQUEST : Le message n°%d a été signalé par %s pour la raison suivante : %s\n", postID, username, warnReason)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
@@ -73,12 +74,12 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		err := admin.AdminCancelSignal(postID, db)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans l'annulation du signalement' : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
 		logMsg := fmt.Sprintf("ADMIN : %s a annulé le signalement du message n°%d.\n", username, postID)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
@@ -87,14 +88,14 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		err := admin.EditExistingMessage(postID, db, content)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la modification du message' : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
 		url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 		topic, _ := getdata.GetTopicInfo(db, topicID)
 		logMsg := fmt.Sprintf("USER : %s a modifié le contenu du message n°%d (sur \"%s\")", username, postID, topic.Name)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
 	case "move":
@@ -102,7 +103,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		newtopicID, err := strconv.Atoi(stringID)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la récupération de l'ID du nouveau sujet : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.StatusBadRequest(w)
 			return
 		}
@@ -110,19 +111,19 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		err = admin.MoveMessage(newtopicID, postID, db)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans le déplacement du message' : ", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.InternalServError(w)
 			return
 		}
 		topic, _ := getdata.GetTopicInfo(db, newtopicID)
 		logMsg := fmt.Sprintf("ADMIN : Message n°%d déplacé par %s dans le sujet n°%d (%s)\n", postID, username, newtopicID, topic.Name)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		url := fmt.Sprintf("/topic/%d#%d", newtopicID, postID)
 		http.Redirect(w, r, url, http.StatusSeeOther)
 		return
 	default:
 		logMsg := fmt.Sprint("ERREUR : <messageactionshandler.go> Requête invalide sur la page message : ", r.FormValue("action"))
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.StatusBadRequest(w)
 		return
 	}

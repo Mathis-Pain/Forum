@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Vérifie si l'utilisateur n'a pas liké le post
@@ -96,7 +96,7 @@ func GetMessageLikesAndDislikes(db *sql.DB, postID int) (models.Message, error) 
 	err := row.Scan(&message.Likes, &message.Dislikes, &message.TopicID)
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return models.Message{}, err
 	}
 

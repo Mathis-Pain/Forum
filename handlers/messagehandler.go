@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -28,7 +29,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Erreur dans l'ouverture de la base de données : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -38,7 +39,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	intID, err := strconv.Atoi(ID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Erreur de convertion : ID du sujet invalide (%s)", ID)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -50,7 +51,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Erreur dans l'exécution de GetTopicInfo: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -58,7 +59,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -113,7 +114,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 	err = AnswerMessage.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <messagehandler.go> Could not execute template <answermessage.html>: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.NotFoundHandler(w)
 
 	}

@@ -2,9 +2,10 @@ package getdata
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func GetCatList() ([]models.Category, error) {
@@ -57,7 +58,8 @@ func GetCatDetails(db *sql.DB, catID int) (models.Category, error) {
 			sqlUpdate := `DELETE FROM topic WHERE id = ?`
 			stmt, err := db.Prepare(sqlUpdate)
 			if err != nil {
-				log.Print("ERREUR : <getcategories.go> Erreur dans la suppression du sujet : ", err)
+				logMsg := fmt.Sprint("ERREUR : <getcategories.go> Erreur dans la suppression du sujet : ", err)
+				logs.AddLogsToDatabase(logMsg)
 				return categ, err
 			}
 			defer stmt.Close()

@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func NewPost(userID, topicID int, message string, mode string) error {
@@ -27,14 +27,14 @@ func NewPost(userID, topicID int, message string, mode string) error {
 	err = row.Scan(&newpost.Author.Username, &newpost.Author.ProfilPic)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <newpost.go> : Impossible de récupérer les données de l'utilisateur %d : %v\n", userID, err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	err = addPostToDatabase(db, newpost, mode)
 
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <newpost.go> Erreur lors de la création du nouveau message : ", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -56,7 +56,7 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 	topic, _ := getdata.GetTopicInfo(db, newpost.TopicID)
 	if mode != "newtopic" {
 		logMsg := fmt.Sprintf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (ID : %d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 	}
 
 	return nil

@@ -155,12 +155,14 @@ document.querySelectorAll('.delete-btn').forEach(button => {
 
 document.querySelectorAll('.modal-cancel-btn').forEach(button => {
     button.addEventListener('click', (event) => {
-        event.preventDefault(); // Stop form submission if this button was type="submit" (it's not)
+        event.preventDefault();
         
         // Find the closest modal element
+        const form = event.target.closest('form');
         const modal = event.target.closest('.modal');
         
         if (modal) {
+            form.classList.remove('overall');
             modal.classList.add('is-hidden');
             modal.style.display = 'none';
         }

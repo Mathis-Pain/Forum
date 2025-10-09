@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour vérifier s'il y a eu une modification d'une catégorie par le formulaire
@@ -49,14 +49,14 @@ func AdminDeleteMessages(db *sql.DB, ID int) error {
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <adminback.go> Erreur dans la suppression du message n°%d : %v", ID, err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
 		logMsg := fmt.Sprint(err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 

@@ -10,6 +10,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 var ProfilHtml = template.Must(template.New("profil.html").ParseFiles(
@@ -22,7 +23,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <profilhandler.go> Erreur à l'ouverture de la base de données :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -32,7 +33,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -41,7 +42,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := getUserProfile(currentUser.Username, db)
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <profilhandler.go> Erreur dans la récupération des données utilisateur :", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -50,7 +51,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	userPosts, err := utils.GetUserPosts(user.ID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur à l'exécution de GetUserPosts: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -59,7 +60,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	likedPosts, err := utils.GetUserLikes(user.ID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur à l'exécution de GetUserLikes : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -67,7 +68,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	dislikedPosts, err := utils.GetUserDislikes(user.ID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur à l'exécution de GetUserDislikes : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -76,7 +77,7 @@ func ProfilHandler(w http.ResponseWriter, r *http.Request) {
 	myTopics, err := utils.GetUserTopics(user.ID)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <profilhandler.go> Erreur à l'exécution de GetUserTopics : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

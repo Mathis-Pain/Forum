@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -27,7 +28,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Could not open database : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -44,7 +45,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -76,7 +77,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		catID, err := strconv.Atoi(stringcatID)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <createtopichandler.go> L'ID de la catégorie n'est pas valide :", err)
-			utils.AddLogsToDatabase(logMsg)
+			logs.AddLogsToDatabase(logMsg)
 			utils.StatusBadRequest(w)
 			return
 		}
@@ -92,7 +93,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		categ, _ := getdata.GetCatDetails(db, catID)
 
 		logMsg := fmt.Sprintf("USER : Nouveau sujet ouvert dans la catégorie \"%s\" par %s : \"%s\"", categ.Name, username, topicName)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 
 		// Redirection vers la page de la catégorie
 		http.Redirect(w, r, fmt.Sprintf("/categorie/%d", catID), http.StatusSeeOther)
@@ -118,7 +119,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 	err = CreatTopicHtml.Execute(w, data)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <create-topic-handler.go> Erreur à l'exécution du template <create-topic.html>: %v", err)
-		utils.AddLogsToDatabase(logMsg)
+		logs.AddLogsToDatabase(logMsg)
 		utils.NotFoundHandler(w)
 
 	}
