@@ -1091,7 +1091,9 @@ a.post-text:hover{
 
 .notif-read {
   background: var(--color-dropdown);
-  color:var(--color-subtitle)
+  color:var(--color-subtitle);
+  font-size:0.9em;
+  font-style: italic;
 }
 
 .notif-block form {

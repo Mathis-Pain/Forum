@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
@@ -19,6 +20,28 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Not
 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
 		logs.AddLogsToDatabase(logMsg)
 		return models.Notifications{}, nil, models.UserLoggedIn{}, err
+	}
+
+	if r.Method == "POST" && r.FormValue("notif-action") != "" {
+		stringID := r.FormValue("notifID")
+		notifID, _ := strconv.Atoi(stringID)
+		switch r.FormValue("notif-action") {
+		case "markread":
+			err := logs.MarkAsRead(notifID)
+			if err != nil {
+				utils.InternalServError(w)
+				return models.Notifications{}, nil, models.UserLoggedIn{}, err
+			}
+		case "delete":
+			err := logs.DeleteNotif(notifID)
+			if err != nil {
+				utils.InternalServError(w)
+				return models.Notifications{}, nil, models.UserLoggedIn{}, err
+			}
+		default:
+			utils.StatusBadRequest(w)
+			return models.Notifications{}, nil, models.UserLoggedIn{}, err
+		}
 	}
 
 	var currentUser models.UserLoggedIn

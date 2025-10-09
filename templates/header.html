@@ -27,9 +27,9 @@
             <form method="POST">
                 <input type="hidden" name="notifID" value="{{.ID}}">
               {{if not .Read}} 
-              <button type="submit" action="markread" title="Marquer comme lu">👀</button> 
+              <button type="submit" name="notif-action" value="markread" title="Marquer comme lu">👀</button> 
             {{end}} 
-              <button type="submit" action="delete" title="Supprimer">🚫</button>
+              <button type="submit" name="notif-action" value="delete" title="Supprimer">🚫</button>
               </form>
               
           </span>

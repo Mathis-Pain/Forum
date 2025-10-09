@@ -32,7 +32,7 @@
                         <tr>
                             <td> {{.Date}}</td>
                             <td> <div>{{.LogMessage}}
-                                <a href="{{.MessageLink}}" class="admin-link" target="_blank">➤ Voir le message</a>
+                               {{if eq .LogType "WARN"}} <a href="{{.MessageLink}}" class="admin-link" target="_blank">➤ Voir le message</a> {{end}}
                             </div> </td>
                             <td> 
                                 <form method="POST">
@@ -50,11 +50,11 @@
                                 type="submit"
                                 action="accept"
                                 class="admin-btn"
-                                >Accepter</button>
+                                >👍 Accepter</button>
                                 <button
                                 type="submit"
                                 action="refuse"
-                                class="admin-btn">Refuser</button>
+                                class="admin-btn">👎 Refuser</button>
                                 {{else}}
                                 <input type="hidden" name="logmessage" value="{{.LogMessage}}">
                                 <input type="hidden" name="date" value="{{.Date}}">

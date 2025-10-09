@@ -116,7 +116,7 @@ func DeleteNotif(notifID int) error {
 	}
 	defer db.Close()
 
-	sqlUpdate := `DELETE FROM notifcations WHERE ID = ?`
+	sqlUpdate := `DELETE FROM notifications WHERE ID = ?`
 
 	_, err = db.Exec(sqlUpdate, notifID)
 	if err != nil {

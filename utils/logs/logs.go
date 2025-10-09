@@ -76,6 +76,8 @@ func DisplayLogs() ([]models.Log, error) {
 		}
 		if handled == 1 {
 			log.Handled = true
+		} else {
+			log.Handled = false
 		}
 		log.MessageLink, err = GetMessageLinkFromLog(log.LogMessage)
 		if err != nil {
@@ -132,22 +134,8 @@ func GetMessageLinkFromLog(log string) (string, error) {
 	}
 	defer db.Close()
 
-	var MessageID int
-	foundID := false
-
-	for _, char := range log {
-		if char == '°' {
-			foundID = true
-		}
-		if foundID {
-			if char >= '0' && char <= '9' {
-				MessageID *= 10
-				MessageID += int(char) - 48
-			}
-		}
-	}
-
-	if MessageID == 0 {
+	MessageID, err := GetIDFromLog(log)
+	if MessageID == 0 || err != nil {
 		return "", nil
 	}
 
@@ -156,6 +144,9 @@ func GetMessageLinkFromLog(log string) (string, error) {
 	sqlQuery := `SELECT topic_id FROM message WHERE id = ?`
 	row := db.QueryRow(sqlQuery, MessageID)
 	err = row.Scan(&topicID)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
 	if err != nil {
 		return "", err
 	}
@@ -164,4 +155,23 @@ func GetMessageLinkFromLog(log string) (string, error) {
 
 	return messageLink, nil
 
+}
+
+func GetIDFromLog(log string) (int, error) {
+	var ID int
+	foundID := false
+
+	for _, char := range log {
+		if char == '°' {
+			foundID = true
+		}
+		if foundID {
+			if char >= '0' && char <= '9' {
+				ID *= 10
+				ID += int(char) - 48
+			}
+		}
+	}
+
+	return ID, nil
 }
