@@ -146,7 +146,7 @@ func adminTopics(topics []models.Topic, categories []models.Category, r *http.Re
 	if r.Method == "POST" {
 		if name := r.FormValue("topicname"); name != "" {
 			// Si un sujet a été modifié
-			err := subhandlers.EditTopicHandler(r, topics)
+			err := subhandlers.EditTopicHandler(r, topics, currentUser.Username)
 			if err != nil {
 				logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminTopics> Erreur dans la modification du sujet : ", err)
 				logs.AddLogsToDatabase(logMsg)
@@ -453,6 +453,49 @@ func adminLogs(r *http.Request, w http.ResponseWriter, currentUser models.UserLo
 				return
 			}
 			logs.DeleteLog(logID)
+		case "refuse":
+			// Récupération des données du formulaire
+			message := r.FormValue("logmessage")
+			receiver := r.FormValue("receiver")
+			receiverID, err := strconv.Atoi(receiver)
+			if err != nil || receiverID == 0 {
+				receiverID, _ = logs.GetIDFromLog(message)
+				receiver = strconv.Itoa(receiverID)
+			}
+			logs.MarkAsHandled(message, receiverID)
+
+			notif := "Votre demande de rejoindre la modération a été refusée."
+			logs.AddNotificationToDatabase("ANSWER", receiverID, 0, notif)
+
+			refusedUser, _ := convertIDtoUsername(receiver)
+			logMsg := fmt.Sprintf("ADMIN : %s a refusé la demande de %s de rejoindre la modération", currentUser.Username, refusedUser)
+			logs.AddLogsToDatabase(logMsg)
+		case "accept":
+			// Récupération des données du formulaire
+			message := r.FormValue("logmessage")
+			receiver := r.FormValue("receiver")
+			receiverID, err := strconv.Atoi(receiver)
+			if err != nil || receiverID == 0 {
+				receiverID, _ = logs.GetIDFromLog(message)
+				receiver = strconv.Itoa(receiverID)
+			}
+			logs.MarkAsHandled(message, receiverID)
+
+			notif := "Votre demande de rejoindre la modération a été acceptée."
+			logs.AddNotificationToDatabase("ANSWER", receiverID, 0, notif)
+
+			err = subhandlers.PromoteToMod(receiverID)
+			if err != nil {
+				logMsg := fmt.Sprint("ERREUR : <adminhandler.go> Erreur dans l'ajout de l'utilisateur à la modération : ", err)
+				logs.AddLogsToDatabase(logMsg)
+				utils.InternalServError(w)
+				return
+			}
+
+			promoted, _ := convertIDtoUsername(receiver)
+			logMsg := fmt.Sprintf("ADMIN : %s a accepté la demande de %s de rejoindre la modération", currentUser.Username, promoted)
+			logs.AddLogsToDatabase(logMsg)
+
 		case "answer":
 			// Récupération des données du formulaire
 			answer := r.FormValue("answer")
@@ -476,6 +519,7 @@ func adminLogs(r *http.Request, w http.ResponseWriter, currentUser models.UserLo
 
 		// Redirection avec les données mises à jour
 		http.Redirect(w, r, "/admin/logs", http.StatusSeeOther)
+		return
 	}
 
 	pageToLoad, err := template.ParseFiles(

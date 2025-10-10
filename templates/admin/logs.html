@@ -45,20 +45,22 @@
                                         value="delete"
                                     >🚫 Supprimer le log</button>
                                 {{else}}
+                                <input type="hidden" name="logmessage" value="{{.LogMessage}}">
+                                <input type="hidden" name="receiver" value="{{.Requester}}">
                                 {{if eq .LogType "REQUEST"}}
                                 <button 
                                 type="submit"
-                                action="accept"
+                                name="action"
+                                value="accept"
                                 class="admin-btn"
                                 >👍 Accepter</button>
                                 <button
                                 type="submit"
-                                action="refuse"
+                                name ="action"
+                                value="refuse"
                                 class="admin-btn">👎 Refuser</button>
                                 {{else}}
-                                <input type="hidden" name="logmessage" value="{{.LogMessage}}">
                                 <input type="hidden" name="date" value="{{.Date}}">
-                                <input type="hidden" name="receiver" value="{{.Requester}}">
                                 <input type="text" name="answer" placeholder="Entrer une réponse" class="admin-input answer-mod is-hidden">
                                 <button type="button" class="admin-btn cancelanswer is-hidden" onclick="CancelAnswer(this)">✖️ Annuler</button>
                                 <button
@@ -96,7 +98,9 @@
                         <tr>
                             <td> {{.Date}}</td>
                             <td>{{.LogType}}</td>
-                            <td> <div>{{.LogMessage}}</pre> </td>
+                            <td> <div>{{.LogMessage}}
+                                {{if eq .LogType "USER"}} <a href="{{.MessageLink}}" class="admin-link" target="_blank">➤ Voir le message</a> {{end}}
+                            </div> </td>
                             <td>
                                  <form method="POST">
                                  <input type="hidden" name="logID" value="{{.ID}}">

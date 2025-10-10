@@ -21,8 +21,15 @@ func AddLogsToDatabase(message string) error {
 	logType := retrieveLogType(message)
 	cutLogMessage(&message, logType)
 
-	sqlUpdate := `INSERT INTO logs (message, type) VALUES (?, ?)`
-	_, err = db.Exec(sqlUpdate, message, logType)
+	if logType == "REQUEST" {
+		userID, _ := GetIDFromLog(message)
+		sqlUpdate := `INSERT INTO logs (message, type, sender) VALUES (?, ?, ?)`
+		_, err = db.Exec(sqlUpdate, message, logType, userID)
+	} else {
+		sqlUpdate := `INSERT INTO logs (message, type) VALUES (?, ?)`
+		_, err = db.Exec(sqlUpdate, message, logType)
+	}
+
 	if err != nil {
 		log.Printf("ERREUR : <logs.go> Erreur dans l'ajout du log \"%s\" : %v\n", message, err)
 		return err

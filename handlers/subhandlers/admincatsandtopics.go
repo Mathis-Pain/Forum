@@ -131,7 +131,7 @@ func AddCatHandler(r *http.Request) error {
 }
 
 // Fonction pour modifier un sujet (titre et catégorie)
-func EditTopicHandler(r *http.Request, topics []models.Topic) error {
+func EditTopicHandler(r *http.Request, topics []models.Topic, admin string) error {
 	// Récupère le nom du sujet, l'ID du sujet et celui de la catégorie
 	name := r.FormValue("topicname")
 	topicID := r.FormValue("topicID")
@@ -157,10 +157,21 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 		}
 	}
 
-	// Si le nom a été modifié, change le nom
-	if name != "" {
-		topic.Name = name
+	if name == topic.Name && catID == topic.CatID {
+		return nil
 	}
+
+	logMsg := "ADMIN : "
+
+	// Si le nom a été modifié, change le nom
+	if name != topic.Name && name != "" {
+		topic.Name = name
+		logMsg += fmt.Sprintf("Le sujet \"%s\" (anciennement \"%s\") a été modifié", name, topic.Name)
+	} else {
+		logMsg += fmt.Sprintf("Le sujet \"%s\" a été déplacé dans la catégorie n°%s", topic.Name, stringID)
+	}
+
+	logMsg += fmt.Sprintf(" par %s.", admin)
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
@@ -180,6 +191,8 @@ func EditTopicHandler(r *http.Request, topics []models.Topic) error {
 	if err != nil {
 		return err
 	}
+
+	logs.AddLogsToDatabase(logMsg)
 
 	return nil
 }

@@ -37,7 +37,7 @@ func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	notif := fmt.Sprintf("Un utilisateur (%s) a réagi à votre ", user.Username)
 	logs.AddNotificationToDatabase("INTERACTION", userToNotify, postID, notif)
 
-	logMsg := fmt.Sprintf("USER : L'utilisateur %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
+	logMsg := fmt.Sprintf("USER : %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
 	logs.AddLogsToDatabase(logMsg)
 
 	return nil

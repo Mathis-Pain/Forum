@@ -39,21 +39,31 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 		return nil
 	}
 
-	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
+	logName := username
+	if username != previousName {
+		logName += " (anciennement " + previousName + ")"
+	}
 
+	// Ajout des logs et des notifications
+	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
+	logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s.", logName, currentUser.Username)
+
+	// Si le pseudo a été modifié
 	if username != previousName {
 		user.Username = username
 		notifMsg += fmt.Sprintf(" Votre nom d'utilisateur a été changé en %s.", username)
+		logMsg += fmt.Sprintf(" Son nom d'utilisateur a été changé en %s.", username)
 	}
+
+	// Si le statut a été modifié
 	if status != previousStatus && status != "" {
 		user.Status = status
 		if status == "Membre " {
 			status = "Membre"
 		}
 		notifMsg += fmt.Sprintf(" Vous avez changé de statut et êtes maintenant %s.", status)
+		logMsg += fmt.Sprintf(" Son statut a été modifié en %s.", status)
 	}
-
-	logs.AddNotificationToDatabase("ADMIN", ID, 0, notifMsg)
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
@@ -76,10 +86,7 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 		return err
 	}
 
-	if username != previousName {
-		username += " (anciennement " + previousName + " )"
-	}
-	logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s", username, currentUser.Username)
+	logs.AddNotificationToDatabase("ADMIN", ID, 0, notifMsg)
 	logs.AddLogsToDatabase(logMsg)
 
 	return nil
@@ -176,6 +183,29 @@ func DeleteUserHandler(stringID string) error {
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func PromoteToMod(userID int) error {
+	db, err := sql.Open("sqlite3", "./data/forum.db")
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <adminuser.go> Erreur à l'ouverture de la base de données :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return err
+	}
+	defer db.Close()
+
+	sqlUpdate := `UPDATE user SET role_id = 2 WHERE id = ?`
+	stmt, err := db.Prepare(sqlUpdate)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(userID)
 	if err != nil {
 		return err
 	}

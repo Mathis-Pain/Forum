@@ -52,6 +52,7 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 			utils.InternalServError(w)
 			return
 		}
+
 		logMsg := fmt.Sprintf("ADMIN : Le message %d a été supprimé par %s.", postID, username)
 		logs.AddLogsToDatabase(logMsg)
 
@@ -60,7 +61,6 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
 			http.Redirect(w, r, url, http.StatusSeeOther)
-
 		}
 
 		return

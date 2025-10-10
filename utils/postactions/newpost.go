@@ -59,7 +59,7 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 	// Si le message est posté sur un sujet qui existe déjà
 	if mode != "newtopic" {
 		// Ajoute un log au panneau d'administration
-		logMsg := fmt.Sprintf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (ID : %d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
+		logMsg := fmt.Sprintf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\"", newpost.Author.Username, topic.Name)
 		logs.AddLogsToDatabase(logMsg)
 
 		topic, err := getdata.GetTopicInfo(db, newpost.TopicID)

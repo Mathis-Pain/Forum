@@ -28,6 +28,7 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 
 		// Récupère la liste des messages du sujet
 		topic.Messages, err = GetMessageList(db, topic.TopicID)
+		topic.CatID = catID
 
 		if err == sql.ErrNoRows {
 			topic.Messages = []models.Message{}
