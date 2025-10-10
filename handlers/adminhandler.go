@@ -463,7 +463,7 @@ func adminLogs(r *http.Request, w http.ResponseWriter, currentUser models.UserLo
 
 			// Préparation de la notification
 			notif := fmt.Sprintf("Vous avez reçu une réponse à votre signalement du %s : %s.", date, answer)
-			logs.AddNotificationToDatabase("ANSWER", receiverID, notif)
+			logs.AddNotificationToDatabase("ANSWER", receiverID, 0, notif)
 			logMsg := fmt.Sprintf("ADMIN : Réponse envoyé au signalement du %s  par %s : %s", date, currentUser.Username, answer)
 			logs.AddLogsToDatabase(logMsg)
 

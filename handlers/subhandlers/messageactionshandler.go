@@ -54,7 +54,15 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		logMsg := fmt.Sprintf("ADMIN : Le message %d a été supprimé par %s.", postID, username)
 		logs.AddLogsToDatabase(logMsg)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+
+		if _, err := getdata.GetTopicInfo(db, topicID); err != nil {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		} else {
+			url := fmt.Sprintf("/topic/%d#%d", topicID, postID)
+			http.Redirect(w, r, url, http.StatusSeeOther)
+
+		}
+
 		return
 	case "warn":
 		warnReason := r.FormValue("warning")

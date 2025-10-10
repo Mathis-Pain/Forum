@@ -53,7 +53,7 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 		notifMsg += fmt.Sprintf(" Vous avez changé de statut et êtes maintenant %s.", status)
 	}
 
-	logs.AddNotificationToDatabase("ADMIN", ID, notifMsg)
+	logs.AddNotificationToDatabase("ADMIN", ID, 0, notifMsg)
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
@@ -102,7 +102,7 @@ func BanUserHandler(stringID string) error {
 	defer db.Close()
 
 	notificationMessage := "Votre compte a été banni par un administrateur. Vous ne pouvez plus poster ni répondre à des messages."
-	logs.AddNotificationToDatabase("ADMIN", ID, notificationMessage)
+	logs.AddNotificationToDatabase("ADMIN", ID, 0, notificationMessage)
 
 	// Met à jour l'utilisateur avec le statut BANNI (4)
 	sqlUpdate := `UPDATE user SET role_id = 4 WHERE id = ?`
@@ -136,7 +136,7 @@ func UnbanUserHandler(stringID string) error {
 	defer db.Close()
 
 	notificationMessage := "Votre compte a été débanni par un administrateur. Vous pouvez à nouveau poster ou répondre à des messages."
-	logs.AddNotificationToDatabase("ADMIN", ID, notificationMessage)
+	logs.AddNotificationToDatabase("ADMIN", ID, 0, notificationMessage)
 
 	// Met à jour l'utilisateur avec le statut MEMBRE (3)
 	sqlUpdate := `UPDATE user SET role_id = 3 WHERE id = ?`

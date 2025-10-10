@@ -128,19 +128,27 @@ func MarkAsHandled(message string, receiverID int) error {
 }
 
 func GetMessageLinkFromLog(log string) (string, error) {
+	MessageID, err := GetIDFromLog(log)
+	if MessageID == 0 || err != nil {
+		return "", nil
+	}
+
+	messageLink, err := GetMessageLink(MessageID)
+	if err != nil {
+		return "", err
+	}
+
+	return messageLink, nil
+}
+
+func GetMessageLink(MessageID int) (string, error) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		return "", err
 	}
 	defer db.Close()
 
-	MessageID, err := GetIDFromLog(log)
-	if MessageID == 0 || err != nil {
-		return "", nil
-	}
-
 	var topicID int
-
 	sqlQuery := `SELECT topic_id FROM message WHERE id = ?`
 	row := db.QueryRow(sqlQuery, MessageID)
 	err = row.Scan(&topicID)
@@ -154,7 +162,6 @@ func GetMessageLinkFromLog(log string) (string, error) {
 	messageLink := fmt.Sprintf("/topic/%d#%d", topicID, MessageID)
 
 	return messageLink, nil
-
 }
 
 func GetIDFromLog(log string) (int, error) {

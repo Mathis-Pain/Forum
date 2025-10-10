@@ -54,9 +54,30 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 	}
 
 	topic, _ := getdata.GetTopicInfo(db, newpost.TopicID)
+	newpost.MessageID = topic.Messages[len(topic.Messages)-1].MessageID
+
+	// Si le message est posté sur un sujet qui existe déjà
 	if mode != "newtopic" {
+		// Ajoute un log au panneau d'administration
 		logMsg := fmt.Sprintf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (ID : %d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
 		logs.AddLogsToDatabase(logMsg)
+
+		topic, err := getdata.GetTopicInfo(db, newpost.TopicID)
+		if err != nil {
+			logMsg = fmt.Sprint("ERREUR : <newpost.go> Erreur dans la récupération du nom du sujet :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return err
+		}
+
+		// Ajoute la notification pour l'envoyer à l'utilisateur ayant ouvert le sujet
+		notif := fmt.Sprintf(` de %s sur le sujet "%s".`, newpost.Author.Username, topic.Name)
+		userToNotify, err := logs.GetUserToNotify(newpost.MessageID, db)
+		logs.AddNotificationToDatabase("MESSAGE", userToNotify, newpost.MessageID, notif)
+		if err != nil {
+			logMsg = fmt.Sprint("ERREUR : <newpost.go> Erreur dans l'envoi d'une notification de réponse : ", err)
+			logs.AddLogsToDatabase(logMsg)
+			return err
+		}
 	}
 
 	return nil

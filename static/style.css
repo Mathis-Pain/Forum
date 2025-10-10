@@ -96,14 +96,14 @@ a:hover {
 }
 
 /* Description du forum */
+.dashboard-header:hover .forum-desc{
+  height: auto;
+  transition: all 0.5s ease;
+}
+
 .forum-desc {
-  background-color: var(--color-headerback);
-  color:var(--color-dashboard);
-  padding:0px 50px 15px 50px;
-  text-align: center;
-  position: relative;
-  font-size: 0.8em;
-  border-bottom: 3px solid var(--color-highlight);
+  color:var(--color-dashboard); 
+  font-size: 0.9em;
 }
 
 /* Lien du retour à l'accueil (logo + titre) */
@@ -1108,6 +1108,15 @@ a.post-text:hover{
   padding: 3px;
   border-radius: 3px;
   margin:2px;
+}
+
+.notif-link {
+  color:var(--color-subtitle);
+  display: inline;
+}
+
+.notif-link:hover {
+  color: inherit;
 }
 
 /* #endregion */

@@ -9,7 +9,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 )
 
-func AddNotificationToDatabase(notifType string, userID int, message string) error {
+func AddNotificationToDatabase(notifType string, userID, postID int, message string) error {
 	db, err := sql.Open("sqlite3", "./data/notifications/notifications.db")
 	if err != nil {
 		log.Printf("ERREUR : <getuserprofil.go> Erreur à l'ouverture de la base de données : %v\n", err)
@@ -17,37 +17,20 @@ func AddNotificationToDatabase(notifType string, userID int, message string) err
 	}
 	defer db.Close()
 
-	typeInt := convertType(notifType)
+	typeInt := ConvertNotifType(notifType)
 
 	if typeInt == 0 {
 		return errors.New("type de notification invalide")
 	}
 
-	sqlUpdate := `INSERT INTO notifications (receiver_id, type, message) VALUES (?, ?, ?)`
-	_, err = db.Exec(sqlUpdate, userID, typeInt, message)
+	sqlUpdate := `INSERT INTO notifications (receiver_id, type, message, post_id) VALUES (?, ?, ?, ?)`
+	_, err = db.Exec(sqlUpdate, userID, typeInt, message, postID)
 	if err != nil {
 		log.Printf("ERREUR : <notifications.go> Erreur dans l'ajout de la notification \"%s\" : %v\n", message, err)
 		return err
 	}
 
 	return nil
-}
-
-func convertType(notifType string) int {
-	switch notifType {
-	case "ADMIN":
-		return 1
-	case "REQUEST":
-		return 2
-	case "ANSWER":
-		return 3
-	case "MESSAGE":
-		return 4
-	case "INTERACTION":
-		return 5
-	}
-
-	return 0
 }
 
 func DisplayNotifications(userID int) (models.Notifications, error) {
@@ -60,7 +43,7 @@ func DisplayNotifications(userID int) (models.Notifications, error) {
 	}
 	defer db.Close()
 
-	sqlQuery := `SELECT id, type, message, read FROM notifications WHERE receiver_id = ?`
+	sqlQuery := `SELECT id, type, message, read, post_id FROM notifications WHERE receiver_id = ?`
 	rows, err := db.Query(sqlQuery, userID)
 
 	if err != nil {
@@ -70,9 +53,10 @@ func DisplayNotifications(userID int) (models.Notifications, error) {
 
 	var notif models.Notif
 	var read int
+	var postID int
 	// Parcourir les résultats
 	for rows.Next() {
-		if err := rows.Scan(&notif.ID, &notif.NotifType, &notif.NotifMessage, &read); err != nil {
+		if err := rows.Scan(&notif.ID, &notif.NotifType, &notif.NotifMessage, &read, &postID); err != nil {
 			if err == sql.ErrNoRows {
 				return models.Notifications{}, nil
 			}
@@ -85,8 +69,15 @@ func DisplayNotifications(userID int) (models.Notifications, error) {
 			notif.Read = false
 			notifications.NotRead += 1
 		}
+
+		notif.MessageLink, err = GetMessageLink(postID)
+		if err != nil {
+			return models.Notifications{}, err
+		}
+
 		notifications.Notifs = append(notifications.Notifs, notif)
 	}
+
 	return notifications, nil
 }
 

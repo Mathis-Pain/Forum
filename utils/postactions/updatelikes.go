@@ -11,9 +11,12 @@ import (
 // Fonction pour ajouter les posts dans les table likes et dislikes de la base de données
 func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 	var sqlUpdate string
+	user, _ := getdata.GetUserInfoFromID(db, userID)
+
 	switch table {
 	case "like":
 		sqlUpdate = `INSERT INTO like (user_id, message_id) VALUES(?, ?)`
+
 	case "dislike":
 		sqlUpdate = `INSERT INTO dislike (user_id, message_id) VALUES(?, ?)`
 	}
@@ -24,7 +27,16 @@ func AddLikesAndDislikes(db *sql.DB, postID, userID int, table string) error {
 		return err
 	}
 
-	user, _ := getdata.GetUserInfoFromID(db, userID)
+	userToNotify, err := logs.GetUserToNotify(postID, db)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <updatelikes.go> Erreur dans la récupération de l'utilisateur à notifier : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		return err
+	}
+
+	notif := fmt.Sprintf("Un utilisateur (%s) a réagi à votre ", user.Username)
+	logs.AddNotificationToDatabase("INTERACTION", userToNotify, postID, notif)
+
 	logMsg := fmt.Sprintf("USER : L'utilisateur %s a ajouté un %s sur le post n°%d", user.Username, table, postID)
 	logs.AddLogsToDatabase(logMsg)
 

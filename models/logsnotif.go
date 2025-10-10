@@ -5,6 +5,7 @@ type Notif struct {
 	Receiver     int
 	NotifType    int
 	NotifMessage string
+	MessageLink  string
 	Read         bool
 }
 
@@ -13,9 +14,9 @@ type Log struct {
 	LogType     string
 	LogMessage  string
 	Date        string
+	MessageLink string
 	Requester   int
 	Handled     bool
-	MessageLink string
 }
 
 type Notifications struct {
