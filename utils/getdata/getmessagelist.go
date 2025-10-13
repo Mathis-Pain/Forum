@@ -42,6 +42,19 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	return messages, nil
 }
 
+func GetMessageAuthor(db *sql.DB, postID int) (int, error) {
+	var authorID int
+
+	sqlQuery := `SELECT user_id FROM message WHERE id = ?`
+	row := db.QueryRow(sqlQuery, postID)
+	err := row.Scan(&authorID)
+	if err != nil {
+		return 0, err
+	}
+
+	return authorID, nil
+}
+
 func FormatDateAllMessages(messages []models.Message) []models.Message {
 	for i := 0; i < len(messages); i++ {
 		messages[i].Created = FormatDate(messages[i].Created)

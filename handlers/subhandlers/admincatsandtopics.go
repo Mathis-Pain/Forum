@@ -3,6 +3,7 @@ package subhandlers
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -12,16 +13,27 @@ import (
 )
 
 // Fonction pour modifier une catégorie
-func EditCatHandler(r *http.Request, categ models.Category) error {
+func EditCatHandler(r *http.Request, categ models.Category, currentUser models.UserLoggedIn) error {
 	// Récupère le nouveau nom et la nouvelle description dans le formulaire
 	name := r.FormValue("name")
 	description := r.FormValue("description")
 
-	// Modifie le nom et la description s'ils ont été changés
-	if name != "" {
-		categ.Name = name
+	if name == categ.Name && description == categ.Description {
+		return nil
 	}
-	categ.Description = description
+
+	logMsg := "ADMIN :"
+
+	// Modifie le nom et la description s'ils ont été changés
+	if name != "" && name != categ.Name {
+		logMsg += fmt.Sprintf("La catégorie %s a été renommée en %s par %s.", categ.Name, name, currentUser.Username)
+		categ.Name = name
+
+	}
+	if categ.Description != description {
+		logMsg += fmt.Sprintf("La description de la catégorie \"%s\"  est maintenant : %s", categ.Name, description)
+		categ.Description = description
+	}
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
@@ -43,6 +55,7 @@ func EditCatHandler(r *http.Request, categ models.Category) error {
 		return err
 	}
 
+	logs.AddLogsToDatabase(logMsg)
 	return nil
 }
 
@@ -157,27 +170,57 @@ func EditTopicHandler(r *http.Request, topics []models.Topic, admin string) erro
 		}
 	}
 
+	log.Println(topic.Messages[0].Author.ID)
+
 	if name == topic.Name && catID == topic.CatID {
 		return nil
 	}
 
 	logMsg := "ADMIN : "
-
-	// Si le nom a été modifié, change le nom
-	if name != topic.Name && name != "" {
-		topic.Name = name
-		logMsg += fmt.Sprintf("Le sujet \"%s\" (anciennement \"%s\") a été modifié", name, topic.Name)
-	} else {
-		logMsg += fmt.Sprintf("Le sujet \"%s\" a été déplacé dans la catégorie n°%s", topic.Name, stringID)
-	}
-
-	logMsg += fmt.Sprintf(" par %s.", admin)
+	notif := ""
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
 		return err
 	}
 	defer db.Close()
+
+	nameChanged := false
+	if name != topic.Name && name != "" {
+		nameChanged = true
+	}
+
+	topicMoved := false
+	if topic.CatID != catID {
+		topicMoved = true
+	}
+
+	// Si le nom a été modifié, change le nom
+	if nameChanged {
+		logMsg += fmt.Sprintf("Le sujet \"%s\" a été renommé en \"%s\"", name, topic.Name)
+		notif += fmt.Sprintf("Votre sujet \"%s\" a été renommé en \"%s\"", topic.Name, name)
+		topic.Name = name
+	} else if topicMoved {
+		logMsg += fmt.Sprintf("Le sujet \"%s\" a été", topic.Name)
+		notif += fmt.Sprintf("Votre sujet \"%s\" a été", topic.Name)
+
+	}
+
+	if topicMoved {
+		if nameChanged {
+			logMsg += " et "
+			notif += " et "
+		}
+		categ, err := getdata.GetCatDetails(db, catID)
+		if err != nil {
+			return err
+		}
+		logMsg += fmt.Sprintf("déplacé dans la catégorie \"%s\"", categ.Name)
+		notif += fmt.Sprintf("déplacé dans la catégorie \"%s\"", categ.Name)
+	}
+
+	logMsg += fmt.Sprintf(" par %s.", admin)
+	notif += fmt.Sprintf(" par %s.", admin)
 
 	// Met à jour le sujet dans la base de données
 	sqlUpdate := `UPDATE topic SET name = ?, category_id = ? WHERE id = ?`
@@ -193,6 +236,7 @@ func EditTopicHandler(r *http.Request, topics []models.Topic, admin string) erro
 	}
 
 	logs.AddLogsToDatabase(logMsg)
+	logs.AddNotificationToDatabase("ADMIN", topic.Messages[0].Author.ID, 0, notif)
 
 	return nil
 }

@@ -69,15 +69,17 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 			return err
 		}
 
-		// Ajoute la notification pour l'envoyer à l'utilisateur ayant ouvert le sujet
-		notif := fmt.Sprintf(` de %s sur le sujet "%s".`, newpost.Author.Username, topic.Name)
-		userToNotify, err := logs.GetUserToNotify(newpost.MessageID, db)
-		logs.AddNotificationToDatabase("MESSAGE", userToNotify, newpost.MessageID, notif)
-		if err != nil {
-			logMsg = fmt.Sprint("ERREUR : <newpost.go> Erreur dans l'envoi d'une notification de réponse : ", err)
-			logs.AddLogsToDatabase(logMsg)
-			return err
+		// Ajoute la notification pour l'envoyer aux utilisateurs ayant posté sur le sujet
+		usersNotified := make(map[int]bool)
+		for i := 0; i < len(topic.Messages); i++ {
+			ID := topic.Messages[i].Author.ID
+			if newpost.Author.ID != ID && !usersNotified[ID] {
+				notif := fmt.Sprintf(` de %s sur le sujet "%s".`, newpost.Author.Username, topic.Name)
+				logs.AddNotificationToDatabase("MESSAGE", ID, newpost.MessageID, notif)
+				usersNotified[ID] = true
+			}
 		}
+
 	}
 
 	return nil

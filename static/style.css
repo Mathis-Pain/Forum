@@ -1099,7 +1099,7 @@ a.post-text:hover{
 .notif-block form {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .notif-block form button {

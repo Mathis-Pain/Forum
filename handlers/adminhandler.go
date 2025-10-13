@@ -242,7 +242,7 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 
 			// Si oui, appelle la fonction de modification de la catégorie
 			if isModified {
-				err := subhandlers.EditCatHandler(r, categ)
+				err := subhandlers.EditCatHandler(r, categ, currentUser)
 				if err != nil {
 					logMsg := fmt.Sprint("ERREUR : <adminhandler.go adminCategories> Erreur dans la modification de la catégorie : ", err)
 					logs.AddLogsToDatabase(logMsg)
@@ -250,8 +250,7 @@ func adminCategories(categories []models.Category, r *http.Request, w http.Respo
 					return
 				}
 			}
-			logMsg := fmt.Sprintf("ADMIN : La catégorie %s a été modifiée par %s", categ.Name, currentUser.Username)
-			logs.AddLogsToDatabase(logMsg)
+
 		}
 
 		// Renvoie la page avec les modifications

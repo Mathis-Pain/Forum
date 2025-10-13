@@ -43,9 +43,11 @@ func MessageActionsHandler(w http.ResponseWriter, r *http.Request) {
 
 	username := r.FormValue("modname")
 
+	_, _, currentUser, err := BuildHeader(r, w, db)
+
 	switch r.FormValue("action") {
 	case "delete":
-		err := admin.AdminDeleteMessage(topicID, postID, db)
+		err := admin.AdminDeleteMessage(topicID, postID, db, currentUser)
 		if err != nil {
 			logMsg := fmt.Sprint("ERREUR : <messageactionshandler> Erreur dans la suppression du message : ", err)
 			logs.AddLogsToDatabase(logMsg)
