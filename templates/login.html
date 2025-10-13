@@ -33,7 +33,7 @@
         type="checkbox"
         onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"
       />
-      <span class="show-password-text-2">Afficher le mot de passe</span>
+      <span class="show-password-text">Afficher le mot de passe</span>
     </div>
     {{if .}}
     <div class="incorrect">{{.}}</div>
@@ -42,9 +42,20 @@
     <button type="submit" class="form-button">Se connecter</button>
   </form>
 
+   <div class="form-divider">
+    <span>Ou</span>
+  </div>
+
+  <a href="/google/login">
+    <button type="button"  class="form-button"><img src="/static/google.png" alt="Connexion avec Google"> 
+      Se connecter avec Google</button>
+    </a>
+
   <div class="form-divider">
     <span>Pas encore de compte ?</span>
   </div>
+
+  
 
   <a href="/registration">
     <button class="secondary-button" type="button">S'inscrire</button>

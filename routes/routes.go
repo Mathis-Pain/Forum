@@ -11,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/test"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/external"
 )
 
 func InitRoutes() *http.ServeMux {
@@ -50,6 +51,10 @@ func InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/categorie/", handlers.CategoriesHandler)
 	mux.HandleFunc("/admin/", handlers.AdminHandler)
 	mux.HandleFunc("/topic/", handlers.TopicHandler)
+
+	// Authentification par google ou github
+	mux.HandleFunc("/google/login", external.HandleGoogleLogin)
+	mux.HandleFunc("/google/callback", external.HandleGoogleCallback)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))

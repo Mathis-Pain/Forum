@@ -860,6 +860,11 @@ a.post-text:hover{
   background-color: var(--color-btnhover);
 }
 
+.form-button img {
+  height:20px;
+  float: left;
+}
+
 .form-divider {
   text-align: center;
   margin: 20px 0;

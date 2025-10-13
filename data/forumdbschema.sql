@@ -9,10 +9,11 @@ CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
+    password TEXT,
     profilpic TEXT DEFAULT '/static/noprofilpic.png',
     role_id INTEGER NOT NULL DEFAULT 3,
-    FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
+    google_id TEXT UNIQUE,
+    FOREIGN KEY (role_id) REFERENCES role(id)
 );
 
 -- Table des catégories
