@@ -10,7 +10,12 @@ import (
 
 // BackupDB crée une copie du fichier DB existant
 func BackupDB(dbPath string) error {
-	backupPath := "./data/backup_forum.db"
+	backupPath := ""
+	if dbPath == "./data/forum.db" {
+		backupPath = "./data/backup_forum.db"
+	} else {
+		backupPath = "./data/notifications/backup_logs.db"
+	}
 
 	// Vérifier si le fichier DB existe
 	if _, err := os.Stat(dbPath); os.IsNotExist(err) {

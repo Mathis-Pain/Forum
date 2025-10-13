@@ -7,11 +7,8 @@ import (
 	"github.com/Mathis-Pain/Forum/builddb/dbutils"
 )
 
-func CompareDB() error {
-	dbPath := "./data/forum.db"
-
+func CompareDB(dbPath string, expectedSchema map[string][]string) error {
 	// Générer expectedSchema depuis le fichier schema.sql
-	expectedSchema := dbutils.ExtractSql("./data/forumdbschema.sql")
 
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
