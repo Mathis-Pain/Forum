@@ -1,6 +1,8 @@
 package logs
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // Fonction pour trouver l'utilisateur à qui envoyer la notification pour les likes et les dislikes
 func GetUserToNotify(messageID int, db *sql.DB) (int, error) {

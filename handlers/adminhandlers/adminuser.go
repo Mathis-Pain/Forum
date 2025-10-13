@@ -1,4 +1,4 @@
-package subhandlers
+package adminhandlers
 
 import (
 	"database/sql"
@@ -11,7 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
-// Fonction pour modifier un utilisateur (nom et statut)
+// MARK: Modifier un utilisateur
 func UserEditHandler(r *http.Request, users []models.User, currentUser models.UserLoggedIn) error {
 	// Récupère l'ID de l'utilisateur dans le formulaire
 	stringID := r.FormValue("userID")
@@ -92,7 +92,7 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 	return nil
 }
 
-// Fonction pour bannir un utilisateur
+// MARK: Bannir un utilisateur
 func BanUserHandler(stringID string) error {
 	// Récupère l'ID de l'utilisateur à bannir
 	ID, err := strconv.Atoi(stringID)
@@ -126,7 +126,7 @@ func BanUserHandler(stringID string) error {
 	return nil
 }
 
-// Fonction pour "libérer" un utilisateur
+// MARK: Débannir un utilisateur
 func UnbanUserHandler(stringID string) error {
 	// Récupération de l'ID
 	ID, err := strconv.Atoi(stringID)
@@ -160,7 +160,7 @@ func UnbanUserHandler(stringID string) error {
 	return nil
 }
 
-// Fonction pour supprimer un utilisateur
+// MARK: Supprimer un utilisateur
 func DeleteUserHandler(stringID string) error {
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
@@ -190,6 +190,7 @@ func DeleteUserHandler(stringID string) error {
 	return nil
 }
 
+// MARK: Promouvoir modérateur
 func PromoteToMod(userID int) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {

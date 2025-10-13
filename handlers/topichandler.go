@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Mathis-Pain/Forum/handlers/adminhandlers"
 	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
@@ -59,7 +60,7 @@ func TopicHandler(w http.ResponseWriter, r *http.Request) {
 	// Supprime le sujet et redirige vers la page d'accueil s'il ne contient aucun message (sécurité anti bug de la BDD)
 	if len(topic.Messages) == 0 {
 		ID := strconv.Itoa(topic.TopicID)
-		subhandlers.DeleteTopicHandler(ID)
+		adminhandlers.DeleteTopicHandler(ID)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}

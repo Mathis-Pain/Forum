@@ -19,6 +19,7 @@ var HomeHtml = template.Must(template.New("home.html").Funcs(funcMap).ParseFiles
 	"templates/home.html", "templates/login.html", "templates/header.html", "templates/initpage.html",
 ))
 
+// MARK: Connexion
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	referer := r.Header.Get("Referer")
 	if referer == "" {
@@ -63,7 +64,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		//Invalider toutes les sessions existantes
+		// Invalider toutes les sessions existantes
 		if err := sessions.InvalidateUserSessions(user.ID); err != nil {
 			utils.InternalServError(w)
 			return
@@ -81,6 +82,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// MARK: Création session
 // Crée, sauvegarde une session, permet d'y insérer une donnée et pose le cookie
 func InitSession(w http.ResponseWriter, id int, fieldName string, fieldData any) error {
 	session, err := sessions.CreateSession(id)

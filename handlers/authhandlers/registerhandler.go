@@ -23,6 +23,7 @@ var funcMap2 = template.FuncMap{
 }
 var registrationHtml = template.Must(template.New("registration.html").Funcs(funcMap2).ParseFiles("templates/registration.html", "templates/login.html", "templates/header.html", "templates/initpage.html"))
 
+// Fonction pour l'inscription
 func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
@@ -32,6 +33,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
+	// Construction du header
 	_, categories, _, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
@@ -40,6 +42,7 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Affiche le formulaire vide si rien n'a encore été envoyé
 	if r.Method != http.MethodPost {
 		data := struct {
 			PageName     string
@@ -56,7 +59,6 @@ func SignUpSubmitHandler(w http.ResponseWriter, r *http.Request) {
 			RegisterData: models.RegisterDataError{},
 			UserInfo:     models.User{},
 		}
-		// GET : afficher le formulaire vide
 		if err := registrationHtml.Execute(w, data); err != nil {
 			logMsg := fmt.Sprint("Erreur dans l'affichage de la page d'inscription :", err)
 			logs.AddLogsToDatabase(logMsg)
