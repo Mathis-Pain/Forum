@@ -8,30 +8,42 @@
     <!-- Main Content -->
     <div class="dashboard-header">
       <div class="topic-top">
-        <h2>{{.Topic.Name}}</h2>
+        <h2>Poster une réponse</h2>
       </div>
     </div>
 
     <main class="main-content">
       <aside class="sidebar">
         <div id="{{.LastMessage.MessageID}}">
-          <strong>Message du {{.LastMessage.Created}}</strong><br />
-          par {{.LastMessage.Author.Username}}<br />
+          Répondre au sujet :  <strong>{{.Topic.Name}}</strong><br /><br />
+          Ouvert le {{.FirstMessage.Created}} par {{.FirstMessage.Author.Username}}<br />
+          <a href="/topic/{{.Topic.TopicID}}" target="blank">➤ Voir le sujet 
+          </a>
         </div>
       </aside>
-</main><br>
-      <div class="input-name-topic"><p>{{.LastMessage.Content}}</p></div>
+<br>
+<section class="posts-section">
+<div class="post-card"> 
+  <div class="post-content">
+  <div class="post-title">Dernier message par {{.LastMessage.Author.Username}} le {{.LastMessage.Created}}</div>
+      <div class="post-text">{{.LastMessage.Content}}</div>
+      </div>
+      </div>
+
+      
       <form class="create-topic-form" method="POST">
         <textarea
           class="input-name-topic"
           name="new-message"
           placeholder="Entrer votre message"
           required
+          maxlength="6000"
         ></textarea>
         <div class="create-topic-form-button">
-          <button type="submit">Envoyer</button>
+          <button type="submit" class="respond-btn" title="Envoyer mon message">Envoyer</button>
         </div>
       </form>
+      </section>
     </main>
   </body>
 </html>

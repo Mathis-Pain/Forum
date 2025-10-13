@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+   {{template "InitPage" .}}
+<body>
+    <!-- Header -->
+   {{template "AdminHeader" .}}
+
+    <div class="main-container">
+       {{template "AdminSidebar" .}}
+
+        <!-- Content Area -->
+       <div class="content-area">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Gestion du forum : {{len .LogList}} logs</h1>
+            </div>
+
+            <!-- Tableau des requêtes -->
+            <div class="table-container four-col">
+                <div class="table-title">Requêtes</div>
+               <div class="admin-list"> <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th style="width:50%">Message</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .LogList }}
+                        {{if or (eq .LogType "REQUEST") (eq .LogType "WARN")}}
+                        <tr>
+                            <td> {{.Date}}</td>
+                            <td> <div>{{.LogMessage}}
+                               {{if eq .LogType "WARN"}} <a href="{{.MessageLink}}" class="admin-link" target="_blank">➤ Voir le message</a> {{end}}
+                            </div> </td>
+                            <td> 
+                                <form method="POST">
+                                {{if .Handled}} 
+                                <div class="admin-topic">Une réponse a déjà été envoyée.</div>
+                                 <input type="hidden" name="logID" value="{{.ID}}">
+                                    <button title="Supprimer le log" 
+                                        type="submit" class="admin-btn" 
+                                        name="action"
+                                        value="delete"
+                                    >🚫 Supprimer le log</button>
+                                {{else}}
+                                <input type="hidden" name="logmessage" value="{{.LogMessage}}">
+                                <input type="hidden" name="receiver" value="{{.Requester}}">
+                                {{if eq .LogType "REQUEST"}}
+                                <button 
+                                type="submit"
+                                name="action"
+                                value="accept"
+                                class="admin-btn"
+                                >👍 Accepter</button>
+                                <button
+                                type="submit"
+                                name ="action"
+                                value="refuse"
+                                class="admin-btn">👎 Refuser</button>
+                                {{else}}
+                                <input type="hidden" name="date" value="{{.Date}}">
+                                <input type="text" name="answer" placeholder="Entrer une réponse" class="admin-input answer-mod is-hidden">
+                                <button type="button" class="admin-btn cancelanswer is-hidden" onclick="CancelAnswer(this)">✖️ Annuler</button>
+                                <button
+                                type="submit"
+                                value="answer"
+                                name="action"
+                                class="admin-btn answer-button"
+                                onclick="AnswerMod(this)">↪️ Répondre</button>
+                                {{end}}
+                                {{end}}
+                                </form>
+                             </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table></div>
+        </div>
+
+        <!-- Tableau des actions -->
+            <div class="table-container four-col">
+                <div class="table-title">Actions admins et utilisateurs</div>
+               <div class="admin-list"> <table>
+                    <thead>
+                        <tr>
+                            <th style="width:12.5%">Date</th>
+                            <th style="width:12.5%">Type</th>
+                            <th style="width:50%">Message</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .LogList }}
+                        {{if or (eq .LogType "USER") (eq .LogType "ADMIN")}}
+                        <tr>
+                            <td> {{.Date}}</td>
+                            <td>{{.LogType}}</td>
+                            <td> <div>{{.LogMessage}}
+                                {{if eq .LogType "USER"}} <a href="{{.MessageLink}}" class="admin-link" target="_blank">➤ Voir le message</a> {{end}}
+                            </div> </td>
+                            <td>
+                                 <form method="POST">
+                                 <input type="hidden" name="logID" value="{{.ID}}">
+                                <button title="Supprimer le log" 
+                                        type="submit" class="admin-btn" 
+                                        name="action"
+                                        value="delete"
+                                >🚫 Supprimer le log</button>
+                                </form> 
+                            </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table></div>
+        </div>
+
+                <!-- Tableau des erreurs -->
+            <div class="table-container four-col">
+                <div class="table-title">Erreurs</div>
+               <div class="admin-list"> <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th style="width:50%">Message</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .LogList }}
+                        {{if eq .LogType "ERREUR"}}
+                        <tr>
+                            <td> {{.Date}}</td>
+                            <td> <div>{{.LogMessage}}</pre> </td>
+                            <td>
+                                <form method="POST">
+
+                                    <input type="hidden" name="logID" value="{{.ID}}">
+                                    <button title="Supprimer le log" 
+                                        type="submit" class="admin-btn" 
+                                        name="action"
+                                        value="delete"
+                                        >🚫 Supprimer le log</button>
+                                </form>
+                                
+
+                             </td>
+                        </tr>
+                        {{end}}
+                        {{end}}
+                    </tbody>
+                </table></div>
+            </div>
+
+
+  
+    </div>
+
+     <style>
+                .loglist span {
+                    display:block;
+                }
+
+                .loglist a {
+                    display:none;
+                }
+                
+                .loglist summary{
+                    color:var(--color-highlight);
+                }
+    </style>
+
+    <script> 
+    function AnswerMod(answerbutton) {
+        const form = answerbutton.closest('form');
+        const answerfield = form.querySelector('.answer-mod');
+        const cancelanswer = form.querySelector('.cancelanswer');
+
+        if (answerfield.classList.contains("is-hidden")) {
+            answerfield.classList.remove("is-hidden");
+            answerfield.required = true;
+            cancelanswer.classList.remove("is-hidden");
+            answerbutton.innerHTML = "✅ Valider";
+        }
+    }
+
+    function CancelAnswer(cancelanswer) {
+        const form = cancelanswer.closest('form');
+        const answerfield = form.querySelector('.answer-mod');
+        const answerbutton = form.querySelector('.answer-button');
+
+
+        answerfield.classList.add("is-hidden");
+        answerfield.required = false;
+        cancelanswer.classList.add("is-hidden");
+        answerbutton.innerHTML = "↪️ Répondre";
+    }
+    
+    </script>
+</body>
+</html>

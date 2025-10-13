@@ -16,9 +16,9 @@
                 <h1>Gestion des sujets</h1>
             </div>
 
-<input type="text" class="search-box" placeholder="search">
+<!-- <input type="text" class="search-box" placeholder="search"> -->
 
-<div class="table-container">
+<div class="table-container four-col">
                 <table>
                     <thead>
                         <tr>
@@ -36,28 +36,30 @@
                     <td>
                         <span class="userfield">{{$topic.Name}} ({{len $topic.Messages}} {{if ne (len $topic.Messages) 1}}messages{{else}}message{{end}})</span>
                         <input type="hidden" name="topicID" value="{{$topic.TopicID}}">
-                        <input type="text" name="topicname" value="{{$topic.Name}}" class="is-hidden user-edit">
+                        <input type="text" name="topicname" value="{{$topic.Name}}" class="is-hidden user-edit admin-input">
                     </td>
                     <td>{{(index $topic.Messages 0).Author.Username}}</td>
                     <td>
                         <span class="userfield">{{$topic.CatName}}</span>
-                        <select name="catID" class="is-hidden user-edit">
+                        <select name="catID" class="is-hidden user-edit admin-input">
                         {{range $.Categories}}
                          <option value="{{.ID}}" {{if eq .Name $topic.CatName}}selected{{end}}>{{.Name}}</option>
                         {{end}}
                         </select>
-                          <button type="submit" title="Valider les modifications" class="validate-btn is-hidden">✅ Valider</button>
-                   
+                        <center>
+                          <button type="submit" title="Valider les modifications" class="validate-btn is-hidden admin-btn">✅ Valider</button>
+                          <button type="button" title="Annuler les modifications" class="cancel-btn is-hidden admin-btn">✖️ Annuler</button>
+                        </center>
                     </td>
                      </form>
                     <td class="actions-column">
                         <div class="menu">
                             <div class="menu-options">
-                               <a title="Modifier le sujet" class="modifier-btn">🔧 Modifier</a>
+                               <a title="Modifier le sujet" class="modifier-btn admin-btn">🔧 Modifier</a>
                                <form method="POST" class="delete-form">
                                         <input type="hidden" name="topicToDelete" value="{{$topic.TopicID}}">
-                                        <button title="Supprimer le sujet" 
-                                        type="button" class="delete-btn" 
+                                        <button title="Supprimer le sujet"
+                                        type="button" class="delete-btn admin-btn" 
                                         data-topic-count="{{len $topic.Messages}}">🚫 Supprimer</button>
                                 </form>
                                </div>
@@ -86,14 +88,14 @@
 
 
             <!-- Modal de confirmation pour la suppression -->
-            <div id="confirmationModal" class="modal is-hidden">
+            <div id="confirmationModal" class="modal modal-confirm is-hidden">
                 <div class="modal-content">
                     <p>Êtes-vous sûr de vouloir supprimer ce sujet ? Cela entrainera la suppression de <span id="topicCountSpan"></span> messages.
                         Cette action est irréversible.
                     </p>
                     <div class="modal-buttons">
-                        <button id="cancelDelete" class="modal-cancel-btn">Annuler</button>
-                        <button id="confirmDelete" class="modal-confirm-btn">Confirmer</button>
+                        <button id="cancelDelete" class="modal-cancel-btn respond-btn">Annuler</button>
+                        <button id="confirmDelete" class="modal-confirm-btn respond-btn">Confirmer</button>
                     </div>
                 </div>
             </div>

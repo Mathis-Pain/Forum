@@ -15,14 +15,16 @@
         <!--statistics table-->
         <div class="table-container">
             <div class="table-title">Statistiques</div>
-                <div>Nombre total d'utilisateur : {{.Stats.TotalUsers}}</div>
-                <div>Dernier utilisateur enregistré : {{.Stats.LastUser}}</div>
-                <div>Nombre de sujets ouverts : {{.Stats.TotalTopics}}</div>
-                <div>Messages postés au cours du dernier mois : {{.Stats.LastMonthPost}}</div>         
+            <div class="admin-stats">
+                <div>Nombre total d'utilisateurs : <b>{{.Stats.TotalUsers}}</b></div>
+                <div>Dernier utilisateur enregistré : <b>{{.Stats.LastUser}}</b></div>
+                <div>Nombre de sujets ouverts :  <b>{{.Stats.TotalTopics}}</b></div>
+                <div>Messages postés au cours du dernier mois :  <b>{{.Stats.LastMonthPost}}</b></div>  
+            </div>       
         </div>
 
             <!-- Recent Posts Table -->
-            <div class="table-container">
+            <div class="table-container four-col">
                 <div class="table-title">Messages postés dans les 30 derniers jours</div>
                 <div class="admin-list"><table>
                     <thead>
@@ -36,7 +38,7 @@
                     <tbody>
                         {{range .PostList}}
                         <tr>
-                            <td> <pre>{{preview .Content 200}} </pre></td>
+                            <td> <div>{{preview .Content 200}} </div></td>
                             <td>{{preview .TopicName 20}}</td>
                             <td> {{ .Author.Username}} </td>
                             <td> 👍 {{.Likes}} / 👎 {{.Dislikes}} </td>
@@ -48,7 +50,7 @@
             </div>
 
             <!-- Forum Categories Table -->
-            <div class="table-container">
+            <div class="table-container three-col">
                 <div class="table-title">Liste des catégories</div>
                <div class="admin-list"> <table>
                     <thead>
@@ -60,9 +62,12 @@
                     </thead>
                     <tbody>
                         {{range .Categories }}<tr>
-                            <td> <a href="/categorie/{{.ID}}" target="_blank">{{.Name}}</a></td>
-                            <td> <pre>{{preview .Description 200}}</pre> </td>
-                            <td> {{range .Topics}} <a href="/topic/{{.TopicID}}" target="_blank">{{.Name}} </a><br> {{end}} </td>
+                            <td> <a href="/categorie/{{.ID}}" target="_blank" title="Ouvrir la catégorie">{{.Name}}</a></td>
+                            <td> <div>{{preview .Description 200}}</pre> </td>
+                            <td> <div class="admin-topic"> {{range .Topics}} <a href="/topic/{{.TopicID}}" target="_blank" title="Ouvrir le sujet">• {{.Name}} </a><br/> 
+                        {{else}}
+                                Cette catégorie ne contient aucun sujet.
+                                {{end}} </div> </td>
                         </tr>
                         {{end}}
                     </tbody>
@@ -70,6 +75,7 @@
             </div>
         </div>
     </div>
+
   
     
 </body>

@@ -126,7 +126,26 @@ document.addEventListener("DOMContentLoaded", () => {
         .querySelectorAll(".userfield")
         .forEach((span) => span.classList.add("is-hidden"));
       row.querySelector(".validate-btn")?.classList.remove("is-hidden");
+      row.querySelector(".cancel-btn")?.classList.remove("is-hidden");
       row.querySelector(".modifier-btn")?.classList.add("is-hidden");
+    });
+  });
+
+  document.querySelectorAll(".cancel-btn").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const row = event.target.closest("tr");
+      if (!row) return;
+
+      // Toggle visibility of fields and buttons back
+      row
+        .querySelectorAll(".user-edit")
+        .forEach((input) => input.classList.add("is-hidden"));
+      row
+        .querySelectorAll(".userfield")
+        .forEach((span) => span.classList.remove("is-hidden"));
+      row.querySelector(".validate-btn")?.classList.add("is-hidden");
+      row.querySelector(".cancel-btn")?.classList.add("is-hidden");
+      row.querySelector(".modifier-btn")?.classList.remove("is-hidden");
     });
   });
 
@@ -143,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .querySelectorAll(".userfield")
         .forEach((span) => span.classList.remove("is-hidden"));
       row.querySelector(".validate-btn")?.classList.add("is-hidden");
+      row.querySelector(".cancel-btn")?.classList.add("is-hidden");
       row.querySelector(".modifier-btn")?.classList.remove("is-hidden");
     });
   });

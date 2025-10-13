@@ -9,7 +9,6 @@ import (
 
 var ErrorHtml = template.Must(template.New("error.html").ParseFiles(
 	"templates/login.html",
-	"templates/header.html",
 	"templates/error.html",
 	"templates/initpage.html",
 ))

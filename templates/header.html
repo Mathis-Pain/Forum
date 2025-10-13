@@ -2,29 +2,71 @@
  <!-- Header -->
     <header class="header">
       <a href="/" class="logo-section">
-        <div class="logo"></div>
-        <div class="title">Forum</div>
+        <img class="logo" src="/static/logo.png"/>
+        <div class="title">Petites Victoires</div>
+        </a>
       </div>
       <nav class="nav-section">
        {{if .CurrentUser.LogStatus}} <a href="/profil" class="nav-link">Profil</a>{{end}}
         <li class="dropdown">
-          <a href="#">Catégories</a>
+          <div class="nav-link nav-cat">Catégories</div>
           <ul class="dropdown-menu">
            {{ range .Categories }}
             <li><a href="/categorie/{{.ID}}">{{.Name}}</a></li>
           {{ end }}
           </ul>
         </li>
-        <input type="text" class="search-box" placeholder="search" />
+
         {{if .CurrentUser.LogStatus}} 
+        <!-- Notifications -->
+
+         <div class="notif">{{if ne (len .Notifications.Notifs) 0}} 
+          <div id="triangle" class="is-hidden"></div>
+          <span title="Vous avez {{.Notifications.NotRead}} notifications non lues" style="cursor: pointer;"  onclick="DisplayNotif()">📬</span>
+          <div class="notif-block is-hidden" id="see-notifications">
+            <!-- Liste des notifications -->
+            {{range .Notifications.Notifs}}
+            <span  class="notif-element {{if .Read}}notif-read{{end}}">
+              <span>
+                <!-- Si la notification est une réponse -->
+                {{if eq .NotifType 4}}
+              <a href="{{.MessageLink}}" class="notif-link">Nouveau message</a>
+              {{end}}
+
+              {{.NotifMessage}} <!-- Contenu de la notification -->
+
+              <!-- Si la notification est une interaction -->
+              {{if eq .NotifType 5}}
+              <a href="{{.MessageLink}}" class="notif-link"> message.</a>
+              {{end}}
+              </span>
+            <form method="POST">
+                <input type="hidden" name="notifID" value="{{.ID}}">
+                <!-- Notifications non lues -->
+              {{if not .Read}} 
+              <button type="submit" name="notif-action" value="markread" title="Marquer comme lu">👀</button> 
+            {{end}} <!-- Fin des notifications non lues -->
+            
+              <button type="submit" name="notif-action" value="delete" title="Supprimer">🚫</button>
+              </form>
+              
+          </span>
+
+            {{end}}  <!-- Fin de la liste des notifications -->
+          </div>
+          {{else}}
+          <span title="Vous n'avez aucune notification" style="cursor: default;">📭</span>
+          
+        {{end}}
+        </div>
+
+        
         <li class="dropdown">
-        <button class="login-btn user-actions">
+        <button class="login-btn user-actions" style="cursor: context-menu;">
           Connecté en tant que {{.CurrentUser.Username}} 🠯
         </button>
           <ul class="dropdown-menu">
-            <li><form action="/logout" method="POST">
-  <button type="submit">Se déconnecter</button>
-</form>
+            <li><a href="/logout">Se déconnecter</a>
           {{if eq .CurrentUser.UserType 1}}<a href="/admin">Panneau d'administration</a>{{end}}
           </li>
           </ul>
@@ -35,6 +77,21 @@
         </button>
         {{end}}
       </nav>
+
+      <script>function DisplayNotif() {
+        const notifList = document.getElementById("see-notifications")
+        const triangle = document.getElementById("triangle")
+
+        if (notifList.classList.contains("is-hidden")) {
+          notifList.classList.remove("is-hidden")
+          triangle.classList.remove("is-hidden")
+        } else {
+          notifList.classList.add("is-hidden")
+          triangle.classList.add("is-hidden")
+        }
+
+       }
+</script>
     </header>
 
      <!-- Modal de connexion -->
@@ -43,7 +100,7 @@
     </div>
 
       {{if  .LoginErr}}
-    <script>
+    <script>       
        document.getElementById("loginModal").style.display = "block";
     </script>
        {{end}}

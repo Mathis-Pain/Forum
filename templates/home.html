@@ -6,12 +6,21 @@
      <!-- Header -->
      {{template "ForumHeader" .}}
      
+      
+         
     
-       <div class="dashboard-header">
-  <div class="topic-top"> <h2>Derniers messages</h2>
+       <div class="dashboard-header">           
+         <div class="topic-top"> <h2>Derniers messages</h2> </div>
     </div></div>
     <!-- Main Content -->
      <main class="main-content">
+ <!-- Sidebar -->
+      <aside class="sidebar"><h3>Qui nous sommes </h3>
+        <div class="cat-desc forum-desc">Le forum Petites Victoires est une communauté zen pour discuter de sa vie personnelle et se concentrer sur l'essentiel : améliorer son quotidien, un jour à la fois.
+
+Que vous soyez à la recherche d'un conseil qui change la donne, d'un soutien bienveillant, ou simplement d'un espace pour partager vos réussites, même les plus modestes, vous êtes au bon endroit. Ensemble, transformons ces petits succès en grandes victoires !</div>
+      </aside>
+
       <!-- Posts Section -->
       <section class="posts-section">
         
@@ -38,6 +47,8 @@
         {{end}}
       </section>
     </main>
+
+    <style>.header {border-bottom: initial;}</style>
    
   </body>
 </html>

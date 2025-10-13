@@ -3,17 +3,31 @@ package admin
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
+	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
-func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
+func AdminDeleteMessage(topicID, postID int, db *sql.DB, currentUser models.UserLoggedIn) error {
+
+	authorID, err := getdata.GetMessageAuthor(db, postID)
+	if err != nil {
+		return err
+	}
+	topic, err := getdata.GetTopicInfo(db, topicID)
+	if err != nil {
+		return err
+	}
+	notif := fmt.Sprintf("Votre message sur le sujet \"%s\" a été supprimé.", topic.Name)
+
 	// Supprime le message de la base de données
 	sqlUpdate := `DELETE FROM message WHERE id = ?`
-	_, err := db.Exec(sqlUpdate, postID)
+	_, err = db.Exec(sqlUpdate, postID)
 	if err != nil {
-		log.Printf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+		logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -22,7 +36,8 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	// Supprime tous les likes et dislikes liés à ce message de la base de données
 	_, totalUsers, err := GetAllUsers()
 	if err != nil {
-		log.Print("ERREUR : <adminmessage.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		logMsg := fmt.Sprint("ERREUR : <adminmessage.go, GetStats> Erreur dans la récupération des utilisateurs", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	for i := 1; i <= totalUsers; i++ {
@@ -31,17 +46,18 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 	}
 
 	// Vérifie s'il reste encore des messages sur le sujet
-	var topic string
+	var scanner string
 	sqlQuery := `SELECT id FROM message WHERE topic_id = ?`
 	row := db.QueryRow(sqlQuery, topicID)
-	err = row.Scan(&topic)
+	err = row.Scan(&scanner)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// S'il n'y a plus de messages dans le sujet, supprime le sujet
 			sqlUpdate := `DELETE FROM topic WHERE id = ?`
 			_, err := db.Exec(sqlUpdate, topicID)
 			if err != nil {
-				log.Printf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+				logMsg := fmt.Sprintf("ERREUR : <adminmessage.go> Erreur dans la suppression du message %d : %v", postID, err)
+				logs.AddLogsToDatabase(logMsg)
 				return err
 			}
 			logMsg += fmt.Sprintf(" Le sujet %d ne contient plus aucun message et a été supprimé.", topicID)
@@ -50,7 +66,10 @@ func AdminDeleteMessage(topicID, postID int, db *sql.DB) error {
 		}
 	}
 
-	log.Print(logMsg)
+	if authorID != currentUser.ID {
+		logs.AddNotificationToDatabase("ADMIN", authorID, postID, notif)
+	}
+	logs.AddLogsToDatabase(logMsg)
 
 	return nil
 }

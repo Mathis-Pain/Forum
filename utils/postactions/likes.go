@@ -2,30 +2,31 @@ package postactions
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
-	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour mettre à jour le nombre de likes
 func ChangeLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
 
 	// Vérifie si le post a déjà été liké par l'utilisateur connecté
-	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
+	liked, err := CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
 		return err
 	}
 
 	var disliked bool
 	// Vérifie ensuite si le post a déjà été disliké par l'utilisateur
-	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
+	disliked, err = CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
 		return err
 	}
@@ -80,18 +81,19 @@ func ChangeLikes(userID int, post models.Message) error {
 func ChangeDisLikes(userID int, post models.Message) error {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <topichandler.go> Erreur à l'ouverture de la base de données : %v", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer db.Close()
 
-	liked, err := getdata.CheckIfLiked(db, post.MessageID, userID)
+	liked, err := CheckIfLiked(db, post.MessageID, userID)
 	if err != nil {
 		return err
 	}
 
 	var disliked bool
-	disliked, err = getdata.CheckIfDisliked(db, post.MessageID, userID)
+	disliked, err = CheckIfDisliked(db, post.MessageID, userID)
 	if err != nil {
 		return err
 	}

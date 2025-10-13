@@ -2,11 +2,12 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour vérifier s'il y a eu une modification d'une catégorie par le formulaire
@@ -19,7 +20,6 @@ func AdminIsCatModified(r *http.Request, categories []models.Category) (models.C
 	// Convertit l'ID récupéré de la catégorie en int pour les comparaisons
 	ID, err := strconv.Atoi(stringID)
 	if err != nil {
-		log.Print("ERREUR : <adminback.go> Erreur dans la récupération de l'ID de catégorie : ", err)
 		return models.Category{}, false, err
 	}
 
@@ -48,13 +48,15 @@ func AdminDeleteMessages(db *sql.DB, ID int) error {
 
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
-		log.Print("ERREUR : <adminback.go> Erreur dans la suppression du message : ", err)
+		logMsg := fmt.Sprintf("ERREUR : <adminback.go> Erreur dans la suppression du message n°%d : %v", ID, err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(ID)
 	if err != nil {
-		log.Print(err)
+		logMsg := fmt.Sprint(err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 

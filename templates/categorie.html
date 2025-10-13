@@ -9,7 +9,7 @@
     <div class="dashboard-header">
       <div class="topic-top">
         <h2>{{ .Category.Name }}</h2>
-        {{if .CurrentUser.LogStatus}}
+        {{if and .CurrentUser.LogStatus (ne .CurrentUser.UserType 4)}}
         <form action="/new-topic" method="GET">
           <input type="hidden" name="category_id" value="{{.Category.ID}}" />
           <button type="submit" class="respond-btn">
@@ -23,7 +23,7 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <h3>{{ .Category.Name }}</h3>
-        <div>{{.Category.Description}}</div>
+        <div class="cat-desc">{{.Category.Description}}</div>
       </aside>
 
       <!-- Posts Section -->
@@ -36,16 +36,17 @@
             src="{{(index .Messages 0).Author.ProfilPic}}"
           />
           <div class="post-content">
-            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a>
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.Name}}</a> <span class="topic-postnumber">({{(len .Messages)}} messages)</span>
             <div class="post-author">
               Dernier message par {{(index .Messages
-              .LastPost).Author.Username}}
+              .LastPost).Author.Username}} le {{(index .Messages
+              .LastPost).Created}} :
             </div>
             <a
               class="post-text"
               href="/topic/{{.TopicID}}#{{(index .Messages .LastPost).MessageID}}"
-            ><img class="post-link" src="/static/ouvrirliens.jpeg" alt="Accéder au message" title="Accéder au message"/>
-{{preview (index .Messages .LastPost).Content 300}}
+              style="margin-top: 5px;"
+            ><img class="post-link" src="/static/ouvrirliens.jpeg" alt="Accéder au message" title="Accéder au message"/>{{preview (index .Messages .LastPost).Content 300}}
             </a>
           </div>
           {{ else }}
@@ -59,8 +60,7 @@
         <div class="post-card">
           <div class="post-content">
             <div class="post-text">
-              Cette catégorie ne contient pour l'instant aucun sujet.
-            </div>
+<center>Cette catégorie ne contient pour l'instant aucun sujet.</center></div>
           </div>
         </div>
         {{end}}

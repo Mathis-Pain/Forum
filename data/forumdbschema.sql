@@ -11,7 +11,7 @@ CREATE TABLE user (
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     profilpic TEXT DEFAULT '/static/noprofilpic.png',
-    role_id INTEGER NOT NULL DEFAULT 1,
+    role_id INTEGER NOT NULL DEFAULT 3,
     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
 );
 
@@ -40,8 +40,8 @@ CREATE TABLE message (
     content TEXT NOT NULL,
     created_at TEXT DEFAULT (CURRENT_TIMESTAMP),
     user_id INTEGER NOT NULL,
-    likes INTEGER,
-    dislikes INTEGER,
+    likes INTEGER DEFAULT 0,
+    dislikes INTEGER DEFAULT 0,
     warning INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (topic_id) REFERENCES topic(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE

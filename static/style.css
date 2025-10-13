@@ -1,30 +1,29 @@
-/********* Initialisation des variables *********/
+/* #region **** Initialisation des variables */
+
 :root {
   /* Couleurs de fond */
-  --color-pageback: #2c2c2c;
-  --color-headerback: #f8f9fa;
-  --color-boxback: #fff;
-  --color-logoback: #ccc;
-  --color-logohover: #bbb;
-  --color-close: #999;
-  --color-avatar: #000;
-
+  --color-pageback: #835f3e;
+  --color-headerback: #ebe3d0;
+  --color-dropdown: #bb9b76;
+  --color-logohover: #b6a287;
+  --color-dashboard : #8d6947; 
+  --color-subtitle:#3A2516;
+ 
   /* Bordures et éléments en évidence */
-  --color-highlight: #007bff;
-  --color-input: #ddd;
-  --color-btnhover: #0056b3;
+  --color-highlight: #cba830;
+  --color-btnhover: #dc8828;
 
   /* Couleurs d'écriture */
-  --color-sidebar: #666;
   --color-write: #333;
-  --color-modalwrite: whitesmoke;
+  --color-modalwrite: whitesmoke;/*on y revient aprés*/
   --color-error: red;
 
   /* Polices d'écriture */
   --font-main: Arial, sans-serif;
 }
+/* #endregion */
 
-/********* Bases de toutes les pages *********/
+/* #region **** Généralités de page du site */
 * {
   margin: 0;
   padding: 0;
@@ -34,6 +33,9 @@
 body {
   font-family: var(--font-main);
   background-color: var(--color-pageback);
+  background-image: url('/static/pageback.jpg');
+  background-size:cover cover;
+  background-attachment: fixed;
   color: var(--color-write);
 }
 
@@ -54,9 +56,33 @@ body {
   color: var(--color-pageback);
 }
 
+/* Barres de défilement */
+::-webkit-scrollbar {
+  height: 12px;
+  width: 7px;
+  background: var(--color-headerback);
+  margin-right: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-dashboard);
+  height: 30px;
+}
+::-webkit-scrollbar-corner {
+  background: none;
+}
 
+/* Couleur des liens */
+a {
+  color: var(--color-highlight);
+}
 
-/**** Header ****/
+a:hover {
+  color: var(--color-btnhover);
+}
+
+/* #endregion */
+
+/* #region **** Header */
 .header {
   background-color: var(--color-headerback);
   padding: 15px 20px;
@@ -67,6 +93,17 @@ body {
   position: sticky;
   top: 0;
   z-index: 8;
+}
+
+/* Description du forum */
+.dashboard-header:hover .forum-desc{
+  height: auto;
+  transition: all 0.5s ease;
+}
+
+.forum-desc {
+  color:var(--color-dashboard); 
+  font-size: 0.9em;
 }
 
 /* Lien du retour à l'accueil (logo + titre) */
@@ -80,7 +117,7 @@ body {
 .logo {
   width: 50px;
   height: 50px;
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border-radius: 50%;
 }
 
@@ -109,6 +146,12 @@ body {
   color: var(--color-highlight);
 }
 
+.nav-cat {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: context-menu;
+}
+
 /* Menu déroulant (catégories et options utilisateur) */
 .dropdown {
   list-style: none;
@@ -120,8 +163,6 @@ body {
 
 .dropdown a {
   display: block;
-  padding: 10px 20px;
-  color: var(--color-write);
   text-decoration: none;
 }
 
@@ -140,11 +181,11 @@ body {
   border-radius: 5px;
   margin: 0;
   padding: 0;
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   min-width: 130px;
   max-height: 60vh;
   overflow-y: auto;
-  z-index:8;
+  z-index:800;
 }
 
 .dropdown-menu li button {
@@ -178,7 +219,7 @@ body {
 /* Barre de recherche */
 .search-box {
   padding: 8px 15px;
-  border: 1px solid var(--color-logoback);
+  border: 1px solid var(--color-dropdown);
   border-radius: 20px;
   width: 200px;
   outline: none;
@@ -186,7 +227,7 @@ body {
 
 /* Bouton de connexion / Inscription */
 .login-btn {
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -198,22 +239,38 @@ body {
   background-color: var(--color-logohover);
 }
 
+/* #endregion */
 
-/********* Bloc général de la page *********/
+/* #region **** Bloc général de la page */
 .main-content {
   display: flex;
-  max-width: 1200px;
+  max-width: 80%;
   margin: 20px auto;
   gap: 20px;
   padding: 0 20px;
 }
 
-/* Sidebar */
+/* Sous-titre de la page */
+.dashboard-header {
+  background-color: var(--color-dashboard);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  color: var(--color-modalwrite);
+  font-weight: normal;
+}
+
+/* Barre latérale */
 .sidebar {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
+  min-width: 150px;
   width: 300px;
+  flex-shrink: 0;
   min-height: 120px;
   height: fit-content;
   position: sticky;
@@ -224,7 +281,7 @@ body {
 
 .sidebar > p {
   font-weight: bold;
-  color: #333;
+  color: var(--color-write);
   margin-top: 15px;
   margin-bottom: 15px;
   font-size: 16px;
@@ -240,7 +297,7 @@ body {
 /* Contenu de la barre latérale */
 .sidebar-item {
   display: block;
-  color: var(--color-sidebar);
+  color: var(--color-write);
   text-decoration: none;
   padding: 5px 0;
   cursor: pointer;
@@ -250,53 +307,14 @@ body {
   color: var(--color-highlight);
 }
 
-details {
-  margin: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+.cat-desc {
+  text-align: justify;
+   white-space: pre-wrap; 
 }
 
-summary {
-  font-weight: bold;
-  cursor: pointer;
-  padding: 8px 0;
-  color: #333;
-  list-style: none;
-  position: relative;
-}
+/*  #endregion */
 
-summary:before {
-  content: ">";
-  position: absolute;
-  left: -15px;
-  transition: transform 0.3s ease;
-}
-
-details[open] summary:before {
-  transform: rotate(90deg);
-}
-
-.menu-item {
-  display: block;
-  color: #666;
-  text-decoration: none;
-  padding: 5px 0 5px 15px;
-  font-size: 14px;
-  transition: color 0.3s ease;
-}
-
-.menu-item:hover {
-  color: #007bff;
-}
-
-.simple-link {
-  font-weight: bold;
-  color: #333;
-  padding: 8px 0;
-  display: block;
-  font-size: 14px;
-}
-
-/* Content area */
+/* #region **** Panneau d'administration */
 .content-area {
   flex: 1;
   display: flex;
@@ -304,31 +322,128 @@ details[open] summary:before {
   gap: 20px;
 }
 
-.dashboard-header {
-  background-color: #d0d0d0;
-  padding: 20px;
-  border-radius: 10px;
+/* Blocs de la barre latérale */
+details {
+  margin: 10px 0;
+  border-bottom: 1px solid lightgray;
 }
 
-.dashboard-header h1 {
-  font-size: 28px;
-  color: #333;
-  font-weight: normal;
+/* Quand la section est active */
+.userlist span,
+.catlist span,
+.topiclist span, 
+.loglist span {
+  color: var(--color-highlight);
+  margin: 10px 0px 10px 25px;
+  padding-left: 15px;
+  border-left: 5px solid var(--color-highlight);
+  border-radius: 5px;
 }
 
-/* Tables */
+/* Titres de la barre latérale */
+summary {
+  font-weight: bold;
+  cursor: pointer;
+  padding: 8px 0;
+  color: var(--color-write);
+  list-style: none;
+  position: relative;
+}
+
+summary:before {
+  content: "➤ ";
+  position: absolute;
+  left: -17px;
+  top:7px;
+  transition: transform 0.3s ease;
+}
+
+details[open] summary:before {
+  transform: rotate(90deg);
+}
+
+/* Informations et liens dans la barre latérale  */
+.menu-item {
+  display: block;
+  color: var(--color-write);
+  text-decoration: none;
+  padding: 5px 0 5px 15px;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.menu-item:hover {
+  color: var(--color-highlight);
+}
+
+.simple-link {
+  font-weight: bold;
+  color: var(--color-write);
+  padding: 8px 0;
+  display: block;
+  font-size: 14px;
+}
+
+/* Tableaux */
 .table-container {
-  background-color: white;
+  background-color: var(--color-headerback);
   border-radius: 15px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.admin-list {
+  display: block;
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.admin-list thead {
+  position: sticky;
+  top: 0px;
+}
+
+/* Liens dans les tableaux */
+.admin-list .admin-topic {
+  max-height:200px;
+  overflow: auto;
+  color:var(--color-subtitle);
+  font-size:0.8em;
+}
+
+.admin-list a {
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.admin-list a::first-letter {
+  font-weight: bold;
+}
+
+/* Affichage des statistiques */
+.admin-stats {
+  display:flex;
+  justify-content: space-between;
+}
+
+.admin-stats div {
+  margin-right: 50px;
+  text-align: center;
+}
+
+.admin-stats div b {
+  display: block;
+}
+
+/* Titre du tableau */
 .table-title {
   font-size: 18px;
-  color: #333;
+  font-weight: bold;
+  color: var(--color-write);
   margin-bottom: 15px;
-  font-weight: normal;
+  color:var(--color-subtitle)
 }
 
 table {
@@ -336,23 +451,86 @@ table {
   border-collapse: collapse;
 }
 
+/* Titres des colonnes */
 th {
-  background-color: #e8e8e8;
-  color: #333;
+  background-color:var(--color-logohover);
+  color: var(--color-write);
   padding: 12px;
   text-align: left;
   font-weight: normal;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid lightgray;
 }
 
+/* Cellules du tableau */
 td {
   padding: 12px;
-  border-bottom: 1px solid #f0f0f0;
-  color: #666;
+  border-bottom: 1px solid lightgrey;
+  color: var(--color-write);
+  vertical-align: top;
+}
+
+.three-col th {
+  width:33%;
+}
+
+.four-col th {
+  width:25%;
+}
+
+/* Boutons d'administration */
+.admin-btn {
+  color: var(--color-highlight);
+  border:none;
+  background:none;
+  font-family: var(--font-main);
+  font-size: 1em;
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.admin-btn:hover {
+  color:var(--color-btnhover);
+}
+
+.admin-input {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  padding:10px;
+  width:100%;
+}
+
+textarea.admin-input {
+  min-height:80px;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.userfield {
+  display: block;
+  max-height:80px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.admin-link {
+  font-size: 0.8em;
+  display: block!important;
+  margin: 5px 15px 0px 0px;
+  text-align: right;
+}
+
+/* Bouton "Ajouter une catégorie */
+.admin-add-cat {
+  margin-top: 30px;
+  cursor: pointer;
+  text-align: center;
+  color:var(--color-headerback)
 }
 
 .add-btn {
-  background-color: #ccc;
+  background-color: var(--color-logohover);
   border: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -361,15 +539,53 @@ td {
   margin-top: 15px;
   float: right;
 }
+/* #endregion */
 
-/********* Affichage d'un sujet *********/
+/* #region **** Afficher les sujets */
 .posts-section {
   flex: 1;
 }
 
+/* Titre du sujet */
+.topic-top {
+  margin: auto;
+  margin-top: 10px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+
+.topic-top h2 {
+  color: var(--color-headerback);
+}
+
+.topic-postnumber {
+  display: inline-block;
+  position: relative;
+  top:-2px;
+  font-size: 0.65em;
+  color:var(--color-subtitle);
+}
+
+/* Bouton répondre ou ouvrir un sujet */
+.respond-btn {
+  background-color: var(--color-highlight);
+  border-radius: 5px;
+  margin-left: 100px;
+  padding: 10px;
+  border: 2px solid var(--color-pageback); 
+}
+
+/* Sommaire / index */
+.topic-index {
+  margin-bottom: 8px;
+  font-size: 0.8em;
+}
+
 /**** Affichage d'un message ****/
+/* Zone générale du message */
 .post-card {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 15px;
@@ -381,58 +597,12 @@ td {
   position: relative;
   z-index:5;
 }
-.create-topic-form {
-  width: 100%;
-  margin-top: 50px;
-}
-.input-name-topic {
-  background-color: var(--color-boxback);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px auto 15px auto;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  min-height: 120px;
-  scroll-margin-top: 100px;
-  width: 70%;
-}
-.input-description-topic {
-  background-color: var(--color-boxback);
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px auto 15px auto;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  min-height: 120px;
-  scroll-margin-top: 100px;
-  width: 70%;
-}
-.create-topic-form-button {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 15px;
-}
 
-.create-topic-form-button button {
-  width: 40%;
-  background-color: var(--color-headerback);
-  color: var(--color-write);
-  border: 1px solid var(--color-input);
-  padding: 12px;
-  border-radius: 5px;
-  font-size: 16px;
-  margin-top: 20px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
 /* Avatar du posteur */
 .post-avatar {
   width: 50px;
   height: 50px;
-  background-color: var(--color-avatar);
+  background-color: var(--color-dropdown);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -457,15 +627,20 @@ td {
 }
 
 .post-author a {
-  color: var(--color-avatar);
+  color: var(--color-dropdown);
   font-weight: bold;
   text-decoration: none;
   font-style: initial;
 }
 
+/* Bordure rouge si le message a été signalé */
+.warning {
+  border-left: 7px solid var(--color-error)!important;
+}
+
 /* Contenu du message */
 .post-text {
-  color: var(--color-sidebar);
+  color: var(--color-write);
   line-height: 1.4;
   white-space: pre-wrap;
   text-align: justify;
@@ -474,6 +649,9 @@ td {
 a.post-text {
   display: block;
   text-decoration: none;
+}
+a.post-text:hover{
+  color: var(--color-write);
 }
 
 .post-link {
@@ -485,7 +663,7 @@ a.post-text {
 
 /* Boutons like/dislike */
 .post-button {
-  background-color: var(--color-logoback);
+  background-color: var(--color-dropdown);
   border: none;
   padding: 8px 15px;
   border-radius: 5px;
@@ -498,23 +676,71 @@ a.post-text {
   background-color: var(--color-logohover);
 }
 
-/********* Pop-up de connexion / réponse / etc *********/
+/* #endregion */
+
+/* #region **** Créer un sujet ou un message */
+.input-name-topic {
+  background-color: var(--color-headerback);
+  border-radius: 10px;
+  padding: 20px;
+  margin:  auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  scroll-margin-top: 100px;
+  width: 100%;
+}
+
+.input-description-topic {
+  background-color: var(--color-headerback);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto 15px auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 120px;
+  scroll-margin-top: 100px;
+  width: 70%;
+}
+
+.create-topic-form-button {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.create-topic-form-button button {
+  width: 40%;
+  color: var(--color-write);
+  padding: 12px;
+  font-size: 16px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* #endregion */
+
+/* #region **** Généralités des pop-ups */
 #loginModal {
   display: none;
 }
 
+/* Format du modal */
 .modal {
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
-  background-color: var(--color-boxback);
+  background-color: var(--color-headerback);
   margin: 5% auto;
   padding: 30px;
   border-radius: 10px;
@@ -537,7 +763,7 @@ a.post-text {
 }
 
 /* Bouton de fermeture */
-.close-login {
+.close-btn {
   position: absolute;
   right: 15px;
   top: 15px;
@@ -545,7 +771,7 @@ a.post-text {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--color-close);
+  color: grey;
 }
 
 .close-btn:hover {
@@ -565,24 +791,36 @@ a.post-text {
   margin-bottom: 5px;
 }
 
-.modal-title-2 {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--color-modalwrite);
-  margin-bottom: 5px;
-}
-
 .modal-subtitle {
-  color: var(--color-sidebar);
+  color: var(--color-write);
   font-size: 14px;
 }
 
-.modal-subtitle-2 {
-  color: var(--color-boxback);
+/* Message d'erreur  */
+.error-message, .incorrect {
+  font-size:0.9em;
+  color: var(--color-error) !important;
+  text-align: center;
+}
+/* #endregion */
+
+/* #region **** Modal de connexion */
+/* Champs de connexion */
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
   font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
-/* Titre des champs */
+.form-input:focus {
+  border-color: var(--color-highlight);
+}
+
+/* Titres des champs */
 .form-group {
   margin-bottom: 20px;
 }
@@ -594,42 +832,21 @@ a.post-text {
   color: var(--color-write);
 }
 
-.form-label-2 {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: 500;
-  color: var(--color-modalwrite);
-}
-
-/* Affichage des mots de passe dans la connexion */
+/* Afficher le mot de passe */
 .show-password-text {
-  color: var(--color-modalwrite);
+  color: var(--color-highlight);
+  font-size: 0.8em;
 }
 
 .show-password-text-2 {
   color: var(--color-write);
 }
 
-/* Champs de connexion */
-.form-input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid var(--color-input);
-  border-radius: 5px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.form-input:focus {
-  border-color: var(--color-highlight);
-}
-
-/* Bouton de connexion */
+/* Bouton connexion */
 .form-button {
   width: 100%;
   background-color: var(--color-highlight);
-  color: var(--color-boxback);
+  color: var(--color-headerback);
   border: none;
   padding: 12px;
   border-radius: 5px;
@@ -646,16 +863,16 @@ a.post-text {
 .form-divider {
   text-align: center;
   margin: 20px 0;
-  color: var(--color-sidebar);
+  color: var(--color-write);
   font-size: 14px;
 }
 
 /* Bouton inscrpiton */
 .secondary-button {
   width: 100%;
-  background-color: var(--color-headerback);
+  background-color: var(--color-logohover);
   color: var(--color-write);
-  border: 1px solid var(--color-input);
+  border: 1px solid lightgrey;
   padding: 12px;
   border-radius: 5px;
   font-size: 16px;
@@ -664,51 +881,29 @@ a.post-text {
 }
 
 .secondary-button:hover {
-  background-color: #e9ecef;
+  background-color: var(--color-dashboard);
 }
 
-.big {
-  font-size: 80px;
-  color: var(--color-highlight);
-  margin: 0;
+/* #endregion */
+
+/* #region **** Modal de confirmation */
+.modal-confirm .modal-content {
+ margin : auto; 
 }
 
-.box {
-  background: var(--color-boxback);
-  padding: 30px;
-  border-radius: 10px;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.btn {
-  color: var(--color-highlight);
-  text-decoration: none;
-  padding: 5px 10px;
-}
-
-/*********** Affichage d'un sujet ***********/
-
-.topic-top {
-  margin: auto;
-  margin-top: 10px;
-  width: 90%;
+.modal-buttons{
   display: flex;
   justify-content: center;
 }
 
-.topic-top h2 {
-  color: var(--color-headerback);
+.modal-cancel-btn, .modal-confirm-btn {
+  margin-left:initial;
+  margin:20px 10% 5px 10%;
 }
 
-.respond-btn {
-  background-color: var(--color-highlight);
-  border-radius: 5px;
-  margin-left: 100px;
-  padding: 10px;
-}
+/* #endregion */
 
-/********* Reponsive *********/
+/* #region **** Responsive */
 @media (max-width: 768px) {
   .container {
     width: 95%;
@@ -781,44 +976,191 @@ a.post-text {
   }
 }
 
-/* Messages d'erreur */
-.error-message {
-  color: var(--color-error) !important;
-}
+/* #endregion */
 
-.admin-list {
-  display: block;
-  width: 100%;
-  max-height: 300px;
-  overflow: auto;
-}
-
-.admin-list thead {
-  position: sticky;
-  top: 0px;
-}
-
-.is-hidden {
-  display: none;
-}
-
-.userlist span,
-.catlist span,
-.topiclist span {
-  color: var(--color-highlight);
-  margin: 10px 0px 10px 25px;
-  padding-left: 15px;
-  border-left: 5px solid var(--color-highlight);
-  border-radius: 5px;
-}
-
-.warning {
-  border-left: 7px solid rgb(212, 99, 79) !important;
-}
-
+/* #region **** Actions sur les messages  */
 .post-actions {
   display: flex;
   position: absolute;
   right: 10px;
   bottom: 5px;
 }
+
+/* Code général des boutons */
+.action-btn, .profil-btn {
+  padding: 3px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: var(--color-logohover);
+  margin: 5px;
+  margin-top: 0px;
+  border-radius: 7px;
+}
+
+.action-btn:hover, .profil-btn:hover {
+  background-color: var(--color-btnhover);
+}
+
+.profil-btn {
+  padding:10px;
+  width:100%;
+  margin-bottom: 10px;
+}
+
+.post-input {
+  background-color: whitesmoke;
+  border-radius: 5px;
+  padding:2px;
+  min-width:100px;
+  width:100%;
+  margin-top: -2px;
+}
+
+/* Bouton modifier un message */
+.edit-message {
+  width: 96%;
+  min-width: 96%;
+  max-width: 96%;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  padding: 2%;
+  height:fit-content;
+  min-height: 150px;
+}
+
+/* Bouton avertissement */
+.warning-input {
+  cursor: text;
+}
+
+/* #endregion */
+
+/* Sections à masquer */
+.is-hidden {
+  display: none;
+}
+
+.overall {
+  position: relative;
+  z-index: 10;
+}
+
+/* #region **** Notifications */
+.notif {
+  position: relative;
+}
+
+.notif #triangle {
+   width: 0px;
+   height: 0px;
+   border-style: solid;
+   border-width: 0 19.5px 12px 19.5px;
+   border-color: transparent transparent var(--color-dropdown) transparent;
+   transform: rotate(0deg);
+   position: absolute;
+   top: 40px;
+  left:50%;
+  transform: translateX(-50%);
+}
+
+.notif-block {
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
+  top:50px;
+  width:30vw;
+  min-width: 250px;
+  max-width:400px;
+  max-height:50vh;
+  overflow: auto;
+  border-radius: 5px;
+  z-index: 900;
+}
+
+.notif-element {
+  display: flex;
+  background: var(--color-highlight);
+  color:var(--color-headerback);
+  text-align: center;
+  padding:5px 10px;
+  min-height:60px;
+  height:fit-content
+}
+
+.notif-read {
+  background: var(--color-dropdown);
+  color:var(--color-subtitle);
+  font-size:0.9em;
+  font-style: italic;
+}
+
+.notif-block form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.notif-block form button {
+  border: none;
+  background-color: var(--color-headerback);
+  padding: 3px;
+  border-radius: 3px;
+  margin:2px;
+}
+
+.notif-link {
+  color:var(--color-subtitle);
+  display: inline;
+}
+
+.notif-link:hover {
+  color: inherit;
+}
+
+/* #endregion */
+
+/* #region **** Messages d'erreur et page d'inscription*/
+/* Titre des messages d'erreur */
+.big {
+  font-size: 80px;
+  color: var(--color-highlight);
+  margin: 0;
+} 
+
+/* Boîte principale */
+.errorbox, .registerbox {
+  background: var(--color-headerback);
+  padding: 30px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.registerbox {
+  max-width: 80%;
+}
+
+.errorbox  {
+  max-width: 500px;
+}
+
+/* Bouton de validation */
+.btn {
+  color: var(--color-highlight);
+  text-decoration: none;
+  padding: 5px 10px;
+} 
+
+/* Titre de la page d'inscription */
+.registerbox .modal-title {
+  text-align: center;
+  color:var(--color-dashboard);
+  font-size: 1.5em;
+}
+
+.registerbox .modal-subtitle {
+  text-align: center;
+}
+
+/* #endregion */

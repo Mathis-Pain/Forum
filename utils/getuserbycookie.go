@@ -2,22 +2,25 @@ package utils
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/sessions"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
 func GetUserNameAndIDByCookie(r *http.Request, db *sql.DB) (string, int, error) {
 	cookie, err := r.Cookie("session_id")
 	if err != nil {
-		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
+		logs.AddLogsToDatabase(logMsg)
 		return "", 0, err
 	}
 	session, err := sessions.GetSession(cookie.Value)
 	if err != nil {
-		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
+		logs.AddLogsToDatabase(logMsg)
 		return "", 0, err
 	}
 

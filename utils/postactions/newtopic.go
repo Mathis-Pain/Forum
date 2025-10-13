@@ -2,9 +2,10 @@ package postactions
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Fonction pour créer un nouveau sujet dans une catégoire
@@ -18,7 +19,6 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("<newtopic.go> Could not open database : ", err)
 		return err
 	}
 	defer db.Close()
@@ -26,21 +26,24 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	// Ajoute les informations du sujet à la base de données (titre, créateur, catégorie)
 	err = addTopicToDatabase(db, newtopic, userID)
 	if err != nil {
-		log.Println("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
+		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans la création d'un nouveau sujet :", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
 	// Récupère l'ID du topic pour pouvoir ajouter le premier message dans la BDD des messages
 	newtopic.TopicID, err = getTopicID(db, newtopic.Name, catID)
 	if err != nil {
-		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message(recuperation de l'id):", err)
+		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans récupération de l'ID du sujet pour créer le premier message :", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
 	// Ajout du premier message du sujet dans la BDD
 	err = NewPost(userID, newtopic.TopicID, message, "newtopic")
 	if err != nil {
-		log.Println("<newtopic.go> Erreur dans la création d'un nouveau message :", err)
+		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans l'ajout du message :", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 

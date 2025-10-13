@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -27,7 +27,9 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Could not open database : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Could not open database : %v", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
 		return
 	}
 	defer db.Close()
@@ -36,17 +38,24 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 	getcatID, err := strconv.Atoi(getcategoryID)
 	if err != nil {
-		// gérer l'erreur si category_id n'est pas un nombre
 		utils.StatusBadRequest(w)
 		return
 	}
-	// on charge es categories et l'utilisateur pour construire le header
-	categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
+	// on charge les categories et l'utilisateur pour construire le header
+	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
-		log.Printf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v", err)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
+
+	// Empêche les utilisateurs bannis ou non enrigistrés d'accéder à la page
+	if currentUser.UserType == 4 || currentUser.UserType == 0 {
+		utils.ForbiddenError(w)
+		return
+	}
+
 	// on prend getcatID pour chercher la categories qui correspond dans la bdd et la donner au template
 	var currentCategory models.Category
 	for _, cat := range categories {
@@ -67,7 +76,8 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 		stringcatID := r.FormValue("category_id")
 		catID, err := strconv.Atoi(stringcatID)
 		if err != nil {
-			fmt.Println("ERREUR : <createtopichandler.go> L'ID de la catégorie n'est pas valide :", err)
+			logMsg := fmt.Sprint("ERREUR : <createtopichandler.go> L'ID de la catégorie n'est pas valide :", err)
+			logs.AddLogsToDatabase(logMsg)
 			utils.StatusBadRequest(w)
 			return
 		}
@@ -82,30 +92,36 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 
 		categ, _ := getdata.GetCatDetails(db, catID)
 
-		log.Printf("USER : Nouveau sujet ouvert dans la catégorie \"%s\" par %s : \"%s\"", categ.Name, username, topicName)
+		logMsg := fmt.Sprintf("USER : Nouveau sujet ouvert dans la catégorie \"%s\" par %s : \"%s\"", categ.Name, username, topicName)
+		logs.AddLogsToDatabase(logMsg)
 
 		// Redirection vers la page de la catégorie
 		http.Redirect(w, r, fmt.Sprintf("/categorie/%d", catID), http.StatusSeeOther)
 		return
 	}
 
+	pagename := "Ouvrir un nouveau sujet - " + currentCategory.Name
+
 	data := struct {
-		PageName    string
-		Category    models.Category
-		CurrentUser models.UserLoggedIn
-		Categories  []models.Category
-		LoginErr    string
+		PageName      string
+		Category      models.Category
+		CurrentUser   models.UserLoggedIn
+		Categories    []models.Category
+		LoginErr      string
+		Notifications models.Notifications
 	}{
-		PageName:    "Forum",
-		Category:    currentCategory,
-		CurrentUser: currentUser,
-		Categories:  categories,
-		LoginErr:    "",
+		PageName:      pagename,
+		Category:      currentCategory,
+		CurrentUser:   currentUser,
+		Categories:    categories,
+		LoginErr:      "",
+		Notifications: notifications,
 	}
 
 	err = CreatTopicHtml.Execute(w, data)
 	if err != nil {
-		log.Printf("ERREUR : <create-topic-handler.go> Could not execute template <create-topic.html>: %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <create-topic-handler.go> Erreur à l'exécution du template <create-topic.html>: %v", err)
+		logs.AddLogsToDatabase(logMsg)
 		utils.NotFoundHandler(w)
 
 	}

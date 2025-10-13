@@ -16,9 +16,9 @@
                 <h1>Gérer les catégories ({{.Stats.TotalCats}})</h1>
             </div>
 
-<input type="text" class="search-box" placeholder="search">
+<!-- <input type="text" class="search-box" placeholder="search"> -->
 
-<div class="table-container">
+<div class="table-container three-col">
                 <table>
                     <thead>
                         <tr>
@@ -34,21 +34,26 @@
 
                          <form method="POST">
                                 <input type="hidden" name="catID" value="{{.ID}}">
-                            <td><span class="userfield"> {{.Name}} </span><input type="text" name="name" value="{{.Name}}" class="is-hidden user-edit"></td>
+                            <td><span class="userfield"> {{.Name}} </span>
+                                <input type="text" name="name" value="{{.Name}}" class="is-hidden user-edit admin-input"></td>
                             <td> 
                                <span class="userfield">{{.Description}} </span>
-                               <textarea name="description" class="is-hidden user-edit">{{.Description}}</textarea>
-                            <button type="submit" title="Valider les modifications" class="validate-btn is-hidden">✅ Valider</button></td>
+                               <textarea name="description" class="is-hidden user-edit admin-input">{{.Description}}</textarea>
+                               <center>
+                            <button type="submit" title="Valider les modifications" class="validate-btn admin-btn is-hidden">✅ Valider</button>
+                            <button type="button" title="Annuler les modifications" class="cancel-btn is-hidden admin-btn">✖️ Annuler</button>
+                            </center>
+                        </td>
                             </form>
 
                             <td class="actions-column">
                         <div class="menu">
                             <div class="menu-options">
-                               <a title="Modifier la catégorie" class="modifier-btn">🔧 Modifier</a>
+                               <a title="Modifier la catégorie" class="modifier-btn admin-btn">🔧 Modifier</a>
                                <form method="POST" class="delete-form">
                                         <input type="hidden" name="catToDelete" value="{{.ID}}">
                                         <button title="Supprimer la catégorie" 
-                                        type="button" class="delete-btn" 
+                                        type="button" class="delete-btn admin-btn" 
                                         data-topic-count="{{len .Topics}}">🚫 Supprimer</button>
                                 </form>
                             </div>
@@ -57,14 +62,19 @@
                     </td>
                         </tr>
                         {{end}}
-                       <tr><td colspan="3"><div id="show-button" style="text-align: center;margin-top: 30px;"  class="dashboard-header">> Ajouter une catégorie</div></td></tr>
+                       <tr><td colspan="3"><div id="show-button" class="dashboard-header admin-add-cat">Ajouter une catégorie</div></td></tr>
                         <tr id="newcat" class="is-hidden">
 
                          <form method="POST">
-                            <td><input type="text" name="newcatname" class="user-edit" placeholder="Nom de la catégorie" required></td>
+                            <td><input type="text" name="newcatname" class="user-edit admin-input" placeholder="Nom de la catégorie" required></td>
                            <td>
-                               <textarea name="newcatdesc" class="user-edit" placeholder="Description de la catégorie"></textarea></td>
-                            <td><button type="submit" title="Ajouter la nouvelle catégorie" id="add-button">✅ Ajouter</button></td>
+                               <textarea name="newcatdesc" class="user-edit admin-input" placeholder="Description de la catégorie"></textarea></td>
+                            <td>
+                                <center>
+                                <button type="submit" class="admin-btn" title="Ajouter la nouvelle catégorie" id="add-button">✅ Ajouter</button>
+                            <button type="button" title="Annuler les modifications" class="admin-btn" id="cancel-button">✖️ Annuler</button>
+                            </center>
+                            </td>
                             </form>
                         </tr>
                       
@@ -88,14 +98,14 @@
             </style>
 
             <!-- Modal de confirmation pour la suppression -->
-            <div id="confirmationModal" class="modal is-hidden">
+            <div id="confirmationModal" class="modal modal-confirm is-hidden">
                 <div class="modal-content">
                     <p>Êtes-vous sûr de vouloir supprimer cette catégorie ? Cela entrainera la suppression de <span id="topicCountSpan"></span> sujets.
                         Cette action est irréversible.
                     </p>
                     <div class="modal-buttons">
-                        <button id="cancelDelete" class="modal-cancel-btn">Annuler</button>
-                        <button id="confirmDelete" class="modal-confirm-btn">Confirmer</button>
+                        <button id="cancelDelete" class="modal-cancel-btn respond-btn">Annuler</button>
+                        <button id="confirmDelete" class="modal-confirm-btn respond-btn">Confirmer</button>
                     </div>
                 </div>
             </div>
@@ -123,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const showButton = document.getElementById('show-button');
         const newCatRow = document.getElementById('newcat');
         const addButton = document.getElementById('add-button');
+        const cancelButton = document.getElementById('cancel-button');
 
         // Function to show the new category row
         showButton.addEventListener('click', () => {
@@ -131,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Function to hide the new category row when 'Ajouter' is clicked
         addButton.addEventListener('click', (event) => {
+            newCatRow.classList.add('is-hidden');
+        });
+
+        cancelButton.addEventListener('click', (event) => {
             newCatRow.classList.add('is-hidden');
         });
     });

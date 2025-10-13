@@ -6,8 +6,8 @@
 
 <div class="dashboard-header">
   <div class="topic-top">
-    <h2>{{.Topic.Name}}</h2>
-     {{if .CurrentUser.LogStatus}}<form action="/answermessage" method="GET">
+    <h2><a href="/categorie/{{.Topic.CatID}}" style="text-decoration: none;"> {{.CatName}} </a> ➤ {{.Topic.Name}}</h2>
+    {{if and .CurrentUser.LogStatus (ne .CurrentUser.UserType 4)}} <form action="/answermessage" method="GET">
           <input type="hidden" name="topic_id" value="{{.Topic.TopicID}}"> 
           <button type="submit" class="respond-btn">
            Répondre 
@@ -19,9 +19,10 @@
 <main class="main-content">
 
     <aside class="sidebar">
+        <h3>Naviguer sur le sujet</h3>
         {{range .Topic.Messages}}
-        • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par {{.Author.Username}}
-      <br>
+     <div class="topic-index">   • <a href="#{{.MessageID}}">Message du {{.Created}}</a> par {{.Author.Username}}
+      </div>
       {{end}}
       </aside>
 
@@ -35,56 +36,55 @@
                 <div class="post-content">
                     <div class="post-title">{{$message.Author.Username}}</div>
                     <textarea name="message-content" class="edit-message is-hidden">{{$message.Content}}</textarea>
-                    <pre class="post-text">
-{{$message.Content}}</pre>
+                    <div class="post-text">{{$message.Content}}</div>
                 <div class="post-actions">
                             
                                 <input type="hidden" name="modname" value="{{$.CurrentUser.Username}}">
                                 <input type="hidden" name="postID" value="{{$message.MessageID}}">
                                 <input type="hidden" name="topicID" value="{{$.Topic.TopicID}}">
                                {{if eq $.CurrentUser.UserType 1}}  
-                               {{if eq $message.Warning 1}} <button name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
+                               {{if eq $message.Warning 1}} <button class="action-btn" name="action" style="cursor:pointer;" type="submit" value="cancel" title="Annuler le signalement">🔕</button> {{end}}
                                {{if ne $index 0}}
-                               <button class="cancelmove is-hidden" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
-                               <select name="topicindex" class="topicindex is-hidden" title="Choisissez le sujet où placer le message">
+                               <button class="cancelmove is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le déplacement" onclick="CancelMove(this)">✖️</button>
+                               <select name="topicindex" class="topicindex is-hidden post-input" title="Choisissez le sujet où placer le message">
                                 <option value=""></option>
                                     {{range $.AllTopics}}
-                                    <option value="{{.TopicID}}">{{.Name}}</option>
+                                    {{if ne .TopicID $.Topic.TopicID}} <option value="{{.TopicID}}">{{.Name}} (ID : {{.TopicID}})</option> {{end}}
                                     {{end}}
                                 </select>
-                                <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
+                                <button name="action" style=" cursor:pointer;" type="submit" value ="move" class="movebutton action-btn" title="Déplacer le message" onclick="MoveMessage(this)">↩️</button>
                                 
                             {{end}}
                                {{end}}
                                
                     {{if eq $.CurrentUser.UserType 2}} 
                     {{if eq $message.Warning 0}}
-                    <button class="cancelwarn is-hidden" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
-                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden">
-                    <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton">⚠️</button> {{end}} 
+                    <button class="cancelwarn is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler le signalement" onclick="CancelSignal(this)">✖️</button>
+                    <input type="text" name="warning" placeholder="Raison du signalement" class="warning-input is-hidden post-input">
+                    <button name="action" style="cursor:pointer;" type="submit" value="warn" title="Signaler le message" onclick="Signal(this)" class="warnbutton action-btn">⚠️</button> {{end}} 
                     {{end}}
                    
                                {{if or (eq $.CurrentUser.UserType 1) (eq $.CurrentUser.UserType 2) (eq $.CurrentUser.ID $message.Author.ID)}} 
 
                                 <!-- Modal de confirmation pour la suppression -->
-            <div id="confirmationModal" class="modal is-hidden">
+            <div class="modal modal-confirm is-hidden">
                 <div class="modal-content">
                     <p>Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.
                     </p>
                     <div class="modal-buttons">
-                        <button id="cancelDelete" class="modal-cancel-btn">Annuler</button>
-                        <button id="confirmDelete" name="action" value="delete" type="submit" class="modal-confirm-btn">Confirmer</button>
+                        <button class="modal-cancel-btn respond-btn">Annuler</button>
+                        <button name="action" value="delete" type="submit" class="modal-confirm-btn respond-btn">Confirmer</button>
                     </div>
                 </div>
             </div>
 
-                    <button style="cursor:pointer;" class="delete-btn" type="button"  title="Supprimer le message">🗑️</button>
+                    <button style="cursor:pointer;" class="delete-btn action-btn" type="button"  title="Supprimer le message">🚮</button>
 
 
                     
-                    <button class="canceledit is-hidden" type="button" style="cursor:pointer;" title="Annuler les modifications" onclick="CancelEdit(this)">✖️</button>
-                    <button class="send-edit is-hidden" style="cursor: pointer;" name="action" type="submit" value="edit" onclick="MessageEdited(this)" title="Valider les modifications">✅</button>
-                    <button name="action" style="cursor: pointer;" type="button" class="editbutton" onclick="EditMessage(this)" title="Modifier le message">📝</button> {{end}}
+                    <button class="canceledit is-hidden action-btn" type="button" style="cursor:pointer;" title="Annuler les modifications" onclick="CancelEdit(this)">✖️</button>
+                    <button class="send-edit is-hidden action-btn" style="cursor: pointer;" name="action" type="submit" value="edit" onclick="MessageEdited(this)" title="Valider les modifications">✅</button>
+                    <button name="action" style="cursor: pointer;" type="button" class="editbutton action-btn" onclick="EditMessage(this)" title="Modifier le message">📝</button> {{end}}
                 
             </div>
             </div></form>
@@ -95,14 +95,14 @@
                 {{if $.CurrentUser.LogStatus}}<div class="action-column">
                    <form method="POST" action="/like" class="like-form">
             <input type="hidden" name="postID" value="{{$message.MessageID}}">
-            <button type="submit" class="action-btn">
+            <button type="submit" class="action-btn" title="Ajouter un like">
                 <span>👍</span>
                 <span>{{$message.Likes}}</span>
             </button>
                     </form>
                     <form method="POST" action="/dislike" class="like-form">
             <input type="hidden" name="postID" value="{{$message.MessageID}}">
-            <button type="submit" class="action-btn">
+            <button type="submit" class="action-btn" title="Ajouter un dislike">
                 <span>👎</span>
                 <span>{{$message.Dislikes}}</span>
             </button>
@@ -124,28 +124,29 @@
         </main>
     </div>
 
-    {{template "ReponseBox"}}
 
 
-   <style>.posts-section form:first-child .post-card {
-  /* border-bottom:10px solid var(--color-highlight); */
-  border-left:7px solid var(--color-highlight);
-  margin-bottom: 25px;
-}</style>
+   <style>
+   .posts-section form:first-child .post-card {
+    border-left:7px solid var(--color-btnhover);
+    margin-bottom: 25px;
+    }
+    .post-text {
+    margin-bottom: 15px;
+    }
+    </style>
      
 
     <script>   
     // --- Local Modal Display/Hide Logic ---
 document.querySelectorAll('.delete-btn').forEach(button => {
     button.addEventListener('click', (event) => {
-        // Prevent the default action (which is none, since type="button")
-        event.preventDefault(); 
-        
         // Find the modal that is a direct sibling/child of the form's content
         const form = event.target.closest('form');
         const modal = form.querySelector('.modal'); // Use class selector since ID is duplicated
         
         if (modal) {
+            form.classList.add('overall');
             modal.classList.remove('is-hidden');
             modal.style.display = 'flex';
         }
@@ -154,12 +155,14 @@ document.querySelectorAll('.delete-btn').forEach(button => {
 
 document.querySelectorAll('.modal-cancel-btn').forEach(button => {
     button.addEventListener('click', (event) => {
-        event.preventDefault(); // Stop form submission if this button was type="submit" (it's not)
+        event.preventDefault();
         
         // Find the closest modal element
+        const form = event.target.closest('form');
         const modal = event.target.closest('.modal');
         
         if (modal) {
+            form.classList.remove('overall');
             modal.classList.add('is-hidden');
             modal.style.display = 'none';
         }

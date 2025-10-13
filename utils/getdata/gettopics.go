@@ -28,6 +28,7 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 
 		// Récupère la liste des messages du sujet
 		topic.Messages, err = GetMessageList(db, topic.TopicID)
+		topic.CatID = catID
 
 		if err == sql.ErrNoRows {
 			topic.Messages = []models.Message{}
@@ -50,12 +51,12 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 // Récupère les informations d'un sujet à partir de son ID
 func GetTopicInfo(db *sql.DB, topicID int) (models.Topic, error) {
 	// Préparation de la requête sql
-	sqlQuery := `SELECT name FROM topic WHERE id = ?`
+	sqlQuery := `SELECT name, category_id FROM topic WHERE id = ?`
 	row := db.QueryRow(sqlQuery, topicID)
 
 	var topic models.Topic
 	// Récupération du titre du sujet
-	err := row.Scan(&topic.Name)
+	err := row.Scan(&topic.Name, &topic.CatID)
 	if err != nil {
 		return models.Topic{}, err
 	}

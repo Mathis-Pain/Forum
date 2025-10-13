@@ -12,7 +12,7 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <h3>Profil</h3>
-        <div class="post-avatar" src="{{.User.ProfilPic}}"></div>
+        <img class="post-avatar" src="{{.User.ProfilPic}}"/>
         <p>{{.User.Username}}</p>
         <p>{{.User.Email}}</p>
         <p>{{.User.Status}}
@@ -20,17 +20,22 @@
     <form  method="POST" action="/sendrequest">
       <input type="hidden" name="username" value="{{.User.Username}}">
       <input type="hidden" name="id" value="{{.User.ID}}">
-      <button type="submit" name ="action" value="requestmod">Demander à rejoindre la modération</button>
+      <button type="submit" name ="action" value="requestmod" class="profil-btn">Demander à rejoindre la modération</button>
     </form>
           {{end}}
 
         </p>
 
         <div class="profil-nav">
-        <button onclick="ShowLikes()">Messages que j'ai 👍 ou 👎</button>
-        <button onclick="ShowPosts()">💬 Tous mes messages</button>
-        <button onclick="ShowTopics()">🔖 Sujets que j'ai ouverts</button>
+        <button onclick="ShowLikes()" class="profil-btn">Messages que j'ai 👍 ou 👎</button>
+        <button onclick="ShowPosts()" class="profil-btn">💬 Tous mes messages</button>
+        <button onclick="ShowTopics()" class="profil-btn">🔖 Sujets que j'ai ouverts</button>
+        {{if eq .User.Status "Modérateur"}}
+        <button onclick="ShowMod()"  class="profil-btn">Historique de modération</button>
+        {{end}}
         </div>
+
+          
 
       </aside>
 
@@ -44,10 +49,10 @@
     </div></div> <br>
         {{range .LikedPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
-            <br><span>Message de {{.Author.Username}} </span>
+            <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
@@ -64,16 +69,16 @@
         </div></section>
 
          <section class="posts-section is-hidden" id="see-disliked-posts">
-         <div>
+         
       <div class="dashboard-header">
   <div class="topic-top"> <h2>Mes 👎</h2>
     </div></div> <br>
         {{range .DislikedPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
-            <br><span>Message de {{.Author.Username}} </span>
+            <span class="topic-postnumber">- Message de {{.Author.Username}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
@@ -87,7 +92,6 @@
           </div>
         </div>
         {{end}}
-        </div>
       </section>
 
       <section class="posts-section is-hidden" id="see-my-posts"><div class="dashboard-header">
@@ -95,7 +99,7 @@
     </div></div><br>
         {{range .MyPosts}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <a class="post-title" href="/topic/{{.TopicID}}">Sur le sujet : {{.TopicName}}</a>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
@@ -118,9 +122,9 @@
     </div></div><br>
         {{range .Topics}}
         <div class="post-card">
-          <div class="post-avatar" src="{{.Author.ProfilPic}}"></div>
+          <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
-            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a>
+            <a class="post-title" href="/topic/{{.TopicID}}">{{.TopicName}}</a> <span class="topic-postnumber">- le {{.Created}} </span>
             <a class="post-text" href="/topic/{{.TopicID}}#{{.MessageID}}">{{.Content}}
             </a>
           </div>
@@ -135,6 +139,19 @@
         </div>
         {{end}}
       </section>
+
+      <section class="posts-section is-hidden" id="see-my-history"><div class="dashboard-header">
+  <div class="topic-top"> <h2>Historique de modération</h2>
+    </div></div><br>
+        
+        <div class="post-card">
+          <div class="post-content">
+            <div class="post-text">
+              <center>Bonjour, ici on affichera l'historique des actions de modération.</center>
+            </div>
+          </div>
+        </div>
+      </section>
       
     </main>
 
@@ -143,18 +160,21 @@
       const DislikedPosts = document.getElementById("see-disliked-posts")
       const MyPosts = document.getElementById("see-my-posts")
       const MyTopics = document.getElementById("see-my-topics")
+      const ModHistory = document.getElementById("see-my-history")
 
       function ShowPosts() {
         MyPosts.classList.remove("is-hidden");
         MyTopics.classList.add("is-hidden");
         LikedPosts.classList.add("is-hidden");
         DislikedPosts.classList.add("is-hidden");
+        ModHistory.classList.add("is-hidden");
       }
       function ShowLikes() {
         LikedPosts.classList.remove("is-hidden");
         DislikedPosts.classList.remove("is-hidden");
         MyPosts.classList.add("is-hidden");
         MyTopics.classList.add("is-hidden");
+        ModHistory.classList.add("is-hidden");
       }
 
       function ShowTopics(){
@@ -162,6 +182,15 @@
         DislikedPosts.classList.add("is-hidden");
         MyPosts.classList.add("is-hidden");
         MyTopics.classList.remove("is-hidden");
+        ModHistory.classList.add("is-hidden");
+      }
+
+      function ShowMod() {
+        LikedPosts.classList.add("is-hidden");
+        DislikedPosts.classList.add("is-hidden");
+        MyPosts.classList.add("is-hidden");
+        MyTopics.classList.add("is-hidden");
+        ModHistory.classList.remove("is-hidden");
       }
     </script>
   </body>

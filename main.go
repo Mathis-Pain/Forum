@@ -12,15 +12,30 @@ import (
 )
 
 func main() {
-	//initialisation de la bdd
-	db, err := builddb.InitDB()
+	// Initialisation de la BDD du forum
+	dbPath := "./data/forum.db"
+	schemaPath := "./data/forumdbschema.sql"
+	log.Printf("Initialisation des bases de données en cours.")
+
+	db, err := builddb.InitDB(dbPath, schemaPath)
 	if err != nil {
 		fmt.Println("Erreur creation bdd :", err)
 		return
 	}
 
-	defer db.Close()
-	fmt.Println("Projet lancé, DB prête à l'emploi")
+	db.Close()
+
+	// Initialisation de la BDD des notifications
+	dbPath = "./data/notifications/notifications.db"
+	schemaPath = "./data/notifications/notifschema.sql"
+	logs, err := builddb.InitDB(dbPath, schemaPath)
+	if err != nil {
+		fmt.Println("Erreur creation bdd :", err)
+		return
+	}
+	logs.Close()
+
+	log.Print("Projet lancé, bases de données prêtes à l'emploi")
 
 	// Nettoyage des sessions expirées toutes les 5 minutes
 	go func() {

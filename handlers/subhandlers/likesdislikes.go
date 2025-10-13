@@ -3,14 +3,13 @@ package subhandlers
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
-	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"github.com/Mathis-Pain/Forum/utils/postactions"
 )
 
@@ -48,7 +47,8 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	cookie, _ := r.Cookie("session_id")
 	session, err := sessions.GetSession(cookie.Value)
 	if err != nil {
-		log.Print("ERREUR : <likesdislikes.go> Erreur dans la récupération de session : ", err)
+		logMsg := fmt.Sprint("ERREUR : <likesdislikes.go> Erreur dans la récupération de session : ", err)
+		logs.AddLogsToDatabase(logMsg)
 		return 0, models.Message{}, err
 	}
 	userID := session.UserID
@@ -56,14 +56,16 @@ func getSessionAndPostInfo(r *http.Request) (int, models.Message, error) {
 	postID, _ := strconv.Atoi(r.FormValue("postID"))
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Printf("ERREUR : <likesdislikes.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		logMsg := fmt.Sprintf("ERREUR : <likesdislikes.go> Erreur à l'ouverture de la base de données : %v\n", err)
+		logs.AddLogsToDatabase(logMsg)
 		return 0, models.Message{}, err
 	}
 	defer db.Close()
 
-	post, err := getdata.GetMessageLikesAndDislikes(db, postID)
+	post, err := postactions.GetMessageLikesAndDislikes(db, postID)
 	if err != nil {
-		log.Print("ERREUR : <likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
+		logMsg := fmt.Sprint("ERREUR : <likesdislikes.go> Erreur dans la récupération des Likes/Dislikes :", err)
+		logs.AddLogsToDatabase(logMsg)
 		return userID, models.Message{}, err
 	}
 

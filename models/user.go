@@ -13,6 +13,7 @@ type User struct {
 type UserLoggedIn struct {
 	ID        int
 	Username  string
+	ProfilPic string
 	LogStatus bool
 	UserType  int
 }

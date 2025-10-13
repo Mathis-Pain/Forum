@@ -1,10 +1,11 @@
-package getdata
+package postactions
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Vérifie si l'utilisateur n'a pas liké le post
@@ -94,7 +95,8 @@ func GetMessageLikesAndDislikes(db *sql.DB, postID int) (models.Message, error) 
 	// Parcourt la base de données et récupère les informations pour rajouter tous les messages dans la slice
 	err := row.Scan(&message.Likes, &message.Dislikes, &message.TopicID)
 	if err != nil {
-		log.Print("ERREUR : <getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
+		logMsg := fmt.Sprint("ERREUR : <getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
+		logs.AddLogsToDatabase(logMsg)
 		return models.Message{}, err
 	}
 

@@ -2,22 +2,46 @@ package subhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
 	admin "github.com/Mathis-Pain/Forum/utils/adminfuncs"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
-func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.Category, models.UserLoggedIn, error) {
+func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Notifications, []models.Category, models.UserLoggedIn, error) {
 	categories, err := CategoriesDropDownMenu()
 	if err != nil && err != sql.ErrNoRows {
-		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
-		utils.InternalServError(w)
-		return nil, models.UserLoggedIn{}, err
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return models.Notifications{}, nil, models.UserLoggedIn{}, err
+	}
+
+	if r.Method == "POST" && r.FormValue("notif-action") != "" {
+		stringID := r.FormValue("notifID")
+		notifID, _ := strconv.Atoi(stringID)
+		switch r.FormValue("notif-action") {
+		case "markread":
+			err := logs.MarkAsRead(notifID)
+			if err != nil {
+				utils.InternalServError(w)
+				return models.Notifications{}, nil, models.UserLoggedIn{}, err
+			}
+		case "delete":
+			err := logs.DeleteNotif(notifID)
+			if err != nil {
+				utils.InternalServError(w)
+				return models.Notifications{}, nil, models.UserLoggedIn{}, err
+			}
+		default:
+			utils.StatusBadRequest(w)
+			return models.Notifications{}, nil, models.UserLoggedIn{}, err
+		}
 	}
 
 	var currentUser models.UserLoggedIn
@@ -29,20 +53,26 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) ([]models.C
 		// Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
 		currentUser.Username, currentUser.ID, err = utils.GetUserNameAndIDByCookie(r, db)
 		if err != nil {
-			log.Print("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.InternalServError(w)
-			return categories, currentUser, err
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return models.Notifications{}, categories, currentUser, err
 		}
 		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
 		if err != nil {
-			log.Print("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			utils.InternalServError(w)
-			return categories, currentUser, err
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return models.Notifications{}, categories, currentUser, err
 		}
-		return categories, currentUser, nil
 	}
 
-	return categories, currentUser, nil
+	notifications, err := logs.DisplayNotifications(currentUser.ID)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des notifications :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return models.Notifications{}, categories, currentUser, err
+	}
+
+	return notifications, categories, currentUser, nil
 
 }
 
@@ -51,14 +81,14 @@ func CheckLogStatus(r *http.Request) bool {
 	userLoggedIn := false
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
-		log.Printf("ERREUR : <buildheader.go> Could not execute GetSessionFromRequest: %v", err)
+		logMsg := fmt.Sprintf("ERREUR : <buildheader.go> Erreur dans l'exécution de GetSessionFromRequest: %v", err)
+		logs.AddLogsToDatabase(logMsg)
 		return false
 	}
 	if session.UserID != 0 {
 		userLoggedIn = true
 	}
 	return userLoggedIn
-
 }
 
 // // Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
@@ -66,12 +96,12 @@ func CheckLogStatus(r *http.Request) bool {
 // 	// Récupère l'ID de l'utilisateur via sa session
 // 	cookie, err := r.Cookie("session_id")
 // 	if err != nil {
-// 		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
+// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
 // 		return "", 0, err
 // 	}
 // 	session, err := sessions.GetSession(cookie.Value)
 // 	if err != nil && err != sql.ErrNoRows {
-// 		log.Print("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
+// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
 // 		return "", 0, err
 // 	}
 

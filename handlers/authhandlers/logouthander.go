@@ -2,23 +2,20 @@ package authhandlers
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/Mathis-Pain/Forum/sessions"
 	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
-
 	// Récupère la session depuis la requête
 	session, err := sessions.GetSessionFromRequest(r)
 	if err != nil {
-		log.Println("ERREUR : <logouthandler.go> Erreur lors de la récupération de la session :", err)
+		logMsg := fmt.Sprintln("ERREUR : <logouthandler.go> Erreur lors de la récupération de la session :", err)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}
@@ -26,7 +23,8 @@ func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// Ouvre la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("ERREUR : <logouthandler.go> Erreur à l'ouverture de la base de données :", err)
+		logMsg := fmt.Sprintln("ERREUR : <logouthandler.go> Erreur à l'ouverture de la base de données :", err)
+		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
 	}

@@ -2,10 +2,11 @@ package postactions
 
 import (
 	"database/sql"
-	"log"
+	"fmt"
 
 	"github.com/Mathis-Pain/Forum/models"
 	"github.com/Mathis-Pain/Forum/utils/getdata"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 func NewPost(userID, topicID int, message string, mode string) error {
@@ -16,7 +17,6 @@ func NewPost(userID, topicID int, message string, mode string) error {
 
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
-		log.Println("ERREUR : <newpost.go> Erreur à l'ouvert de la base de données : ", err)
 		return err
 	}
 	defer db.Close()
@@ -26,13 +26,15 @@ func NewPost(userID, topicID int, message string, mode string) error {
 
 	err = row.Scan(&newpost.Author.Username, &newpost.Author.ProfilPic)
 	if err != nil {
-		log.Printf("ERREUR : <newpost.go> : Impossible de récupérer les données de l'utilisateur %d : %v\n", userID, err)
+		logMsg := fmt.Sprintf("ERREUR : <newpost.go> : Impossible de récupérer les données de l'utilisateur %d : %v\n", userID, err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 	err = addPostToDatabase(db, newpost, mode)
 
 	if err != nil {
-		log.Println("ERREUR : <newpost.go> Erreur lors de la création du nouveau message : ", err)
+		logMsg := fmt.Sprintln("ERREUR : <newpost.go> Erreur lors de la création du nouveau message : ", err)
+		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
 
@@ -52,8 +54,32 @@ func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
 	}
 
 	topic, _ := getdata.GetTopicInfo(db, newpost.TopicID)
+	newpost.MessageID = topic.Messages[len(topic.Messages)-1].MessageID
+
+	// Si le message est posté sur un sujet qui existe déjà
 	if mode != "newtopic" {
-		log.Printf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\" (%d)\n", newpost.Author.Username, topic.Name, newpost.TopicID)
+		// Ajoute un log au panneau d'administration
+		logMsg := fmt.Sprintf("USER : L'utilisateur %s a posté une réponse sur le sujet \"%s\"", newpost.Author.Username, topic.Name)
+		logs.AddLogsToDatabase(logMsg)
+
+		topic, err := getdata.GetTopicInfo(db, newpost.TopicID)
+		if err != nil {
+			logMsg = fmt.Sprint("ERREUR : <newpost.go> Erreur dans la récupération du nom du sujet :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return err
+		}
+
+		// Ajoute la notification pour l'envoyer aux utilisateurs ayant posté sur le sujet
+		usersNotified := make(map[int]bool)
+		for i := 0; i < len(topic.Messages); i++ {
+			ID := topic.Messages[i].Author.ID
+			if newpost.Author.ID != ID && !usersNotified[ID] {
+				notif := fmt.Sprintf(` de %s sur le sujet "%s".`, newpost.Author.Username, topic.Name)
+				logs.AddNotificationToDatabase("MESSAGE", ID, newpost.MessageID, notif)
+				usersNotified[ID] = true
+			}
+		}
+
 	}
 
 	return nil

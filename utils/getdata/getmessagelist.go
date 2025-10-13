@@ -2,9 +2,12 @@ package getdata
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
 // Récupère la liste complète des messages (date de création, auteur, contenu) pour un sujet
@@ -37,4 +40,47 @@ func GetMessageList(db *sql.DB, topicID int) ([]models.Message, error) {
 	}
 
 	return messages, nil
+}
+
+func GetMessageAuthor(db *sql.DB, postID int) (int, error) {
+	var authorID int
+
+	sqlQuery := `SELECT user_id FROM message WHERE id = ?`
+	row := db.QueryRow(sqlQuery, postID)
+	err := row.Scan(&authorID)
+	if err != nil {
+		return 0, err
+	}
+
+	return authorID, nil
+}
+
+func FormatDateAllMessages(messages []models.Message) []models.Message {
+	for i := 0; i < len(messages); i++ {
+		messages[i].Created = FormatDate(messages[i].Created)
+		if strings.Contains(messages[i].Created, "ERREUR") {
+			logMsg := messages[i].Created + " (message n°%d)"
+			logs.AddLogsToDatabase(logMsg)
+			return nil
+		}
+	}
+	return messages
+}
+
+func FormatDate(dateToConvert string) string {
+	parts := strings.Split(dateToConvert, " ")
+	date := parts[0]
+	parts = strings.Split(date, "-")
+
+	if len(parts) != 3 {
+		logMsg := fmt.Sprint("ERREUR : <getmessagelist.go> Erreur dans le format de la date sur le message. Doit être YYYY-MM-DD, est : ", dateToConvert)
+		return logMsg
+	}
+	day := parts[2]
+	month := parts[1]
+	year := parts[0]
+
+	date = day + "/" + month + "/" + year
+
+	return date
 }
