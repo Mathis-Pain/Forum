@@ -38,7 +38,6 @@ func InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/like", subhandlers.LikePostHandler)
 	mux.HandleFunc("/dislike", subhandlers.DislikePostHandler)
 	mux.HandleFunc("/messageactions", subhandlers.MessageActionsHandler)
-	mux.HandleFunc("/sendrequest", subhandlers.RequestsHandler)
 
 	//******** Pages principales (accessibles)
 	// Pages pour poster des messages
@@ -53,8 +52,8 @@ func InitRoutes() *http.ServeMux {
 	mux.HandleFunc("/topic/", handlers.TopicHandler)
 
 	// Authentification par google ou github
-	mux.HandleFunc("/google/login", external.HandleGoogleLogin)
-	mux.HandleFunc("/google/callback", external.HandleGoogleCallback)
+	mux.HandleFunc("/auth/google/login", external.HandleGoogleLogin)
+	mux.HandleFunc("/auth/google/callback", external.HandleGoogleCallback)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))

@@ -9,6 +9,7 @@ import (
 	"github.com/Mathis-Pain/Forum/builddb"
 	"github.com/Mathis-Pain/Forum/routes"
 	"github.com/Mathis-Pain/Forum/sessions"
+	"github.com/Mathis-Pain/Forum/utils/external"
 )
 
 func main() {
@@ -36,6 +37,8 @@ func main() {
 	logs.Close()
 
 	log.Print("Projet lancé, bases de données prêtes à l'emploi")
+
+	external.InitGoogleOAuth()
 
 	// Nettoyage des sessions expirées toutes les 5 minutes
 	go func() {

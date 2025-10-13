@@ -11,15 +11,28 @@
 
       <!-- Sidebar -->
       <aside class="sidebar">
-        <h3>Profil</h3>
-        <img class="post-avatar" src="{{.User.ProfilPic}}"/>
-        <p>{{.User.Username}}</p>
-        <p>{{.User.Email}}</p>
+        <form method="POST">
+        <h3>Profil 
+          <button class="profil-edit" type="button" id="editprofil" onclick="EditProfil()" title="Modifier mon profil">🔧</button></h3>
+        
+        <img class="post-avatar" src="{{.User.ProfilPic}}"/><p><span id="currentimg"></span>
+        <input type="text" name="newimg" value="{{.User.ProfilPic}}" id="newimg" class="is-hidden admin-input" required>
+        </p>
+
+        <p><span id="currentname">{{.User.Username}}</span>
+          
+          <input type="text" name="newname" maxlength="50" value="{{.User.Username}}" id="newname" class="is-hidden admin-input" required>
+        </p>
+
+        <p> <span id="currentmail">{{.User.Email}}</span>
+           <input type="email" name="newmail" maxlength="50" value="{{.User.Email}}" id="newmail" class="is-hidden admin-input" required>
+        </p>
+
+        <button type="submit" name="action" value="editprofil" class="profil-btn is-hidden" id="valid-btn">✅ Valider</button>
+        </form>
         <p>{{.User.Status}}
           {{if eq .User.Status "Membre"}}
-    <form  method="POST" action="/sendrequest">
-      <input type="hidden" name="username" value="{{.User.Username}}">
-      <input type="hidden" name="id" value="{{.User.ID}}">
+    <form  method="POST">
       <button type="submit" name ="action" value="requestmod" class="profil-btn">Demander à rejoindre la modération</button>
     </form>
           {{end}}
@@ -156,6 +169,33 @@
     </main>
 
     <script>
+      // -------- Modifications du profil
+      function EditProfil()  {
+      const editBtn = document.getElementById("editprofil")
+      const validBtn = document.getElementById("valid-btn")
+
+      const imageInput = document.getElementById("newimg")
+      const nameInput = document.getElementById("newname")
+      const mailInput = document.getElementById("newmail")
+
+      const currentName = document.getElementById("currentname")
+      const currentMail = document.getElementById("currentmail")
+      const currentImg = document.getElementById("currentimg")
+
+      imageInput.classList.remove("is-hidden");
+      nameInput.classList.remove("is-hidden");
+      mailInput.classList.remove("is-hidden");
+      validBtn.classList.remove("is-hidden");
+
+      currentMail.innerHTML = "Modifier mon adresse mail";
+      currentName.innerHTML = "Modifier mon pseudo";
+      currentImg.innerHTML = "Modifier l'image";
+      editBtn.classList.add("is-hidden");
+
+      }
+
+
+      // -------- Onglets du profil
       const LikedPosts = document.getElementById("see-liked-posts")
       const DislikedPosts = document.getElementById("see-disliked-posts")
       const MyPosts = document.getElementById("see-my-posts")

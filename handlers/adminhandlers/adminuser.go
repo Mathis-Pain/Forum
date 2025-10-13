@@ -35,36 +35,6 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 	previousName := r.FormValue("previous")
 	previousStatus := r.FormValue("current")
 
-	if status == previousStatus && username == previousName {
-		return nil
-	}
-
-	logName := username
-	if username != previousName {
-		logName += " (anciennement " + previousName + ")"
-	}
-
-	// Ajout des logs et des notifications
-	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
-	logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s.", logName, currentUser.Username)
-
-	// Si le pseudo a été modifié
-	if username != previousName {
-		user.Username = username
-		notifMsg += fmt.Sprintf(" Votre nom d'utilisateur a été changé en %s.", username)
-		logMsg += fmt.Sprintf(" Son nom d'utilisateur a été changé en %s.", username)
-	}
-
-	// Si le statut a été modifié
-	if status != previousStatus && status != "" {
-		user.Status = status
-		if status == "Membre " {
-			status = "Membre"
-		}
-		notifMsg += fmt.Sprintf(" Vous avez changé de statut et êtes maintenant %s.", status)
-		logMsg += fmt.Sprintf(" Son statut a été modifié en %s.", status)
-	}
-
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
@@ -73,6 +43,49 @@ func UserEditHandler(r *http.Request, users []models.User, currentUser models.Us
 		return err
 	}
 	defer db.Close()
+
+	// Vérifie si le statut a été modifié
+	nameChange := false
+	statusChange := false
+	if status != previousStatus && status != "" {
+		statusChange = true
+	}
+
+	// Vérifie si le nom a été modifié et si le nouveau nom n'est pas déjà pris
+	uniqueName := CheckUniqueName(username, db)
+	logName := username
+	if username != previousName && uniqueName {
+		logName := username
+		logName += " (anciennement " + previousName + ")"
+		nameChange = true
+	}
+
+	if !nameChange && !statusChange {
+		return nil
+	}
+
+	// Ajout des logs et des notifications
+	notifMsg := fmt.Sprintf("Votre compte a été modifié par un administrateur (%s).", currentUser.Username)
+	logMsg := fmt.Sprintf("ADMIN : L'utilisateur %s a été modifié par %s.", logName, currentUser.Username)
+
+	if nameChange {
+		// Si le pseudo a été modifié
+		if username != previousName {
+			user.Username = username
+			notifMsg += fmt.Sprintf(" Votre nom d'utilisateur a été changé en %s.", username)
+			logMsg += fmt.Sprintf(" Son nom d'utilisateur a été changé en %s.", username)
+		}
+	}
+
+	// Si le statut a été modifié
+	if statusChange {
+		user.Status = status
+		if status == "Membre " {
+			status = "Membre"
+		}
+		notifMsg += fmt.Sprintf(" Vous avez changé de statut et êtes maintenant %s.", status)
+		logMsg += fmt.Sprintf(" Son statut a été modifié en %s.", status)
+	}
 
 	// Met à jour l'utilisateur et son rôle à partir de son ID
 	sqlUpdate := `UPDATE user SET username = ?, role_id = ? WHERE id = ?`
@@ -212,4 +225,17 @@ func PromoteToMod(userID int) error {
 	}
 
 	return nil
+}
+
+func CheckUniqueName(username string, db *sql.DB) bool {
+	sqlQuery := `SELECT id FROM user WHERE username = ?`
+	row := db.QueryRow(sqlQuery, username)
+
+	err := row.Scan(&username)
+	if err == sql.ErrNoRows {
+		return true
+	} else {
+		return false
+	}
+
 }

@@ -279,7 +279,7 @@ a:hover {
   overflow: auto;
 }
 
-.sidebar > p {
+.sidebar > p, .sidebar form > p {
   font-weight: bold;
   color: var(--color-write);
   margin-top: 15px;
@@ -1012,6 +1012,13 @@ a.post-text:hover{
   padding:10px;
   width:100%;
   margin-bottom: 10px;
+}
+
+.profil-edit {
+  float:right;
+  border:none;
+  background: none;
+  cursor: pointer;
 }
 
 .post-input {
