@@ -15,6 +15,7 @@ import (
 )
 
 func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Notifications, []models.Category, models.UserLoggedIn, error) {
+	// MARK: Liste des catégories
 	categories, err := CategoriesDropDownMenu()
 	if err != nil && err != sql.ErrNoRows {
 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de la liste des catégories :", err)
@@ -22,6 +23,37 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Not
 		return models.Notifications{}, nil, models.UserLoggedIn{}, err
 	}
 
+	// MARK: Utilisateur en ligne
+	var currentUser models.UserLoggedIn
+
+	currentUser.LogStatus = CheckLogStatus(r)
+
+	// Si un utilisateur est en ligne, récupère son nom pour l'afficher à droite + son ID pour le profil
+	if currentUser.LogStatus {
+		// Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
+		currentUser.Username, currentUser.ID, err = utils.GetUserNameAndIDByCookie(r, db)
+		if err != nil {
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return models.Notifications{}, categories, currentUser, err
+		}
+		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
+		if err != nil {
+			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
+			logs.AddLogsToDatabase(logMsg)
+			return models.Notifications{}, categories, currentUser, err
+		}
+	}
+
+	// MARK: Liste notifications
+	notifications, err := logs.DisplayNotifications(currentUser.ID)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des notifications :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return models.Notifications{}, categories, currentUser, err
+	}
+
+	// MARK: Actions notifications
 	if r.Method == "POST" && r.FormValue("notif-action") != "" {
 		stringID := r.FormValue("notifID")
 		notifID, _ := strconv.Atoi(stringID)
@@ -44,34 +76,6 @@ func BuildHeader(r *http.Request, w http.ResponseWriter, db *sql.DB) (models.Not
 		}
 	}
 
-	var currentUser models.UserLoggedIn
-
-	currentUser.LogStatus = CheckLogStatus(r)
-
-	// Si un utilisateur est en ligne, récupère son nom pour l'afficher à droite + son ID pour le profil
-	if currentUser.LogStatus {
-		// Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
-		currentUser.Username, currentUser.ID, err = utils.GetUserNameAndIDByCookie(r, db)
-		if err != nil {
-			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			logs.AddLogsToDatabase(logMsg)
-			return models.Notifications{}, categories, currentUser, err
-		}
-		currentUser.UserType, err = admin.GetUserType(currentUser.Username)
-		if err != nil {
-			logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des données utilisateur :", err)
-			logs.AddLogsToDatabase(logMsg)
-			return models.Notifications{}, categories, currentUser, err
-		}
-	}
-
-	notifications, err := logs.DisplayNotifications(currentUser.ID)
-	if err != nil {
-		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération des notifications :", err)
-		logs.AddLogsToDatabase(logMsg)
-		return models.Notifications{}, categories, currentUser, err
-	}
-
 	return notifications, categories, currentUser, nil
 
 }
@@ -90,34 +94,6 @@ func CheckLogStatus(r *http.Request) bool {
 	}
 	return userLoggedIn
 }
-
-// // Récupère le pseudo et l'ID de l'utilisateur si un utilisateur est en ligne
-// func getUserNameAndID(r *http.Request, db *sql.DB) (string, int, error) {
-// 	// Récupère l'ID de l'utilisateur via sa session
-// 	cookie, err := r.Cookie("session_id")
-// 	if err != nil {
-// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération du cookie : ", err)
-// 		return "", 0, err
-// 	}
-// 	session, err := sessions.GetSession(cookie.Value)
-// 	if err != nil && err != sql.ErrNoRows {
-// 		logMsg := fmt.Sprint("ERREUR : <buildheader.go> Erreur dans la récupération de session : ", err)
-// 		return "", 0, err
-// 	}
-
-// 	// Récupère le pseudo de l'utilisateur
-// 	sqlQuery := `SELECT username FROM user WHERE id = ?`
-// 	row := db.QueryRow(sqlQuery, session.UserID)
-
-// 	var username string
-
-// 	err = row.Scan(&username)
-// 	if err != nil && err != sql.ErrNoRows {
-// 		return "", 0, err
-// 	}
-
-// 	return username, session.UserID, nil
-// }
 
 // Fabrique la liste des catégories pour le menu déroulant
 func CategoriesDropDownMenu() ([]models.Category, error) {

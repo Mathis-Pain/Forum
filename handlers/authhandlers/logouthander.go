@@ -10,6 +10,7 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
+// Gestion de la déconnexion
 func LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// Récupère la session depuis la requête
 	session, err := sessions.GetSessionFromRequest(r)

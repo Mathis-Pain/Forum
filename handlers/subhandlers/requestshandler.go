@@ -10,6 +10,8 @@ import (
 	"github.com/Mathis-Pain/Forum/utils/logs"
 )
 
+// Gère les requêtes à l'administration
+// Pour l'instant il y a juste un bouton "rejoindre la modération"
 func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 
@@ -46,4 +48,20 @@ func RequestsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+}
+
+// Met à jour le statut d'un membre ayant demandé à rejoindre la modération pour éviter le spam
+func AskedToBeMod(db *sql.DB, ID int) error {
+	sqlUpdate := `UPDATE user SET role_id = 5 WHERE id = ?`
+	stmt, err := db.Prepare(sqlUpdate)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
