@@ -54,6 +54,10 @@ func InitRoutes() *http.ServeMux {
 	// Authentification par google ou github
 	mux.HandleFunc("/auth/google/login", external.HandleGoogleLogin)
 	mux.HandleFunc("/auth/google/callback", external.HandleGoogleCallback)
+	mux.HandleFunc("/auth/github/login", external.HandleGitHubLogin)
+	mux.HandleFunc("/auth/github/callback", external.HandleGitHubCallback)
+	mux.HandleFunc("/auth/discord/login", external.HandleDiscordLogin)
+	mux.HandleFunc("/auth/discord/callback", external.HandleDiscordCallback)
 
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))

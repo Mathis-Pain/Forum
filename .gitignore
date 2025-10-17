@@ -1,3 +1,4 @@
 forum.db
 backup_forum.db
-google.env
+notifications.db
+external.env

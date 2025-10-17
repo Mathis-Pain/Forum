@@ -56,7 +56,7 @@ func loadEnv(filename string) error {
 }
 
 func InitGoogleOAuth() {
-	err := loadEnv("./google.env")
+	err := loadEnv("./external.env")
 	if err != nil {
 		log.Print("Erreur à l'ouverture du fichier env :", err)
 	}
@@ -224,7 +224,7 @@ func CreateNewGoogleUser(googleID, email, googleName string, db *sql.DB) (int, e
 		}
 	}
 
-	sqlUpdate := `INSERT INTO user(username, email, google_id, role_id) VALUES(?, ?, ?, ?, ?)`
+	sqlUpdate := `INSERT INTO user(username, email, google_id, role_id) VALUES(?, ?, ?, ?)`
 	result, err := db.Exec(sqlUpdate, googleName, email, googleID, role)
 	if err != nil {
 		return 0, err

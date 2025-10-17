@@ -13,6 +13,8 @@ CREATE TABLE user (
     profilpic TEXT DEFAULT '/static/noprofilpic.png',
     role_id INTEGER NOT NULL DEFAULT 3,
     google_id TEXT UNIQUE,
+    github_id TEXT UNIQUE,
+    discord_id TEXT UNIQUE,
     FOREIGN KEY (role_id) REFERENCES role(id)
 );
 

@@ -39,6 +39,8 @@ func main() {
 	log.Print("Projet lancé, bases de données prêtes à l'emploi")
 
 	external.InitGoogleOAuth()
+	external.InitGitHubOAuth()
+	external.InitDiscordOAuth()
 
 	// Nettoyage des sessions expirées toutes les 5 minutes
 	go func() {
