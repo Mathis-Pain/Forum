@@ -5,116 +5,135 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/Mathis-Pain/Forum/handlers/authhandlers" // Assuming the path is correct
-	"github.com/Mathis-Pain/Forum/utils"                 // Assuming the path is correct
+	"github.com/Mathis-Pain/Forum/handlers/authhandlers"
+	"github.com/Mathis-Pain/Forum/utils"
+	"github.com/Mathis-Pain/Forum/utils/logs"
 	"golang.org/x/oauth2"
 )
 
-// GitHub OAuth Endpoint
+// GitHubEndpoint définit les URLs nécessaires pour l'authentification OAuth avec GitHub
+// GitHubOauthConfig stocke la configuration OAuth pour GitHub
 var GitHubEndpoint = oauth2.Endpoint{
-	AuthURL:  "https://github.com/login/oauth/authorize",
-	TokenURL: "https://github.com/login/oauth/access_token",
+	AuthURL:  "https://github.com/login/oauth/authorize",    // URL pour demander l'autorisation
+	TokenURL: "https://github.com/login/oauth/access_token", // URL pour échanger le code contre un token
 }
 
 var GitHubOauthConfig *oauth2.Config
 
-// InitGitHubOAuth initializes the GitHub OAuth configuration
+// Appelée dans le main, InitGitHubOAuth initialise la configuration OAuth de GitHub
+// Cette fonction charge les identifiants depuis le fichier external.env
 func InitGitHubOAuth() {
-	// Use the same loadEnv but point to github.env
+	// Chargement des variables d'environnement depuis le fichier external.env
 	err := loadEnv("./external.env")
 	if err != nil {
-		log.Print("Erreur à l'ouverture du fichier env pour GitHub:", err)
+		logMsg := fmt.Sprint("ERREUR : <github.go> Impossible d'ouvrir le fichier env. Vérifiez que le fichier existe", err)
+		logs.AddLogsToDatabase(logMsg)
 	}
 
+	// Récupère les identifiants GitHub dans le .env
 	GitHubOauthConfig = &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_CLIENT_ID"),
 		ClientSecret: os.Getenv("GITHUB_CLIENT_SECRET"),
-		// Must match the "Authorization callback URL" set on GitHub
-		RedirectURL: "http://localhost:5080/auth/github/callback",
+		RedirectURL:  "http://localhost:5080/auth/github/callback", // URL de redirection configurée sur GitHub et dans les routes
 		Scopes: []string{
-			"user:email", // Scope to get user's email
+			"user:email",
 		},
 		Endpoint: GitHubEndpoint,
 	}
 }
 
-// HandleGitHubLogin redirects the user to GitHub's consent page
+// HandleGitHubLogin redirige l'utilisateur vers la page de consentement GitHub
+// C'est la première étape du processus OAuth : demander l'autorisation à l'utilisateur
 func HandleGitHubLogin(w http.ResponseWriter, r *http.Request) {
 	url := GitHubOauthConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
-// HandleGitHubCallback handles the redirect back from GitHub
+// HandleGitHubCallback gère la redirection après autorisation
+// C'est ici que l'on traite la réponse de GitHub et qu'on crée/connecte l'utilisateur
 func HandleGitHubCallback(w http.ResponseWriter, r *http.Request) {
+	// Récupération du code d'autorisation depuis l'URL
 	code := r.URL.Query().Get("code")
 	if code == "" {
-		http.Error(w, "Code manquant dans l'URL", http.StatusBadRequest)
+		logMsg := "ERREUR : <github.go> Erreur dans la tentative de connexion, GitHub n'a pas renvoyé de code d'autorisation."
+		logs.AddLogsToDatabase(logMsg)
+		utils.StatusBadRequest(w)
 		return
 	}
 
+	// Échange du code d'autorisation contre un token d'accès
 	token, err := GitHubOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
-		http.Error(w, "Échec lors de l'échange du code : "+err.Error(), http.StatusInternalServerError)
+		logMsg := fmt.Sprint("ERREUR : <github.go> Erreur dans l'utilisateur du code d'autorisation : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
 		return
 	}
 
-	// 1. Get basic user info (ID, login)
+	// ÉTAPE 1 : Récupération des informations de l'utilisateur (ID, login)
 	req, _ := http.NewRequest("GET", "https://api.github.com/user", nil)
 	req.Header.Set("Authorization", "token "+token.AccessToken)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		http.Error(w, "Impossible de récupérer les infos utilisateur (base)", http.StatusInternalServerError)
+		logMsg := fmt.Sprint("ERREUR : <github.go> Impossible de récupérer les données de l'utilisateur : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
 		return
 	}
 	defer resp.Body.Close()
 
+	// Décodage de la réponse JSON contenant les informations utilisateur
 	var userInfo map[string]interface{}
 	json.NewDecoder(resp.Body).Decode(&userInfo)
 
-	// GitHub ID is typically a number, we convert it to string for consistency with google_id storage
+	// Conversion de l'ID GitHub (nombre) en chaîne pour cohérence avec le stockage en base
 	githubID := fmt.Sprintf("%.0f", userInfo["id"].(float64))
+	// Récupération du nom d'utilisateur GitHub
 	githubUsername, ok := userInfo["login"].(string)
 	if !ok {
-		githubUsername = "GitHubUser"
+		githubUsername = "GitHubUser" // Valeur par défaut si le login n'est pas disponible
 	}
 
-	// 2. Get email info (requires separate call as the basic 'user' endpoint might not expose the primary email)
-	// This is required because the email can be null or private in the first API call.
+	// ÉTAPE 2 : Récupération de l'email principal
+	// Un appel séparé est nécessaire car l'email peut être privé ou null dans l'API de base
 	email, err := getGitHubPrimaryEmail(token.AccessToken)
 	if err != nil || email == "" {
-		// Fallback or error handling if email can't be retrieved
-		log.Println("Could not retrieve primary email from GitHub:", err)
-		// If the email is essential, you might stop here or ask the user to set a public email on GitHub.
-		// For this example, we'll use a placeholder/generated email if it's strictly necessary for your DB.
+		logMsg := fmt.Sprint("ERREUR : <github.go> Erreur dans la récupération de l'email : ", err, " création d'un mail placeholder pour la base de données.")
+		logs.AddLogsToDatabase(logMsg)
+
+		// Génération d'un email de secours pour la base de données
 		email = fmt.Sprintf("%s@github-user.noemail", githubID)
 	}
 
-	// Logic for finding/creating the user in your database
+	// ÉTAPE 3 : Recherche ou création de l'utilisateur dans la base de données locale
 	userID, err := GitHubUser(githubID, email, githubUsername)
 	if err != nil {
-		http.Error(w, "Échec de la recherche/création de l'utilisateur local: "+err.Error(), http.StatusInternalServerError)
+		logMsg := fmt.Sprint("Échec de la recherche/création de l'utilisateur : ", err)
+		logs.AddLogsToDatabase(logMsg)
+		utils.InternalServError(w)
 		return
 	}
 
-	// Création du cookie
+	// ÉTAPE 4 : Création de la session utilisateur (cookie)
 	err = authhandlers.InitSession(w, userID, "user", githubUsername)
 	if err != nil {
 		utils.InternalServError(w)
 		return
 	}
 
-	// Redirection
+	// ÉTAPE 5 : Redirection vers la page d'accueil
 	http.Redirect(w, r, "/", http.StatusFound)
 }
 
-// getGitHubPrimaryEmail fetches the user's primary, verified email.
+// getGitHubPrimaryEmail récupère l'email principal et vérifié de l'utilisateur GitHub
+// Cette fonction est nécessaire car l'email n'est pas toujours disponible dans l'API de base
 func getGitHubPrimaryEmail(accessToken string) (string, error) {
+	// Requête vers l'endpoint des emails GitHub
 	req, _ := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
 	req.Header.Set("Authorization", "token "+accessToken)
 
@@ -125,26 +144,27 @@ func getGitHubPrimaryEmail(accessToken string) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	// Décodage de la liste des emails
 	var emails []map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&emails); err != nil {
 		return "", err
 	}
 
+	// Recherche de l'email principal et vérifié
 	for _, e := range emails {
 		isPrimary, ok1 := e["primary"].(bool)
 		isVerified, ok2 := e["verified"].(bool)
 		email, ok3 := e["email"].(string)
 
+		// Retourne le premier email qui est à la fois principal et vérifié
 		if ok1 && ok2 && ok3 && isPrimary && isVerified {
 			return email, nil
 		}
 	}
-	return "", fmt.Errorf("no primary and verified email found")
+	return "", fmt.Errorf("aucun email principal et vérifié trouvé")
 }
 
-// GitHubUser handles the logic for finding or creating a user in the local database.
-// This function needs to be adapted to handle a column like 'github_id' in your 'user' table.
-// *You'll need to update your database schema to add a `github_id` column.*
+// GitHubUser gère la logique de recherche ou de création d'un utilisateur dans la base de données locale
 func GitHubUser(githubID, email, username string) (int, error) {
 	db, err := sql.Open("sqlite3", "./data/forum.db")
 	if err != nil {
@@ -154,42 +174,42 @@ func GitHubUser(githubID, email, username string) (int, error) {
 
 	var userID int
 
-	// Cherche l'utilisateur ayant ce github_id dans la base de données
+	// CAS 1 : Recherche d'un utilisateur ayant déjà ce github_id
 	sqlQuery := `SELECT id FROM user WHERE github_id = ?`
 	row := db.QueryRow(sqlQuery, githubID)
 	err = row.Scan(&userID)
 
 	if err == nil {
-		// L'utilisateur a été trouvé, renvoie son id
+		// L'utilisateur a été trouvé avec ce github_id, on renvoie son ID
 		return userID, nil
 	} else if err != sql.ErrNoRows {
-		// Erreur dans la base de données
+		// Erreur inattendue dans la base de données
 		return 0, err
 	}
 
-	// L'utilisateur n'a pas lié son compte github, on vérifie s'il n'a pas utilisé cette adresse mail
+	// CAS 2 et 3 : L'utilisateur n'a pas lié son compte GitHub
 	if err == sql.ErrNoRows {
+		// Recherche d'un utilisateur avec cette adresse email
 		sqlQuery = `SELECT id FROM user WHERE email = ?`
 		row = db.QueryRow(sqlQuery, email)
 		err = row.Scan(&userID)
 
 		switch err {
-		// L'utilisateur a été trouvé, on associe son github_id à son adresse mail
+		// CAS 2 : L'utilisateur existe avec cet email → on associe son github_id
 		case nil:
 			sqlUpdate := `UPDATE user SET github_id = ? WHERE id = ?`
 			_, err = db.Exec(sqlUpdate, githubID, userID)
 			if err != nil {
 				return 0, err
 			}
-		// Aucun utilisateur n'existe, on l'ajoute
+		// CAS 3 : Aucun utilisateur n'existe → on crée un nouveau compte
 		case sql.ErrNoRows:
-			// You'll need to define this function or move it to a shared package
 			userID, err = CreateNewGitHubUser(githubID, email, username, db)
 			if err != nil {
 				return 0, err
 			}
 		default:
-			// Erreur dans la base de données
+			// Erreur inattendue dans la base de données
 			return 0, err
 		}
 	}
@@ -197,25 +217,23 @@ func GitHubUser(githubID, email, username string) (int, error) {
 	return userID, nil
 }
 
-// CreateNewGitHubUser is a function placeholder, it should be the same as CreateNewGoogleUser
-// but setting 'github_id' instead of 'google_id'. You might want to merge CreateNewGoogleUser
-// and CreateNewGitHubUser into a single, generic user creation function.
+// CreateNewGitHubUser crée un nouvel utilisateur dans la base de données avec ses informations GitHub
+// Cette fonction gère l'attribution du rôle, la création d'un nom d'utilisateur unique et l'insertion en base
 func CreateNewGitHubUser(githubID, email, githubName string, db *sql.DB) (int, error) {
-	// This is essentially the same logic as CreateNewGoogleUser but for GitHub.
-	// It should handle role assignment, unique username creation, and insertion.
-
-	// 1. Determine role
+	// ÉTAPE 1 : Détermination du rôle de l'utilisateur
 	var count int
-	role := 3 // Default role
+	role := 3 // Rôle par défaut (simple membre)
 	err := db.QueryRow("SELECT COUNT(*) FROM user").Scan(&count)
 	if err != nil {
 		return 0, err
 	}
+	// Le premier utilisateur devient administrateur
 	if count == 0 {
-		role = 1 // Admin for first user
+		role = 1
 	}
 
-	// 2. Ensure unique username
+	// ÉTAPE 2 : Génération d'un nom d'utilisateur unique
+	// Si le nom est déjà pris, on ajoute un suffixe numérique (_1, _2, etc.)
 	addon := 0
 	uniqueUsername := githubName
 	for {
@@ -224,30 +242,35 @@ func CreateNewGitHubUser(githubID, email, githubName string, db *sql.DB) (int, e
 		if addon != 0 {
 			testedName = fmt.Sprintf("%s_%d", githubName, addon)
 		}
+		// Vérifie si le nom d'utilisateur existe déjà
 		sqlQuery := `SELECT id FROM user WHERE username = ?`
 		row := db.QueryRow(sqlQuery, testedName)
 		err = row.Scan(&id)
 		if err != sql.ErrNoRows {
 			if err == nil {
+				// Le nom existe déjà, on incrémente le suffixe
 				addon += 1
 				continue
 			} else {
+				// Erreur de base de données
 				return 0, err
 			}
 		} else {
+			// Le nom est disponible
 			uniqueUsername = testedName
 			break
 		}
 	}
 
-	// 3. Insert new user
-	// Note: You must ensure your 'user' table has a 'github_id' column.
+	// ÉTAPE 3 : Insertion du nouvel utilisateur dans la base de données
+	// Note : la table 'user' contient une nouvelle colonne 'github_id'
 	sqlUpdate := `INSERT INTO user(username, email, github_id, role_id) VALUES(?, ?, ?, ?)`
 	result, err := db.Exec(sqlUpdate, uniqueUsername, email, githubID, role)
 	if err != nil {
 		return 0, err
 	}
 
+	// Récupération de l'ID du nouvel utilisateur créé
 	userID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err

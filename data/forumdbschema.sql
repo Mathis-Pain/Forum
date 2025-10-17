@@ -10,7 +10,7 @@ CREATE TABLE user (
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT,
-    profilpic TEXT DEFAULT '/static/noprofilpic.png',
+    profilpic TEXT DEFAULT '/static/images/noprofilpic.png',
     role_id INTEGER NOT NULL DEFAULT 3,
     google_id TEXT UNIQUE,
     github_id TEXT UNIQUE,
