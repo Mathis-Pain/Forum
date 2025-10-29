@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/Mathis-Pain/Forum/data"
 	"github.com/Mathis-Pain/Forum/internal/routes"
+	"github.com/Mathis-Pain/Forum/internal/server"
 	"github.com/Mathis-Pain/Forum/internal/sessions"
 	"github.com/Mathis-Pain/Forum/internal/utils/external"
 )
@@ -53,10 +53,7 @@ func main() {
 	// initialisation des routes
 	mux := routes.InitRoutes()
 
-	// démarrage serveur
-	fmt.Println("Serveur démarré sur http://localhost:5080 ...")
-	if err := http.ListenAndServe(":5080", mux); err != nil {
-		log.Fatal("Erreur serveur : ", err)
-	}
+	// Démarrage du serveur avec gestion avancée
+	server.StartServer(":5080", mux)
 
 }
