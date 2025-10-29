@@ -9,12 +9,13 @@ import (
 )
 
 // Fonction pour créer un nouveau sujet dans une catégoire
-func CreateNewtopic(userID, catID int, topicName, message string) error {
+func CreateNewtopic(userID, catID int, jsonCats []byte, topicName, message string) error {
 	var newtopic models.Topic
 
-	// Stocke le numéro de la catégorie et le nom du sujet dans la struct
+	// Stocke le numéro de la catégorie, les autres catégories sélectionnées et le nom du sujet dans la struct
 	newtopic.CatID = catID
 	newtopic.Name = topicName
+	newtopic.AllCatID = string(jsonCats)
 
 	// Ouverture de la base de données
 	db, err := sql.Open("sqlite3", "./data/forum.db")
@@ -52,13 +53,13 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 
 // Fonction pour ajouter le nouveau sujet dans la BDD
 func addTopicToDatabase(db *sql.DB, newtopic models.Topic, userID int) error {
-	sqlUpdate := `INSERT INTO topic (category_id, name, user_id) VALUES(?, ?, ?)`
+	sqlUpdate := `INSERT INTO topic (category_id, category_ids, name, user_id) VALUES(?, ?, ?, ?)`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(newtopic.CatID, newtopic.Name, userID)
+	_, err = stmt.Exec(newtopic.CatID, newtopic.AllCatID, newtopic.Name, userID)
 	if err != nil {
 		return err
 	}

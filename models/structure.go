@@ -11,6 +11,7 @@ type Category struct {
 
 type Topic struct {
 	CatID    int
+	AllCatID string
 	TopicID  int
 	Name     string
 	Messages []Message
