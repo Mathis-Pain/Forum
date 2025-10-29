@@ -1,7 +1,7 @@
 ### Building and running your application
 
 When you're ready, start your application by running:
-`docker compose up --build -d`.
+` docker compose -f docker/compose.yaml up --build -d`.
 To access the inside of the container:
 docker exec -it <container_id> /bin/sh
 
