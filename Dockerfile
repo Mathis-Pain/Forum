@@ -38,7 +38,6 @@ COPY --from=builder /app/forum /app/forum
 COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/static /app/static
 COPY --from=builder /app/data/forumdbschema.sql /app/data/forumdbschema.sql
-COPY --from=builder /app/data/notifications/notifschema.sql /app/data/notifications/notifschema.sql
 
 # Créer dossier pour la DB et config utilisateur non-root
 # Crée un dossier pour les données persistantes
