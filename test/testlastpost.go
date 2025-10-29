@@ -1,6 +1,6 @@
 package test
 
-import "github.com/Mathis-Pain/Forum/models"
+import "github.com/Mathis-Pain/Forum/internal/models"
 
 func TestLastPost() models.LastPost {
 	var testlastpost models.LastPost

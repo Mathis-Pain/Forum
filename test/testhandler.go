@@ -4,7 +4,7 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/Mathis-Pain/Forum/models"
+	"github.com/Mathis-Pain/Forum/internal/models"
 )
 
 func TestHandler(w http.ResponseWriter, r *http.Request) {

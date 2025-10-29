@@ -1,6 +1,6 @@
 package test
 
-import "github.com/Mathis-Pain/Forum/models"
+import "github.com/Mathis-Pain/Forum/internal/models"
 
 func TestTopic() models.Topic {
 	var testtopic models.Topic

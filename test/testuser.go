@@ -1,6 +1,6 @@
 package test
 
-import "github.com/Mathis-Pain/Forum/models"
+import "github.com/Mathis-Pain/Forum/internal/models"
 
 func TestUser() models.User {
 	var testuser models.User

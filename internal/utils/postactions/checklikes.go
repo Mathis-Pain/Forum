@@ -1,0 +1,104 @@
+package postactions
+
+import (
+	"database/sql"
+	"fmt"
+
+	"github.com/Mathis-Pain/Forum/internal/models"
+	"github.com/Mathis-Pain/Forum/internal/utils/logs"
+)
+
+// Vérifie si l'utilisateur n'a pas liké le post
+// Renvoie "true" si le post a été liké
+func CheckIfLiked(db *sql.DB, postID, userID int) (bool, error) {
+	// Vérifie si l'utilisateur n'a pas déjà liké ce post
+	sqlQuery := `SELECT message_id FROM like WHERE user_id = ?`
+	rows, err := db.Query(sqlQuery, userID)
+
+	if err != nil {
+		// Erreur dans la base de données
+		return true, err
+	}
+
+	var likes models.Likes
+	// Récupère la liste de tous les posts likés par l'utilisateur
+	for rows.Next() {
+		likedID := 0
+		err := rows.Scan(&likedID)
+		if err == sql.ErrNoRows {
+			// S'il ne trouve ausun post dans la table like, renvoie false aussitôt (le post n'a jamais été liké par l'utilisateur)
+			return false, nil
+		} else if err != nil {
+			// Erreur dans la base de données
+			return true, err
+		}
+		likes.LikedPosts = append(likes.LikedPosts, likedID)
+	}
+
+	// Vérifie si le post actuel est présent dans la liste des posts likés par l'utilisateur
+	for _, n := range likes.LikedPosts {
+		if n == postID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+
+}
+
+// Vérifie si l'utilisateur n'a pas disliké le post
+// Renvoie "true" si le post a été dislike
+func CheckIfDisliked(db *sql.DB, postID, userID int) (bool, error) {
+	sqlQuery := `SELECT message_id FROM dislike WHERE user_id = ?`
+	rows, err := db.Query(sqlQuery, userID)
+
+	if err != nil {
+		// Erreur dans la base de données
+		return false, err
+	}
+
+	var dislikes models.Likes
+	// Récupère la liste de tous les posts dislikés par l'utilisateur
+	for rows.Next() {
+		dislikedID := 0
+		err := rows.Scan(&dislikedID)
+		if err == sql.ErrNoRows {
+			// S'il ne trouve ausun post dans la table dislike, renvoie false aussitôt (le post n'a jamais été disliké par l'utilisateur)
+			return false, nil
+		} else if err != nil {
+			// Erreur dans la base de données
+			return false, err
+		}
+		dislikes.LikedPosts = append(dislikes.LikedPosts, dislikedID)
+	}
+
+	// Vérifie si le post actuel est présent dans la liste des posts dislikés par l'utilisateur
+	for _, n := range dislikes.LikedPosts {
+		if n == postID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+// Récupère le nombre de likes et de dislikes d'un sujet
+func GetMessageLikesAndDislikes(db *sql.DB, postID int) (models.Message, error) {
+	// Préparation de la requête sql
+	sqlQuery := `SELECT IFNULL(likes, 0), IFNULL(dislikes, 0), topic_id FROM message WHERE id = ?`
+	row := db.QueryRow(sqlQuery, postID)
+
+	var message models.Message
+
+	message.MessageID = postID
+
+	// Parcourt la base de données et récupère les informations pour rajouter tous les messages dans la slice
+	err := row.Scan(&message.Likes, &message.Dislikes, &message.TopicID)
+	if err != nil {
+		logMsg := fmt.Sprint("ERREUR : <getmessagelikes.go> Impossible de récupérer les likes et dislikes dans la base de données :", err)
+		logs.AddLogsToDatabase(logMsg)
+		return models.Message{}, err
+	}
+
+	return message, nil
+}
