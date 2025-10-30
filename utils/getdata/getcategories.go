@@ -52,6 +52,12 @@ func GetCatDetails(db *sql.DB, catID int) (models.Category, error) {
 
 	// Appelle la fonction pour récupérer la liste des sujets
 	categ.Topics, err = GetTopicList(db, catID)
+	otherTopics, err2 := GetTopicListByJSONCategory(db, catID)
+	if err2 != nil {
+		return models.Category{}, err
+	}
+
+	categ.Topics = append(categ.Topics, otherTopics...)
 
 	for _, topic := range categ.Topics {
 		if len(topic.Messages) == 0 {

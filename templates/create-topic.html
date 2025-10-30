@@ -43,13 +43,15 @@
  name="message" 
  placeholder="Entrer votre message" 
  required></textarea>
- <div>
-    Ajouter à d'autres catégories
+ <div class="checkbox-categories">
+     <div class="checkbox-title">Ajouter à d'autres catégories</div>
     {{range .Categories}}
+    {{if ne .Name $.Category.Name}}
     <label>
     <input type="checkbox" name="selectedcat" value="{{.ID}}">
     {{.Name}}
   </label><br>
+  {{end}}
   {{end}}
   </div>
  

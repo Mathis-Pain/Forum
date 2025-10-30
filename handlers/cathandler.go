@@ -4,9 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/Mathis-Pain/Forum/handlers/subhandlers"
 	"github.com/Mathis-Pain/Forum/models"
@@ -50,51 +48,6 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		logs.AddLogsToDatabase(logMsg)
 		utils.InternalServError(w)
 		return
-	}
-
-	// - Récupération des topics supplémentaires -
-
-	stringID := strconv.Itoa(category.ID)
-
-	rows, err := db.Query(`
-	SELECT t.id, t.name
-	FROM topic t
-	WHERE EXISTS (
-		SELECT 1
-		FROM json_each(t.category_ids)
-		WHERE json_each.value = ?
-	)
-`, stringID)
-
-	if err != nil {
-		log.Println("<cathandler.go> Erreur lors de la requête à la db pour les catégories supplémentaires: ", err)
-		utils.InternalServError(w)
-		return
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var t models.Topic
-		err := rows.Scan(&t.TopicID, &t.Name)
-		if err != nil {
-			log.Printf("<cathandler.go> Erreur lors de la lecture des topics dans la db (catégories supplémentaires):  %v", err)
-			utils.InternalServError(w)
-			return
-		}
-		t.Messages, err = getdata.GetMessageList(db, t.TopicID)
-		if err == sql.ErrNoRows {
-			t.Messages = []models.Message{}
-		} else if err != nil {
-			log.Printf("<cathandler.go> Erreur lors de la lecture des messages dans la db (catégories supplémentaires):  %v", err)
-			return
-		}
-
-		t.LastPost = len(t.Messages) - 1
-		if t.LastPost < 0 {
-			t.LastPost = 0
-		}
-		category.Topics = append(category.Topics, t)
-		log.Printf("topic ajouté: %v", t)
 	}
 
 	// --- Construction du header ---
