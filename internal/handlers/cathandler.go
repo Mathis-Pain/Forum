@@ -50,6 +50,8 @@ func CategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// --- Construction du header ---
+
 	notifications, categories, currentUser, err := subhandlers.BuildHeader(r, w, db)
 	if err != nil {
 		logMsg := fmt.Sprintf("ERREUR : <cathandler.go> Erreur dans la construction du header : %v\n", err)
