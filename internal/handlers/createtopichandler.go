@@ -86,6 +86,13 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 			utils.StatusBadRequest(w)
 			return
 		}
+		// Recuperation de l'image
+		imgPath, err := getdata.GetImg(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		fmt.Println(imgPath)
 
 		// --- Récupération deuserID ---
 		username, userID, _ := utils.GetUserNameAndIDByCookie(r, db)
