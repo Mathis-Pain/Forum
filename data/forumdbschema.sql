@@ -42,6 +42,7 @@ CREATE TABLE message (
     topic_id INTEGER NOT NULL,
     content TEXT NOT NULL,
     created_at TEXT DEFAULT (CURRENT_TIMESTAMP),
+    image_path TEXT,
     user_id INTEGER NOT NULL,
     likes INTEGER DEFAULT 0,
     dislikes INTEGER DEFAULT 0,
