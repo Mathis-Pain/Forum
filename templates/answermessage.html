@@ -26,12 +26,18 @@
 <div class="post-card"> 
   <div class="post-content">
   <div class="post-title">Dernier message par {{.LastMessage.Author.Username}} le {{.LastMessage.Created}}</div>
-      <div class="post-text">{{.LastMessage.Content}}</div>
+     <div class="post-text">
+    {{.LastPost.Content}}
+    {{if .LastPost.ImgPath}}
+        <br>
+        <img src="{{.LastPost.ImgPath}}" alt="Image jointe" style="max-width:300px; max-height:300px;">
+    {{end}}
+</div>
       </div>
       </div>
 
       
-      <form class="create-topic-form" method="POST">
+      <form class="create-topic-form" method="POST" enctype="multipart/form-data">
         <textarea
           class="input-name-topic"
           name="new-message"
@@ -39,6 +45,7 @@
           required
           maxlength="6000"
         ></textarea>
+        <input type="file" name="image" accept="image/*">
         <div class="create-topic-form-button">
           <button type="submit" class="respond-btn" title="Envoyer mon message">Envoyer</button>
         </div>

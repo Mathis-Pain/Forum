@@ -27,4 +27,5 @@ type Message struct {
 	Dislikes  int
 	Content   string
 	Warning   int
+	ImgPath   string
 }

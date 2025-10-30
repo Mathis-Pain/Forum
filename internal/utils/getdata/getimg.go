@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -29,8 +30,8 @@ func GetImg(w http.ResponseWriter, r *http.Request) (string, error) {
 		buff := make([]byte, 512)
 		file.Read(buff)
 		filetype := http.DetectContentType(buff)
-		if filetype != "image/jpeg" && filetype != "image/png" {
-			return "", fmt.Errorf("format d’image non supporté (JPEG/PNG uniquement)")
+		if filetype != "image/jpeg" && filetype != "image/png" && filetype != "image/gif" && filetype != "image/svg" {
+			return "", fmt.Errorf("format d’image non supporté (JPEG/PNG/GIF/SVG uniquement)")
 		}
 		file.Seek(0, 0)
 		// cree le chemin de destination du fichier avant de l'importer
@@ -48,5 +49,8 @@ func GetImg(w http.ResponseWriter, r *http.Request) (string, error) {
 			return "", fmt.Errorf("image path no import")
 		}
 	}
+	// pour retirer le point devant le / dans le chemin static
+	imagePath = strings.TrimPrefix(imagePath, ".")
+	fmt.Println(imagePath)
 	return imagePath, nil
 }

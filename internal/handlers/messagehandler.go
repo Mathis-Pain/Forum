@@ -86,8 +86,13 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 			utils.StatusBadRequest(w)
 			return
 		}
+		imgPath, err := getdata.GetImg(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
-		postactions.NewPost(currentUser.ID, intID, message, "")
+		postactions.NewPost(currentUser.ID, intID, message, imgPath, "")
 		// Redirection vers la page catégorie
 		http.Redirect(w, r, fmt.Sprintf("/topic/%d", intID), http.StatusSeeOther)
 		return

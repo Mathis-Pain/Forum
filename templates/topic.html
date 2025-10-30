@@ -36,7 +36,10 @@
                 <div class="post-content">
                     <div class="post-title">{{$message.Author.Username}}</div>
                     <textarea name="message-content" class="edit-message is-hidden">{{$message.Content}}</textarea>
-                    <div class="post-text">{{$message.Content}}</div>
+                   <div class="post-text">
+    {{$message.Content}}
+   
+</div>
                 <div class="post-actions">
                             
                                 <input type="hidden" name="modname" value="{{$.CurrentUser.Username}}">

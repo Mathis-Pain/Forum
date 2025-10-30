@@ -9,7 +9,7 @@ import (
 )
 
 // Fonction pour créer un nouveau sujet dans une catégoire
-func CreateNewtopic(userID, catID int, topicName, message string) error {
+func CreateNewtopic(userID, catID int, topicName, message, imgPath string) error {
 	var newtopic models.Topic
 
 	// Stocke le numéro de la catégorie et le nom du sujet dans la struct
@@ -40,7 +40,7 @@ func CreateNewtopic(userID, catID int, topicName, message string) error {
 	}
 
 	// Ajout du premier message du sujet dans la BDD
-	err = NewPost(userID, newtopic.TopicID, message, "newtopic")
+	err = NewPost(userID, newtopic.TopicID, message, imgPath, "newtopic")
 	if err != nil {
 		logMsg := fmt.Sprintln("<newtopic.go> Erreur dans l'ajout du message :", err)
 		logs.AddLogsToDatabase(logMsg)

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/Mathis-Pain/Forum/internal/models"
+
 	"github.com/Mathis-Pain/Forum/internal/utils/getdata"
 	"github.com/Mathis-Pain/Forum/internal/utils/logs"
 

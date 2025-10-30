@@ -9,7 +9,7 @@ import (
 	"github.com/Mathis-Pain/Forum/internal/utils/logs"
 )
 
-func NewPost(userID, topicID int, message string, mode string) error {
+func NewPost(userID, topicID int, message string, imgPath, mode string) error {
 	var newpost models.Message
 	newpost.Author.ID = userID
 	newpost.TopicID = topicID
@@ -30,7 +30,7 @@ func NewPost(userID, topicID int, message string, mode string) error {
 		logs.AddLogsToDatabase(logMsg)
 		return err
 	}
-	err = addPostToDatabase(db, newpost, mode)
+	err = addPostToDatabase(db, newpost, imgPath, mode)
 
 	if err != nil {
 		logMsg := fmt.Sprintln("ERREUR : <newpost.go> Erreur lors de la création du nouveau message : ", err)
@@ -41,14 +41,14 @@ func NewPost(userID, topicID int, message string, mode string) error {
 	return nil
 }
 
-func addPostToDatabase(db *sql.DB, newpost models.Message, mode string) error {
-	sqlUpdate := `INSERT INTO message (topic_id, content, user_id) VALUES(?, ?, ?)`
+func addPostToDatabase(db *sql.DB, newpost models.Message, imgPath string, mode string) error {
+	sqlUpdate := `INSERT INTO message (topic_id, content, image_path ,user_id ) VALUES(?, ?, ?, ?)`
 	stmt, err := db.Prepare(sqlUpdate)
 	if err != nil {
 		return err
 	}
 
-	_, err = stmt.Exec(newpost.TopicID, newpost.Content, newpost.Author.ID)
+	_, err = stmt.Exec(newpost.TopicID, newpost.Content, imgPath, newpost.Author.ID)
 	if err != nil {
 		return err
 	}

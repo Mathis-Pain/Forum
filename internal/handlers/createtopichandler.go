@@ -92,11 +92,10 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Println(imgPath)
 
 		// --- Récupération deuserID ---
 		username, userID, _ := utils.GetUserNameAndIDByCookie(r, db)
-		postactions.CreateNewtopic(userID, catID, topicName, message)
+		postactions.CreateNewtopic(userID, catID, topicName, message, imgPath)
 
 		categ, _ := getdata.GetCatDetails(db, catID)
 
