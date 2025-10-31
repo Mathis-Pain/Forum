@@ -6,16 +6,16 @@
   --color-headerback: #ebe3d0;
   --color-dropdown: #bb9b76;
   --color-logohover: #b6a287;
-  --color-dashboard : #8d6947; 
-  --color-subtitle:#3A2516;
- 
+  --color-dashboard: #8d6947;
+  --color-subtitle: #3a2516;
+
   /* Bordures et éléments en évidence */
   --color-highlight: #cba830;
   --color-btnhover: #dc8828;
 
   /* Couleurs d'écriture */
   --color-write: #333;
-  --color-modalwrite: whitesmoke;/*on y revient aprés*/
+  --color-modalwrite: whitesmoke; /*on y revient aprés*/
   --color-error: red;
 
   /* Polices d'écriture */
@@ -33,8 +33,8 @@
 body {
   font-family: var(--font-main);
   background-color: var(--color-pageback);
-  background-image: url('/static/images/pageback.jpg');
-  background-size:cover cover;
+  background-image: url("/static/images/pageback.jpg");
+  background-size: cover cover;
   background-attachment: fixed;
   color: var(--color-write);
 }
@@ -96,13 +96,13 @@ a:hover {
 }
 
 /* Description du forum */
-.dashboard-header:hover .forum-desc{
+.dashboard-header:hover .forum-desc {
   height: auto;
   transition: all 0.5s ease;
 }
 
 .forum-desc {
-  color:var(--color-dashboard); 
+  color: var(--color-dashboard);
   font-size: 0.9em;
 }
 
@@ -185,7 +185,7 @@ a:hover {
   min-width: 130px;
   max-height: 60vh;
   overflow-y: auto;
-  z-index:800;
+  z-index: 800;
 }
 
 .dropdown-menu li button {
@@ -279,7 +279,8 @@ a:hover {
   overflow: auto;
 }
 
-.sidebar > p, .sidebar form > p {
+.sidebar > p,
+.sidebar form > p {
   font-weight: bold;
   color: var(--color-write);
   margin-top: 15px;
@@ -309,7 +310,7 @@ a:hover {
 
 .cat-desc {
   text-align: justify;
-   white-space: pre-wrap; 
+  white-space: pre-wrap;
 }
 
 /*  #endregion */
@@ -331,7 +332,7 @@ details {
 /* Quand la section est active */
 .userlist span,
 .catlist span,
-.topiclist span, 
+.topiclist span,
 .loglist span {
   color: var(--color-highlight);
   margin: 10px 0px 10px 25px;
@@ -354,7 +355,7 @@ summary:before {
   content: "➤ ";
   position: absolute;
   left: -17px;
-  top:7px;
+  top: 7px;
   transition: transform 0.3s ease;
 }
 
@@ -406,10 +407,10 @@ details[open] summary:before {
 
 /* Liens dans les tableaux */
 .admin-list .admin-topic {
-  max-height:200px;
+  max-height: 200px;
   overflow: auto;
-  color:var(--color-subtitle);
-  font-size:0.8em;
+  color: var(--color-subtitle);
+  font-size: 0.8em;
 }
 
 .admin-list a {
@@ -424,7 +425,7 @@ details[open] summary:before {
 
 /* Affichage des statistiques */
 .admin-stats {
-  display:flex;
+  display: flex;
   justify-content: space-between;
 }
 
@@ -443,7 +444,7 @@ details[open] summary:before {
   font-weight: bold;
   color: var(--color-write);
   margin-bottom: 15px;
-  color:var(--color-subtitle)
+  color: var(--color-subtitle);
 }
 
 table {
@@ -453,7 +454,7 @@ table {
 
 /* Titres des colonnes */
 th {
-  background-color:var(--color-logohover);
+  background-color: var(--color-logohover);
   color: var(--color-write);
   padding: 12px;
   text-align: left;
@@ -470,18 +471,18 @@ td {
 }
 
 .three-col th {
-  width:33%;
+  width: 33%;
 }
 
 .four-col th {
-  width:25%;
+  width: 25%;
 }
 
 /* Boutons d'administration */
 .admin-btn {
   color: var(--color-highlight);
-  border:none;
-  background:none;
+  border: none;
+  background: none;
   font-family: var(--font-main);
   font-size: 1em;
   display: inline-block;
@@ -491,32 +492,32 @@ td {
 }
 
 .admin-btn:hover {
-  color:var(--color-btnhover);
+  color: var(--color-btnhover);
 }
 
 .admin-input {
   background-color: whitesmoke;
   border-radius: 10px;
-  padding:10px;
-  width:100%;
+  padding: 10px;
+  width: 100%;
 }
 
 textarea.admin-input {
-  min-height:80px;
+  min-height: 80px;
   min-width: 100%;
   max-width: 100%;
 }
 
 .userfield {
   display: block;
-  max-height:80px;
+  max-height: 80px;
   overflow: auto;
   white-space: pre-wrap;
 }
 
 .admin-link {
   font-size: 0.8em;
-  display: block!important;
+  display: block !important;
   margin: 5px 15px 0px 0px;
   text-align: right;
 }
@@ -526,7 +527,7 @@ textarea.admin-input {
   margin-top: 30px;
   cursor: pointer;
   text-align: center;
-  color:var(--color-headerback)
+  color: var(--color-headerback);
 }
 
 .add-btn {
@@ -562,9 +563,9 @@ textarea.admin-input {
 .topic-postnumber {
   display: inline-block;
   position: relative;
-  top:-2px;
+  top: -2px;
   font-size: 0.65em;
-  color:var(--color-subtitle);
+  color: var(--color-subtitle);
 }
 
 /* Bouton répondre ou ouvrir un sujet */
@@ -573,7 +574,7 @@ textarea.admin-input {
   border-radius: 5px;
   margin-left: 100px;
   padding: 10px;
-  border: 2px solid var(--color-pageback); 
+  border: 2px solid var(--color-pageback);
 }
 
 /* Sommaire / index */
@@ -595,7 +596,7 @@ textarea.admin-input {
   min-height: 120px;
   scroll-margin-top: 100px;
   position: relative;
-  z-index:5;
+  z-index: 5;
 }
 
 /* Avatar du posteur */
@@ -635,7 +636,7 @@ textarea.admin-input {
 
 /* Bordure rouge si le message a été signalé */
 .warning {
-  border-left: 7px solid var(--color-error)!important;
+  border-left: 7px solid var(--color-error) !important;
 }
 
 /* Contenu du message */
@@ -650,15 +651,15 @@ a.post-text {
   display: block;
   text-decoration: none;
 }
-a.post-text:hover{
+a.post-text:hover {
   color: var(--color-write);
 }
 
 .post-link {
-  height:15px;
-  float:right;
+  height: 15px;
+  float: right;
   position: relative;
-  top:-40px;
+  top: -40px;
 }
 
 /* Boutons like/dislike */
@@ -683,7 +684,7 @@ a.post-text:hover{
   background-color: var(--color-headerback);
   border-radius: 10px;
   padding: 20px;
-  margin:  auto;
+  margin: auto;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -797,8 +798,9 @@ a.post-text:hover{
 }
 
 /* Message d'erreur  */
-.error-message, .incorrect {
-  font-size:0.9em;
+.error-message,
+.incorrect {
+  font-size: 0.9em;
   color: var(--color-error) !important;
   text-align: center;
 }
@@ -861,7 +863,7 @@ a.post-text:hover{
 }
 
 .form-button img {
-  height:20px;
+  height: 20px;
   float: left;
 }
 
@@ -893,19 +895,41 @@ a.post-text:hover{
 
 /* #region **** Modal de confirmation */
 .modal-confirm .modal-content {
- margin : auto; 
+  margin: auto;
 }
 
-.modal-buttons{
+.modal-buttons {
   display: flex;
   justify-content: center;
 }
 
-.modal-cancel-btn, .modal-confirm-btn {
-  margin-left:initial;
-  margin:20px 10% 5px 10%;
+.modal-cancel-btn,
+.modal-confirm-btn {
+  margin-left: initial;
+  margin: 20px 10% 5px 10%;
 }
 
+/* #region **** image-upload */
+.post-image-container {
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.post-image {
+  max-width: 100%;
+  max-height: 400px;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.post-image:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+}
 /* #endregion */
 
 /* #region **** Responsive */
@@ -992,7 +1016,8 @@ a.post-text:hover{
 }
 
 /* Code général des boutons */
-.action-btn, .profil-btn {
+.action-btn,
+.profil-btn {
   padding: 3px;
   border: none;
   cursor: pointer;
@@ -1004,19 +1029,20 @@ a.post-text:hover{
   border-radius: 7px;
 }
 
-.action-btn:hover, .profil-btn:hover {
+.action-btn:hover,
+.profil-btn:hover {
   background-color: var(--color-btnhover);
 }
 
 .profil-btn {
-  padding:10px;
-  width:100%;
+  padding: 10px;
+  width: 100%;
   margin-bottom: 10px;
 }
 
 .profil-edit {
-  float:right;
-  border:none;
+  float: right;
+  border: none;
   background: none;
   cursor: pointer;
 }
@@ -1024,9 +1050,9 @@ a.post-text:hover{
 .post-input {
   background-color: whitesmoke;
   border-radius: 5px;
-  padding:2px;
-  min-width:100px;
-  width:100%;
+  padding: 2px;
+  min-width: 100px;
+  width: 100%;
   margin-top: -2px;
 }
 
@@ -1038,7 +1064,7 @@ a.post-text:hover{
   margin-bottom: 15px;
   border-radius: 10px;
   padding: 2%;
-  height:fit-content;
+  height: fit-content;
   min-height: 150px;
 }
 
@@ -1065,27 +1091,27 @@ a.post-text:hover{
 }
 
 .notif #triangle {
-   width: 0px;
-   height: 0px;
-   border-style: solid;
-   border-width: 0 19.5px 12px 19.5px;
-   border-color: transparent transparent var(--color-dropdown) transparent;
-   transform: rotate(0deg);
-   position: absolute;
-   top: 40px;
-  left:50%;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 19.5px 12px 19.5px;
+  border-color: transparent transparent var(--color-dropdown) transparent;
+  transform: rotate(0deg);
+  position: absolute;
+  top: 40px;
+  left: 50%;
   transform: translateX(-50%);
 }
 
 .notif-block {
   position: absolute;
-  left:50%;
+  left: 50%;
   transform: translateX(-50%);
-  top:50px;
-  width:30vw;
+  top: 50px;
+  width: 30vw;
   min-width: 250px;
-  max-width:400px;
-  max-height:50vh;
+  max-width: 400px;
+  max-height: 50vh;
   overflow: auto;
   border-radius: 5px;
   z-index: 900;
@@ -1094,17 +1120,17 @@ a.post-text:hover{
 .notif-element {
   display: flex;
   background: var(--color-highlight);
-  color:var(--color-headerback);
+  color: var(--color-headerback);
   text-align: center;
-  padding:5px 10px;
-  min-height:60px;
-  height:fit-content
+  padding: 5px 10px;
+  min-height: 60px;
+  height: fit-content;
 }
 
 .notif-read {
   background: var(--color-dropdown);
-  color:var(--color-subtitle);
-  font-size:0.9em;
+  color: var(--color-subtitle);
+  font-size: 0.9em;
   font-style: italic;
 }
 
@@ -1119,11 +1145,11 @@ a.post-text:hover{
   background-color: var(--color-headerback);
   padding: 3px;
   border-radius: 3px;
-  margin:2px;
+  margin: 2px;
 }
 
 .notif-link {
-  color:var(--color-subtitle);
+  color: var(--color-subtitle);
   display: inline;
 }
 
@@ -1139,10 +1165,11 @@ a.post-text:hover{
   font-size: 80px;
   color: var(--color-highlight);
   margin: 0;
-} 
+}
 
 /* Boîte principale */
-.errorbox, .registerbox {
+.errorbox,
+.registerbox {
   background: var(--color-headerback);
   padding: 30px;
   border-radius: 10px;
@@ -1153,7 +1180,7 @@ a.post-text:hover{
   max-width: 80%;
 }
 
-.errorbox  {
+.errorbox {
   max-width: 500px;
 }
 
@@ -1162,12 +1189,12 @@ a.post-text:hover{
   color: var(--color-highlight);
   text-decoration: none;
   padding: 5px 10px;
-} 
+}
 
 /* Titre de la page d'inscription */
 .registerbox .modal-title {
   text-align: center;
-  color:var(--color-dashboard);
+  color: var(--color-dashboard);
   font-size: 1.5em;
 }
 

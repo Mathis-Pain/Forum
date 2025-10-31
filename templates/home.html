@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="fr">
     {{template "InitPage" .}}
   <body>
@@ -22,16 +21,24 @@ Que vous soyez à la recherche d'un conseil qui change la donne, d'un soutien bi
       <!-- Posts Section -->
       <section class="posts-section">
         
-
         {{range .Posts}}
         <div class="post-card">
           <img class="post-avatar" src="{{.Author.ProfilPic}}"/>
           <div class="post-content">
             <div class="post-title">{{.Author.Username}} a posté dans <a href="topic/{{.TopicID}}">{{.TopicName}}</a></div>
-            <a class="post-text" 
-            href="topic/{{.TopicID}}#{{.MessageID}}"
-            > <img class="post-link" src="/static/images/ouvrirliens.jpeg" alt="Accéder au message" title="Accéder au message"/>{{preview .Content 300}}
-            </a>            
+            <a class="post-text" href="topic/{{.TopicID}}#{{.MessageID}}">
+              <img class="post-link" src="/static/images/ouvrirliens.jpeg" alt="Accéder au message" title="Accéder au message"/>
+              {{preview .Content 300}}
+            </a>
+            
+            <!-- Affichage de l'image si elle existe -->
+            {{if .ImgPath}}
+            <div class="post-image-container">
+              <a href="topic/{{.TopicID}}#{{.MessageID}}">
+                <img class="post-image" src="{{.ImgPath}}" alt="Image du message" />
+              </a>
+            </div>
+            {{end}}
           </div>
         </div>
         {{else}}
@@ -46,7 +53,6 @@ Que vous soyez à la recherche d'un conseil qui change la donne, d'un soutien bi
       </section>
     </main>
 
-    <style>.header {border-bottom: initial;}</style>
    
   </body>
 </html>

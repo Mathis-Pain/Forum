@@ -29,7 +29,7 @@ func GetLastPosts() ([]models.LastPost, error) {
 
 	// Préparation de la requête sql :
 	// - Joint la section "message" et la section "topic" pour récupérer le titre du sujet et les infos du message en une seule requête
-	// - Récupère l'ID du message et celui du sujet, le contenu du message, la date de création, l'auteur du message et le titre du sujet
+	// - Récupère l'ID du message et celui du sujet, le contenu du message, la date de création, l'auteur du message, le chemin de l'image et le titre du sujet
 	// - Commence par le plus récent et s'arrête maximum à 7 messages
 	sqlQuery := `
         SELECT
@@ -38,6 +38,7 @@ func GetLastPosts() ([]models.LastPost, error) {
             m.content,
             m.created_at,
             m.user_id,
+            IFNULL(m.image_path, ''),
             t.name
         FROM message m
         JOIN topic t ON m.topic_id = t.id
@@ -57,7 +58,8 @@ func GetLastPosts() ([]models.LastPost, error) {
 	for rows.Next() {
 		var mw models.LastPost
 		var user_id int
-		if err := rows.Scan(&mw.MessageID, &mw.TopicID, &mw.Content, &mw.Created, &user_id, &mw.TopicName); err != nil {
+		// AJOUT du scan de img_path
+		if err := rows.Scan(&mw.MessageID, &mw.TopicID, &mw.Content, &mw.Created, &user_id, &mw.ImgPath, &mw.TopicName); err != nil {
 			log.Printf("ERREUR : <getlastposts.go> Erreur dans le parcours de la base de données : %v\n", err)
 			return nil, err
 		}
@@ -102,6 +104,7 @@ func LastMonthPost() ([]models.LastPost, int, error) {
             m.user_id,
 			IFNULL(m.likes, 0),
 			IFNULL(m.dislikes, 0),
+			IFNULL(m.image_path, ''),
 			u.username,
             t.name
         FROM message m
@@ -121,7 +124,8 @@ func LastMonthPost() ([]models.LastPost, int, error) {
 	for rows.Next() {
 		var currentPost models.LastPost
 
-		err := rows.Scan(&currentPost.MessageID, &currentPost.TopicID, &currentPost.Content, &currentPost.Created, &currentPost.Author.ID, &currentPost.Likes, &currentPost.Dislikes, &currentPost.Author.Username, &currentPost.TopicName)
+		// AJOUT du scan de img_path
+		err := rows.Scan(&currentPost.MessageID, &currentPost.TopicID, &currentPost.Content, &currentPost.Created, &currentPost.Author.ID, &currentPost.Likes, &currentPost.Dislikes, &currentPost.ImgPath, &currentPost.Author.Username, &currentPost.TopicName)
 		if err != nil {
 			log.Print("ERREUR : <getlastposts.go> Erreur dans le parcours de la base de données :", err)
 			return nil, 0, err

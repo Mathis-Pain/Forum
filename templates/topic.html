@@ -38,7 +38,11 @@
                     <textarea name="message-content" class="edit-message is-hidden">{{$message.Content}}</textarea>
                    <div class="post-text">
     {{$message.Content}}
-   
+              {{if $message.ImgPath}}
+                    <div class="message-image-container">
+                        <img src="{{$message.ImgPath}}" alt="Image du message" class="post-image"/>
+                    </div>
+                    {{end}}
 </div>
                 <div class="post-actions">
                             

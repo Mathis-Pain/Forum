@@ -1,43 +1,54 @@
 <!DOCTYPE html>
 <html lang="fr">
   {{template "InitPage" .}}
-  
-    <!-- Header -->
-    {{template "ForumHeader" .}}
 
-    <!-- Main Content -->
-    <div class="dashboard-header">
-      <div class="topic-top">
-        <h2>Poster une réponse</h2>
-      </div>
+  <!-- Header -->
+  {{template "ForumHeader" .}}
+
+  <!-- Main Content -->
+  <div class="dashboard-header">
+    <div class="topic-top">
+      <h2>Poster une réponse</h2>
     </div>
+  </div>
 
-    <main class="main-content">
-      <aside class="sidebar">
-        <div id="{{.LastMessage.MessageID}}">
-          Répondre au sujet :  <strong>{{.Topic.Name}}</strong><br /><br />
-          Ouvert le {{.FirstMessage.Created}} par {{.FirstMessage.Author.Username}}<br />
-          <a href="/topic/{{.Topic.TopicID}}" target="blank">➤ Voir le sujet 
-          </a>
+  <main class="main-content">
+    <aside class="sidebar">
+      <div id="{{.LastMessage.MessageID}}">
+        Répondre au sujet : <strong>{{.Topic.Name}}</strong><br /><br />
+        Ouvert le {{.FirstMessage.Created}} par
+        {{.FirstMessage.Author.Username}}<br />
+        <a href="/topic/{{.Topic.TopicID}}" target="blank">➤ Voir le sujet</a>
+      </div>
+    </aside>
+
+    <br />
+
+    <section class="posts-section">
+      <div class="post-card">
+        <div class="post-content">
+          <div class="post-title">
+            Dernier message par {{.LastMessage.Author.Username}} le
+            {{.LastMessage.Created}}
+          </div>
+          <div class="post-text">
+            {{.LastMessage.Content}} {{if .LastMessage.ImgPath}}
+            <br />
+            <img
+              src="{{.LastMessage.ImgPath}}"
+              alt="Image jointe"
+              style="max-width: 300px; max-height: 300px"
+            />
+            {{end}}
+          </div>
         </div>
-      </aside>
-<br>
-<section class="posts-section">
-<div class="post-card"> 
-  <div class="post-content">
-  <div class="post-title">Dernier message par {{.LastMessage.Author.Username}} le {{.LastMessage.Created}}</div>
-     <div class="post-text">
-    {{.LastPost.Content}}
-    {{if .LastPost.ImgPath}}
-        <br>
-        <img src="{{.LastPost.ImgPath}}" alt="Image jointe" style="max-width:300px; max-height:300px;">
-    {{end}}
-</div>
-      </div>
       </div>
 
-      
-      <form class="create-topic-form" method="POST" enctype="multipart/form-data">
+      <form
+        class="create-topic-form"
+        method="POST"
+        enctype="multipart/form-data"
+      >
         <textarea
           class="input-name-topic"
           name="new-message"
@@ -45,12 +56,13 @@
           required
           maxlength="6000"
         ></textarea>
-        <input type="file" name="image" accept="image/*">
+        <input type="file" name="image" accept="image/*" />
         <div class="create-topic-form-button">
-          <button type="submit" class="respond-btn" title="Envoyer mon message">Envoyer</button>
+          <button type="submit" class="respond-btn" title="Envoyer mon message">
+            Envoyer
+          </button>
         </div>
       </form>
-      </section>
-    </main>
-  </body>
+    </section>
+  </main>
 </html>
