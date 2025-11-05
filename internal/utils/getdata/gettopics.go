@@ -3,6 +3,7 @@ package getdata
 import (
 	"database/sql"
 	"log"
+	"strconv"
 
 	"github.com/Mathis-Pain/Forum/internal/models"
 )
@@ -33,6 +34,51 @@ func GetTopicList(db *sql.DB, catID int) ([]models.Topic, error) {
 		if err == sql.ErrNoRows {
 			topic.Messages = []models.Message{}
 			return topics, err
+		} else if err != nil {
+			return topics, err
+		}
+
+		topic.LastPost = len(topic.Messages) - 1
+		if topic.LastPost < 0 {
+			topic.LastPost = 0
+		}
+
+		topics = append(topics, topic)
+	}
+
+	return topics, nil
+}
+
+func GetTopicListByJSONCategory(db *sql.DB, catID int) ([]models.Topic, error) {
+	stringID := strconv.Itoa(catID)
+	rows, err := db.Query(`
+		SELECT t.id, t.name
+		FROM topic t
+		WHERE EXISTS (
+			SELECT 1
+			FROM json_each(t.category_ids)
+			WHERE json_each.value = ?
+		)
+	`, stringID)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var topics []models.Topic
+
+	for rows.Next() {
+		var topic models.Topic
+		if err := rows.Scan(&topic.TopicID, &topic.Name); err != nil {
+			log.Printf("ERREUR : <gettopiclist.go> Erreur dans le parcours de la base de données : %v", err)
+			return nil, err
+		}
+
+		topic.Messages, err = GetMessageList(db, topic.TopicID)
+
+		if err == sql.ErrNoRows {
+			topic.Messages = []models.Message{}
 		} else if err != nil {
 			return topics, err
 		}

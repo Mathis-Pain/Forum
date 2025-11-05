@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -72,6 +74,11 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Verification username et password non nul
+		otherCat := r.Form["selectedcat"] //on récupère les autres catégories et on les met au format json
+		jsonCats, err := json.Marshal(otherCat)
+		if err != nil {
+			log.Println("Erreur JSON:", err)
+		}
 		topicName := r.FormValue("title")
 		message := r.FormValue("message")
 		stringcatID := r.FormValue("category_id")
@@ -82,6 +89,7 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 			utils.StatusBadRequest(w)
 			return
 		}
+
 		if topicName == "" || message == "" {
 			utils.StatusBadRequest(w)
 			return
@@ -93,9 +101,9 @@ func CreateTopicHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// --- Récupération deuserID ---
+		// --- Récupération de userID ---
 		username, userID, _ := utils.GetUserNameAndIDByCookie(r, db)
-		postactions.CreateNewtopic(userID, catID, topicName, message, imgPath)
+		postactions.CreateNewtopic(userID, catID, jsonCats, topicName, message, imgPath)
 
 		categ, _ := getdata.GetCatDetails(db, catID)
 

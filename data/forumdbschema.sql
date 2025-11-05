@@ -32,6 +32,7 @@ CREATE TABLE topic (
     created_at TEXT DEFAULT (CURRENT_TIMESTAMP),
     user_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
+    category_ids TEXT,
     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );

@@ -10,10 +10,10 @@
 services:
   server:
     build:
-      context: .. # le contexte reste la racine du projet
+      context: ..
       dockerfile: docker/Dockerfile
     ports:
-      - "9000:5080"
+      - '5080:5080'
     volumes:
       - ../data:/app/data
       - ../external.env:/app/external.env:ro

@@ -43,6 +43,18 @@
  name="message" 
  placeholder="Entrer votre message" 
  required></textarea>
+ <div class="checkbox-categories">
+     <div class="checkbox-title">Ajouter à d'autres catégories</div>
+    {{range .Categories}}
+    {{if ne .Name $.Category.Name}}
+    <label>
+    <input type="checkbox" name="selectedcat" value="{{.ID}}">
+    {{.Name}}
+  </label><br>
+  {{end}}
+  {{end}}
+  </div>
+ 
    <input type="file" name="image" accept="image/*" class="respond-btn"/>
   <div class="create-topic-form-button">
     <button type="submit" class="respond-btn" style="margin-left: initial;"> Envoyer</button></div>
