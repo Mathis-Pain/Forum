@@ -2,3 +2,4 @@ forum.db
 backup_forum.db
 notifications.db
 external.env
+static/uploads
