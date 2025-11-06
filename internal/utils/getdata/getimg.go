@@ -10,7 +10,7 @@ import (
 )
 
 // Taille maximale autorisée en octets (ici 700 Ko)
-const MaxImageSize = 1024 * 1024
+const MaxImageSize = 200 * 1024
 
 func GetImg(w http.ResponseWriter, r *http.Request) (string, error) {
 	var imagePath string

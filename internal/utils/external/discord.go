@@ -82,7 +82,9 @@ func HandleDiscordCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// ÉTAPE 3 : Récupération des informations utilisateur via l'API Discord
-	resp, err := http.Get("https://discord.com/api/v10/users/@me?access_token=" + token.AccessToken)
+	client := DiscordOauthConfig.Client(context.Background(), token)
+
+	resp, err := client.Get("https://discord.com/api/v10/users/@me")
 	if err != nil {
 		logMsg := fmt.Sprint("ERREUR : <discord.go> Impossible de récupérer les données de l'utilisateur : ", err)
 		logs.AddLogsToDatabase(logMsg)
